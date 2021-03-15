@@ -16,6 +16,7 @@ import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import LinkedInIcon from '@material-ui/icons/LinkedIn'; 
 import EmailIcon from '@material-ui/icons/Email';
 import TuneIcon from '@material-ui/icons/Tune';
+import Typography from '@material-ui/core/Typography'; 
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -53,113 +54,211 @@ const VerticalDivider = () => {
     );
 }
 
-const CustomToggleButtonGroup = ({ handleDialogOpen, ModeSelectorComponent, }) => {
+const LinkedinIconComp = () => {
+    return (<LinkedInIcon />);
+}
+const FacebookIconComp = () => {
+    return (<FacebookIcon />); 
+}
+const TwitterIconComp = () => {
+    return (<TwitterIcon />);
+}
+const WhatsAppIconComp = () => {
+    return (<WhatsAppIcon />);
+}
 
+const medias = [
+    {
+        name: 'linkedin',
+        component: <LinkedinIconComp />,
+    },{
+        name: 'facebook',
+        component: <FacebookIconComp />,
+    },{
+        name: 'twitter',
+        component: <TwitterIconComp />, 
+    },{
+        name: 'whatsapp',
+        component: <WhatsAppIconComp />,
+    }
+];
+    
+// const StyledToggleButtonGroup22 = () => {
+//     return (
+//         <ToggleButtonGroup>
+//             { medias.map( (item) => {
+//                 <ToggleButton 
+//                     key={item.name}
+//                     value={item.name}
+//                     onClick={
+//                         (e) => dispatch({ 
+//                             type: 'UPDATE_SOCIAL', 
+//                             payload: { 
+//                                 name: `${item.name}`,  
+//                                 value: true
+//                             }
+//                         })
+//                     }
+//                 > 
+//                     {medias[`${item.name}`]}
+//                 </ToggleButton>
+//             })} 
+//         </ToggleButtonGroup>
+//     ); 
+// }
+
+  
+const ToggleButtonGroup2 = () => {
+    const [state, dispatch] = useCount(); 
+
+    return (
+        <StyledToggleButtonGroup>
+            <ToggleButton 
+                value="facebook"
+                onClick={
+                    (e) => dispatch({ 
+                        type: 'UPDATE_SOCIAL', 
+                        payload: { 
+                            name: 'facebook', 
+                            value: true
+                        }
+                    })
+                }
+            >
+                { medias[0].component }
+            </ToggleButton>
+                
+            <ToggleButton 
+                value="linkedin"
+                onClick={
+                    (e) => dispatch({ 
+                        type: 'UPDATE_SOCIAL', 
+                        payload: { 
+                            name: 'linkedin', 
+                            value: true
+                        }
+                    })
+                }
+            >
+                { medias[1].component }
+            </ToggleButton>
+            
+            <ToggleButton 
+                value="twitter"
+                onClick={
+                    (e) => dispatch({ 
+                        type: 'UPDATE_SOCIAL', 
+                        payload: { 
+                            name: 'twitter', 
+                            value: true
+                        }
+                    })
+                }
+            >
+               { medias[2].component }
+            </ToggleButton>
+
+            <ToggleButton 
+                value="whatsapp" 
+                onClick={
+                    (e) => dispatch({ 
+                        type: 'UPDATE_SOCIAL', 
+                        payload: { 
+                            name: 'whatsapp', 
+                            value: true
+                        }
+                    })
+                }
+            >
+                { medias[3].component }
+            </ToggleButton>
+        </StyledToggleButtonGroup> 
+    );
+}
+
+const UtmAnalyticsButton = ({ executeOnOpen }) => {
+    return (
+        <Button 
+            onClick={executeOnOpen}
+        > 
+            <Typography 
+                variant="overline"
+                style={{ marginRight: '5px' }}> 
+                UTM 
+            </Typography>
+            
+            <TuneIcon /> 
+        </Button>     
+    );
+}
+
+// const IOSAnalyticsButton = ({ todoiOS }) => {
+//     return (
+//         <Button 
+//             onClick={todoiOS}
+//         > 
+//             <Typography 
+//                 variant="overline"
+//                 style={{ marginRight: '5px' }}> 
+//                 iOS 
+//             </Typography>
+            
+            
+//         </Button>     
+//     );
+// }
+
+// const todoiOS = () => {
+//     console.log("open ios button"); 
+//     return (
+//        <a> "hello" </a>
+//     );
+// }
+
+
+const CustomToggleButtonGroup = ({ handleDialogOpen, ModeSelectorComponent, }) => {
   const classes = useStyles();
   const [state, dispatch] = useCount(); 
 
   return (
-    <div>
-        <Paper 
-            elevation={0} 
-            className={classes.paper}
+    <Paper 
+        elevation={0} 
+        className={classes.paper}
+        style = {{ 
+            display: 'flex', 
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+        }}
+    >
+        <div style = {{ 
+                display: 'flex', 
+                flexDirection: 'row', 
+                justifyContent: 'flex-start'
+            }}
         >
-            <StyledToggleButtonGroup
-                size="small"
-                value={state.socials}
-                exclusive
-            >
+            <ModeSelectorComponent />
+            <VerticalDivider /> 
+           
+            <UtmAnalyticsButton executeOnOpen={handleDialogOpen} />
 
-                <ToggleButton 
-                    value="facebook"
-                    onClick={
-                        (e) => dispatch({ 
-                            type: 'UPDATE_SOCIAL', 
-                            payload: { 
-                                name: 'facebook', 
-                                value: true
-                            }
-                        })
-                    }
-                >
-                    <FacebookIcon /> 
-                </ToggleButton>
-                
-                <ToggleButton 
-                    value="linkedin"
-                    onClick={
-                        (e) => dispatch({ 
-                            type: 'UPDATE_SOCIAL', 
-                            payload: { 
-                                name: 'linkedin', 
-                                value: true
-                            }
-                        })
-                    }
-                >
-                    <LinkedInIcon />
-                </ToggleButton>
-                
-                <ToggleButton 
-                    value="twitter"
-                    onClick={
-                        (e) => dispatch({ 
-                            type: 'UPDATE_SOCIAL', 
-                            payload: { 
-                                name: 'twitter', 
-                                value: true
-                            }
-                        })
-                    }
-                >
-                    <TwitterIcon />
-                </ToggleButton>
+            <VerticalDivider />
 
-                <ToggleButton 
-                    value="whatsapp" 
-                    onClick={
-                        (e) => dispatch({ 
-                            type: 'UPDATE_SOCIAL', 
-                            payload: { 
-                                name: 'whatsapp', 
-                                value: true
-                            }
-                        })
-                    }
-                >
-                    <WhatsAppIcon />
-                </ToggleButton>
-                
-                <ToggleButton 
-                    value="email" 
-                    onClick={
-                        (e) => dispatch({ 
-                            type: 'UPDATE_SOCIAL', 
-                            payload: { 
-                                name: 'email', 
-                                value: true
-                            }
-                        })
-                    }
-                >
-                    <EmailIcon />
-                </ToggleButton>
+            {/* <IOSAnalyticsButton executeOnOpen={todoiOS} /> */}
+           
+            
+        </div>
 
-                
-                <VerticalDivider /> 
+        <ToggleButtonGroup
+            size="small"
+            value={state.socials}
+            exclusive
+        >
+            <VerticalDivider /> 
+            <ToggleButtonGroup2 />
+            <VerticalDivider /> 
+        </ToggleButtonGroup>           
 
-                <ModeSelectorComponent />
-
-                <VerticalDivider /> 
-        
-                <Button 
-                    onClick={handleDialogOpen}> 
-                    <TuneIcon /> 
-                </Button> 
-
-            </StyledToggleButtonGroup>           
-      </Paper>
-    </div>
+    </Paper>
   );
 }
 

@@ -6,14 +6,12 @@ import { useCount } from '../components/CounterContext';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';  
+import TextField from '@material-ui/core/TextField'; 
+import ToolTip from '@material-ui/core/ToolTip';  
+import Radio from '@material-ui/core/Radio'; 
 
 import PageContainer from '../components/PageContainer'; 
-import DashboardCard from './Shortener/DashboardBase'; 
-import TextField from '@material-ui/core/TextField'; 
-
-import ToolTip from '@material-ui/core/ToolTip';  
-
-import Radio from '@material-ui/core/Radio'; 
+import DashboardCard from './Shortener/DashboardCard'; 
 
 const useStyles = makeStyles({
     root: {
@@ -21,7 +19,10 @@ const useStyles = makeStyles({
         flexDirection: 'row', 
         flexWrap: 'wrap', 
         justifyContent: 'space-around',
-    },        
+    },    
+    radioButtonGroup: {
+        paddingTop: '5px'
+    }    
 });
 
 const UtmParameterBuilder = () => {
@@ -130,38 +131,42 @@ const ModeSelectionRadio = () => {
     const [state, dispatch] = useCount();
   
     return (
-      <div>
-        <Radio
-          checked={state.mode === 'SHORT'}
-          onChange={(e) => 
-            dispatch({ 
-                'type'  : 'UPDATE_MODE', 
-                payload : e.target 
-            })
-          }
-          value="SHORT"
-          name="radio-short"
+      <div className="radioButtonGroup">
+        <Radio 
+            color="primary"
+            value="SHORT"
+            name="radio-short"
+            checked = {
+                state.mode === 'SHORT'
+            }
+            onChange={(e) => 
+                dispatch({ 
+                    'type'  : 'UPDATE_MODE', 
+                    payload : e.target 
+                })
+            }
         />
 
-        <Radio
-          checked = {
-              state.mode === 'GUESSABLE'
-          }
-          onChange={(e) => 
-            dispatch({ 
-                'type'  : 'UPDATE_MODE', 
-                payload : e.target 
-            })
-          }
-          value="GUESSABLE"
-          name="radio-guessable"
+        <Radio 
+            color="primary"
+            value="UNGUESSABLE"
+            name="radio-unguessable"
+            checked = {
+                state.mode === 'UNGUESSABLE'
+            }
+            onChange={(e) => 
+                dispatch({ 
+                    'type'  : 'UPDATE_MODE', 
+                    payload : e.target 
+                })
+            }
         />
     </div> 
     );
  }
 
 function Dashboard () {
-    const { user, loading } = useAuth(); 
+    const { user, loading, signout } = useAuth(); 
  
     if(!user && !loading) {
         Router.push('/')

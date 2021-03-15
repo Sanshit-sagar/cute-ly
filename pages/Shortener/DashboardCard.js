@@ -20,6 +20,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider'; 
 
+import { createLink } from '../../lib/db'; 
+
 const useStyles = makeStyles({
     root: {
         
@@ -95,7 +97,6 @@ const DashboardBase = ({ ParamDialogComp, ModeSelectorComp }) => {
 
                             <FilledInput
                                 fullWidth
-                                multiline
                                 id="filled-adornment-amount"
                                 value={state.url}
                                 onChange={(e) => dispatch({ type: 'UPDATE_URL', payload: (e)})}
@@ -138,9 +139,11 @@ const DashboardCard = ({ ParamDialog, ModeSelector }) => {
 
     const handleSubmit = () => {
         console.log('Submitting...');
+        console.log(JSON.stringify(state)); 
 
-        var updatedState = JSON.stringify(state); 
-        console.log(updatedState); 
+        const resp = createLink(state); 
+        console.log("Response..."); 
+        console.log(resp); 
     }
 
     return (
@@ -152,8 +155,14 @@ const DashboardCard = ({ ParamDialog, ModeSelector }) => {
                 className = {classes.dashboardCard}
             > 
                 <CardContent>
-                    <Typography variant="h3">
-                        cute.ify a link
+                    <Typography 
+                        variant="overline"
+                        component="body1" 
+                        style = {{ 
+                            fontSize: '16px' 
+                        }}
+                    >
+                        URL Shortner
                     </Typography>
 
                     <Divider /> 

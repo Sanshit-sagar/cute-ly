@@ -15,6 +15,9 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
+import SvgIcon from '@material-ui/core/SvgIcon';
+import IconButton from '@material-ui/core/IconButton';
+
 import { useAuth } from '../lib/auth'; 
 
 const useStyles = makeStyles((theme) => ({
@@ -103,35 +106,67 @@ export default function SignInSide() {
               variant="outlined"
               color="primary"
               className={classes.submit}
-              onClick={(e) => auth.signinWithEmail(email, password, '/account')}
+              onClick={(e) => auth.signinWithEmail(email, password, '/dashboard')}
             >
               sign in
             </Button>
 
             <Box height='20vh'> 
               <Grid container> 
-                <Grid item xs> 
-                  <Button fullWidth size="large"> 
+
+                {/* <Grid item xs> 
+                  <IconButton fullWidth size="large"> 
                     <LinkedInIcon />
-                  </Button>
-                </Grid>
+                  </IconButton>
+                </Grid> */}
+                
                 <Grid item xs> 
-                  <Button fullWidth size="large"> 
+                  <IconButton 
+                    fullWidth 
+                    size="large"
+                  > 
                     <FacebookIcon /> 
-                  </Button>
+                  </IconButton>
                 </Grid>
 
                 <Grid item xs> 
-                  <Button fullWidth size="large"> 
+                  <IconButton 
+                    fullWidth 
+                    size = "large" 
+                    onClick={
+                      () => auth.signinWithTwitter('/dashboard')
+                    }
+                  > 
                     <TwitterIcon /> 
-                  </Button>
+                  </IconButton>
                 </Grid>
 
                 <Grid item xs> 
-                  <Button fullWidth size="large" onClick={() => auth.signinWithGoogle('/dashboard')}> 
+                  <IconButton
+                    fullWidth
+                    size="large"
+                    onClick={
+                      () => auth.signinWithGoogle('/dashboard')
+                    }
+                  > 
                     <GitHubIcon /> 
-                  </Button>
+                  </IconButton>
                 </Grid>
+              
+                <Grid item xs> 
+                  <IconButton
+                    fullWidth
+                    size="large"
+                    onClick = {
+                      () => auth.signinWithGitHub('/dashboard')
+                    }
+                  > 
+                    <SvgIcon>
+                      <GitHubIcon /> 
+                    </SvgIcon>
+                  </IconButton>
+                </Grid>
+                
               </Grid>
             </Box>
 

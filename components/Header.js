@@ -8,18 +8,12 @@ import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper'; 
 
-import TextField from '@material-ui/core/TextField'; 
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import HomeIcon from '@material-ui/icons/Home';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import HourglassFullIcon from '@material-ui/icons/HourglassFull';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import WbSunnyIcon from '@material-ui/icons/WbSunny';
-import Brightness2Icon from '@material-ui/icons/Brightness2';
-
-import { makeStyles } from '@material-ui/core/styles'; 
+import Home from '../icons/icons'; 
+import { Loading, Dashboard, LightMode, DarkMode, Analytics } from '../icons/icons'; 
+import { withStyles, makeStyles } from '@material-ui/core/styles'; 
 
 import { useAuth } from '../lib/auth'; 
 
@@ -53,12 +47,41 @@ const useStyles = makeStyles({
     // onMouseEnter={() => handleMouseEnter()} 
     // onMouseLeave={() => handleMouseLeave()}
   },
-});   
+  avatar: {
+    marginLeft: '7.5px', 
+  },
+  headerLinkGroup: {
+    display: "flex", 
+    flexDirection: "row", 
+    justifyContent: 'space-evenly'
+  }
+});
+
+const LightTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}))(Tooltip);
 
 const HeaderLink = ({ href, children }) => {
   return (
-    <Link href={href} mr={4} fontWeight='light'>
-        <Button variant="primary" color="primary" passHref style={{ marginRight: '10px', borderRadius: '5px' }}>
+    <Link 
+      href={href} 
+      mr={4} 
+      fontWeight='light'
+    >
+        <Button 
+          variant="primary" 
+          color="primary" 
+          passHref 
+          style = {{ 
+            marginRight: '10px', 
+            borderRadius: '5px' 
+          }}
+        >
           { children }
         </Button>
      </Link>
@@ -80,81 +103,86 @@ const Header = ({ props }) => {
     }
   }
 
+  const LightDarkModeButton = ({ executeOnClick }) => {
+    return (
+      <LightTooltip title="Dark Mode"> 
+        { open 
+        ? 
+          <Button onClick={ executeOnClick }> 
+            <LightMode /> 
+          </Button> 
+        : 
+          <Button onClick={ executeOnClick }> 
+            <DarkMode />
+          </Button>
+        }
+      </LightTooltip>
+    ); 
+  }
+
   const { user, loading, signout } = useAuth();
 
   return (
-    <Container className={classes.cardContainer}> 
-        <Typography variant="overline"> 
+    <Container 
+      className={classes.cardContainer}
+    > 
+        <Typography 
+          variant="overline" 
+          color="primary" 
+          style = {{ fontSize: '32px' }}
+        > 
           cute.ly
         </Typography>
 
         <Box> 
           <Paper className={classes.profileInfo}> 
-              { user ? ( 
-                <React.Fragment> 
+            { user ? ( 
+              <React.Fragment> 
+                
+                <HeaderLink href='/dashboard'>
+                  <Home />
+                </HeaderLink>
 
-                  <Box style={{display: "flex", flexDirection: "row", justifyContent: 'space-evenly'}}>
-                    <Tooltip title="Shorten a new Link"> 
-                      <HeaderLink href='/dashboard'> 
-                        <HomeIcon /> 
-                      </HeaderLink>
-                    </Tooltip> 
+                <HeaderLink href='/analytics'>
+                  <Analytics />
+                </HeaderLink>
+                  
+                <HeaderLink href='/account'>
+                  <Dashboard /> 
+                </HeaderLink>
+                
+                
+                <LightDarkModeButton 
+                  executeOnClick = {handleSwitchToggle} 
+                /> 
 
-                    <Tooltip title="Find any data you need on your links">
-                      <HeaderLink href='/analytics'> 
-                        <AssessmentIcon /> 
-                      </HeaderLink>
-                    </Tooltip> 
+                <Divider 
+                    orientation="vertical" 
+                    flexItem 
+                />
 
-                    <Tooltip title="The control centre of the app"> 
-                      <HeaderLink href='/account'> 
-                        <DashboardIcon /> 
-                      </HeaderLink>
-                    </Tooltip>
-                  </Box> 
-
-                  <Tooltip title="Dark Mode"> 
-                    { 
-                      open ? 
-                      <Button onClick={handleSwitchToggle}> 
-                        <WbSunnyIcon /> 
-                      </Button> :
-
-                      <Button onClick={handleSwitchToggle}> 
-                        <Brightness2Icon /> 
-                      </Button>
-                    }
-                  </Tooltip>
-
-                  <Divider 
-                      orientation="vertical" 
-                      flexItem 
-                  />
-
-                  <Tooltip 
-                          title="View Profile" 
-                          aria-label="view-profile"
-                  >  
-                    <Button 
-                            margin="dense" 
-                            className={classes.responsiveButton}
+                <LightTooltip 
+                  title="View Profile" 
+                  aria-label="view-profile"
+                >  
+                  <Button 
+                    margin="dense" 
+                    className={classes.responsiveButton}
+                  >
+                    <Avatar 
+                      className={classes.avatar}
                     >
-                      <TextField 
-                                color="primary" 
-                                margin="dense" 
-                                disabled={true} 
-                                value={user.name}
-                      />
-                      <Avatar style = {{ marginLeft: '7.5px' }}>
-                        { user.email.charAt(1) }
-                      </Avatar> 
-                    </Button>
-                  </Tooltip>
-                </React.Fragment> 
-              )
-              : 
-              <HourglassFullIcon /> 
-              } 
+                      { user.email.charAt(0) }
+                    </Avatar> 
+                  </Button>
+                </LightTooltip>
+
+              </React.Fragment> 
+            ) 
+            : 
+              <Loading /> 
+            } 
+
           </Paper> 
         </Box>
     </Container>

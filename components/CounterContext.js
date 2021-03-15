@@ -21,7 +21,11 @@ const initialState =  {
         linkedin: false, 
         email: false, 
         google: false, 
-    }
+    }, 
+    responseData: {
+        payload: '', 
+        timestamp: '',  
+    },
 }; 
 
 const reducer = (state, action) => {
@@ -52,6 +56,14 @@ const reducer = (state, action) => {
                     [action.payload.name]: action.payload.value,
                 } 
             };
+        case "DB_RESPONSE": 
+            return {
+                ...state, 
+                responseData: {
+                    ...state.responseData, 
+                    payload: action.payload,  
+                }
+            }
         default: 
             throw new Error("Unexpected Input"); 
     }
