@@ -1,10 +1,8 @@
 import React from 'react'; 
-import { render } from 'react-dom';
-import { useAuth } from '../lib/auth'; 
 import firebase from '../lib/firebase';
-
 import Router from 'next/router'
 
+import { useAuth } from '../lib/auth'; 
 import PageContainer from '../components/PageContainer';
 import { DataGrid } from '@material-ui/data-grid';
 

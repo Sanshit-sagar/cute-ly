@@ -1,48 +1,117 @@
-	
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
- 
-const useStyles = makeStyles(theme => ({
+
+import { useCount } from './SharedContext'; 
+// import PreviousMap from 'postcss/lib/previous-map';
+
+const useStyles = makeStyles((theme) => ({
   close: {
     padding: theme.spacing(0.5),
   },
 }));
- 
-export default function SimpleSnackbar() {
-  const classes = useStyles();
- 
+
+export default function ConsecutiveSnackbars() {
+  const [state, dispatch] = useCount();
+  
+  React.useEffect(() => {
+    if (state.snackbar.snackpack.length && !state.snackbar.messageInfo) {
+      dispatch({ 
+        type: "SNACKBAR_IDLE", payload: { 
+          messageInfo: {
+            ...state.snackbar.snackpack[0] 
+          }, 
+          snackpack: state.snackbar.snackpack.slice(1),
+        } 
+      });
+    } else if (state.snackbar.length && state.snackbar.messageInfo && state.snackbar.open) {
+      
+      dispatch({ type: "SNACKBAR_CLOSE" }); 
+    }
+  }, [state.snackbar.snackpack, state.snackbar.messageInfo, state.snackbar.open]);
+
+  const handleClick = (message) => () => {  
+    dispatch({ 
+      type: "SNACKBAR_TRIGGER", payload: { 
+        message, 
+        key: new Date().getTime(), 
+      }
+    });
+  };
+
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
- 
-    // setOpen(false);
+    dispatch({ 
+      type: "SNACKBAR_CLOSE" 
+    }); 
   };
- 
+
+  const handleExited = () => {
+    dispatch({ 
+      type: "SNACKBAR_EXIT" 
+    }); 
+  };
+
+  const classes = useStyles();
   return (
     <div>
+
+      {/* <Button onClick={handleClick('Message A')}>
+        Show message A
+      </Button>
+      <Button onClick={handleClick('Message B')}>
+        Show message B
+      </Button> */}
+
       <Snackbar
-        anchorOrigin={{
+        key = {
+          state.snackbar.messageInfo ? 
+          state.snackbar.messageInfo.key : 
+          undefined
+        }
+        anchorOrigin = {{
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        open={false}
+        open = {
+          state.snackbar.open
+        }
         autoHideDuration={6000}
-        onClose={handleClose}
-        message={<span>Note archived</span>}
-        action={[
-          <IconButton
-            key="close"
-            color="inherit"
-            className={classes.close}
-            onClick={handleClose}
-          >
-            <CloseIcon />
-          </IconButton>,
-        ]}
+        onClose={ 
+          handleClose
+        }
+        onExited={
+          handleExited
+        }
+        message={
+            state.snackbar.messageInfo 
+          ? state.snackbar.messageInfo.message 
+          : undefined
+        }
+        action={
+          <React.Fragment>
+            <Button 
+              color="secondary" 
+              size="small" 
+              onClick={handleClose}
+            >
+              UNDO
+            </Button>
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              className={classes.close}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          </React.Fragment>
+        }
       />
     </div>
   );

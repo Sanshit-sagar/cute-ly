@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useCount } from '../../components/CounterContext'; 
+import { useCount } from '../../components/SharedContext'; 
 
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
@@ -14,7 +14,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp'; 
 import LinkedInIcon from '@material-ui/icons/LinkedIn'; 
-import EmailIcon from '@material-ui/icons/Email';
+
 import TuneIcon from '@material-ui/icons/Tune';
 import Typography from '@material-ui/core/Typography'; 
 
@@ -180,10 +180,12 @@ const UtmAnalyticsButton = ({ executeOnOpen }) => {
     return (
         <Button 
             onClick={executeOnOpen}
+            // size="large" 
         > 
             <Typography 
                 variant="overline"
-                style={{ marginRight: '5px' }}> 
+                style={{ marginRight: '5px' }}
+            > 
                 UTM 
             </Typography>
             
@@ -192,29 +194,37 @@ const UtmAnalyticsButton = ({ executeOnOpen }) => {
     );
 }
 
-// const IOSAnalyticsButton = ({ todoiOS }) => {
-//     return (
-//         <Button 
-//             onClick={todoiOS}
-//         > 
-//             <Typography 
-//                 variant="overline"
-//                 style={{ marginRight: '5px' }}> 
-//                 iOS 
-//             </Typography>
+const IOSAnalyticsButton = ({ executeOnOpen }) => {
+    return (
+        <Button 
+            onClick={executeOnOpen}
+        > 
+            <Typography 
+                variant="overline"
+                style={{ marginRight: '5px' }}> 
+                iOS 
+            </Typography>
             
+            <TuneIcon /> 
+        </Button>     
+    );
+}
+
+const AndroidAnalyticsButton = ({ executeOnOpen }) => {
+    return (
+        <Button 
+            onClick={executeOnOpen}
+        > 
+            <Typography 
+                variant="overline"
+                style={{ marginRight: '5px' }}> 
+                Android
+            </Typography>
             
-//         </Button>     
-//     );
-// }
-
-// const todoiOS = () => {
-//     console.log("open ios button"); 
-//     return (
-//        <a> "hello" </a>
-//     );
-// }
-
+            <TuneIcon /> 
+        </Button>     
+    );
+}
 
 const CustomToggleButtonGroup = ({ handleDialogOpen, ModeSelectorComponent, }) => {
   const classes = useStyles();
@@ -230,31 +240,33 @@ const CustomToggleButtonGroup = ({ handleDialogOpen, ModeSelectorComponent, }) =
             justifyContent: 'space-between'
         }}
     >
-        <div style = {{ 
+         <div style = {{ 
                 display: 'flex', 
-                flexDirection: 'row', 
-                justifyContent: 'flex-start'
+                flexDirection: 'row'
             }}
         >
             <ModeSelectorComponent />
             <VerticalDivider /> 
-           
             <UtmAnalyticsButton executeOnOpen={handleDialogOpen} />
+            <VerticalDivider /> 
+           
+            {/* <UtmAnalyticsButton executeOnOpen={handleDialogOpen} /> */}
 
             <VerticalDivider />
-
-            {/* <IOSAnalyticsButton executeOnOpen={todoiOS} /> */}
-           
-            
-        </div>
+        </div> 
 
         <ToggleButtonGroup
             size="small"
             value={state.socials}
             exclusive
         >
+            
+            {/* <IOSAnalyticsButton executeOnOpen={handleDialogOpen} />
             <VerticalDivider /> 
-            <ToggleButtonGroup2 />
+            <AndroidAnalyticsButton executeOnOpen={handleDialogOpen} /> */}
+
+            <VerticalDivider />  
+            <ToggleButtonGroup2 /> 
             <VerticalDivider /> 
         </ToggleButtonGroup>           
 

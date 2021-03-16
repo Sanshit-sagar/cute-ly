@@ -1,8 +1,7 @@
 import React, { Fragment, useState } from 'react'; 
-import { useCount } from '../../components/CounterContext'; 
+import { useCount } from '../../components/SharedContext'; 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Grid from '@material-ui/core/Grid'; 
 import Button from '@material-ui/core/Button'; 
 import FormControl from '@material-ui/core/FormControl';
 import LanguageIcon from '@material-ui/icons/Language';
@@ -10,8 +9,9 @@ import CustomToggleButtonGroup from './ToggleButtonGroup';
 import UtmParamsDialog from './UtmParamsDialog';
 
 import Container from '@material-ui/core/Container'; 
-import InputLabel from '@material-ui/core/InputLabel';
+
 import FilledInput from '@material-ui/core/FilledInput';
+import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import Card from '@material-ui/core/Card';
@@ -20,16 +20,22 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider'; 
 
+// import { shadows } from '@material-ui/system'; 
+
 import { createLink } from '../../lib/db'; 
+import SharedSnackbar from '../../components/Snackbar';
 
 const useStyles = makeStyles({
     root: {
         
     },
     urlInput: {
-        backgroundColor: 'white', 
-        width: '100%', 
-        height: '100%', 
+        backgroundColor: '#fff', 
+        color: '#000', 
+        borderColor: '#000', 
+        border: 'thin solid black', 
+        borderRadius: '5px', 
+        marginBottom: '5px',
     }, 
     shortenUrlButton: {
         display: 'flex', 
@@ -42,16 +48,13 @@ const useStyles = makeStyles({
         left: '12.5%', 
         top: '15%',
         width: '75%', 
-        height: '50%',
+        height: '57.5%',
         backgroundColor: 'white', 
         border: 'thin solid black', 
         borderRadius: "5px", 
     },
     cardContent: {
         borderRadius: '5px', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'stretch',
     },
     customToggleButtons: {
         display: 'flex', 
@@ -81,46 +84,48 @@ const DashboardBase = ({ ParamDialogComp, ModeSelectorComp }) => {
     return (
         <Fragment> 
             <Container>
-                <Grid 
-                    item 
-                    className={classes.urlInput}
-                > 
-                    <FormControl 
-                        fullWidth 
-                        className={classes.margin} 
-                        variant="filled"
-                    >
-                        <div className={classes.smallGap}> 
-                            <InputLabel htmlFor="filled-adornment-amount">
-                                Destination URL 
-                            </InputLabel>
+              
+                <FormControl 
+                    fullWidth 
+                    className={classes.margin} 
+                    variant="filled"
+                >
+                    <div className={classes.smallGap}> 
+                        <InputLabel 
+                            htmlFor="filled-adornment-amount"
+                        >
+                            Destination URL 
+                        </InputLabel>
 
-                            <FilledInput
-                                fullWidth
-                                id="filled-adornment-amount"
-                                value={state.url}
-                                onChange={(e) => dispatch({ type: 'UPDATE_URL', payload: (e)})}
-                                color="primary"
-                                variant="standard"
-                                placeholde="Enter or Type a Valid URL"
-                                error=
-                                {
-                                    state.url.length > 0 && !validUrlPattern.test(state.url
-                                )}
-                                endAdornment = {
-                                    <InputAdornment position="end">
-                                        <LanguageIcon />
-                                    </InputAdornment>
-                                }
-                            />
-                        </div>
-                        <CustomToggleButtonGroup  
-                            handleDialogOpen={handleOpenDialog}
-                            ModeSelectorComponent={ModeSelectorComp} 
-                        /> 
+                        <FilledInput
+                            fullWidth
+                            id="filled-adornment-amount"
+                            value={state.url}
+                            onChange={(e) => dispatch({ type: 'UPDATE_URL', payload: (e)})}
+                            color="primary"
+                            variant="standard"
+                            placeholde="Enter or Type a Valid URL"
+                            error=
+                            {
+                                state.url.length > 0 && !validUrlPattern.test(state.url
+                            )}
+                            endAdornment = {
+                                <InputAdornment 
+                                    position="end"
+                                >
+                                    <LanguageIcon />
+                                </InputAdornment>
+                            }
+                            className={classes.urlInput}
+                        />
+                    </div>
+                    <CustomToggleButtonGroup  
+                        handleDialogOpen={handleOpenDialog}
+                        ModeSelectorComponent={ModeSelectorComp} 
+                    /> 
 
-                    </FormControl>
-                </Grid>                
+                </FormControl>
+              
             </Container>
 
             <UtmParamsDialog 
@@ -130,6 +135,26 @@ const DashboardBase = ({ ParamDialogComp, ModeSelectorComp }) => {
             /> 
         </Fragment>
     );
+}
+
+const SnackBar = () => {
+    const [state, dispatch] = useCount(); 
+
+    return (
+        <Button
+            size="large" 
+            color="primary"
+            onClick={(e) => dispatch({ 
+                type: 'SNACKBAR_MESSAGE', 
+                payload: { 
+                    variant: 'alert', 
+                    message: 'no more snacks', 
+                }
+            })} 
+        > 
+            Scooby Snacks! 
+        </Button> 
+    ); 
 }
 
 const DashboardCard = ({ ParamDialog, ModeSelector }) => {
@@ -149,7 +174,7 @@ const DashboardCard = ({ ParamDialog, ModeSelector }) => {
     return (
         <Container 
             display="flex" 
-            justifyContent="center"
+            justifycontent="center"
         >
             <Card 
                 className = {classes.dashboardCard}
@@ -157,7 +182,6 @@ const DashboardCard = ({ ParamDialog, ModeSelector }) => {
                 <CardContent>
                     <Typography 
                         variant="overline"
-                        component="body1" 
                         style = {{ 
                             fontSize: '16px' 
                         }}
@@ -183,8 +207,13 @@ const DashboardCard = ({ ParamDialog, ModeSelector }) => {
                     > 
                             Submit
                     </Button>
+                    
+                    <SnackBar /> 
+
                 </CardActions>
             </Card> 
+
+            <SharedSnackbar /> 
         </Container>
     )
 }

@@ -176,7 +176,6 @@ const Header = ({ props }) => {
                     </Avatar> 
                   </Button>
                 </LightTooltip>
-
               </React.Fragment> 
             ) 
             : 

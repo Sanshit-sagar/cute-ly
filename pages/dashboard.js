@@ -2,16 +2,25 @@ import React, { Fragment } from 'react';
 import Router from 'next/router';
 
 import { useAuth } from '../lib/auth';
-import { useCount } from '../components/CounterContext'; 
+import { useCount } from '../components/SharedContext'; 
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';  
-import TextField from '@material-ui/core/TextField'; 
-import ToolTip from '@material-ui/core/ToolTip';  
-import Radio from '@material-ui/core/Radio'; 
 
-import PageContainer from '../components/PageContainer'; 
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+import Tooltip from '@material-ui/core/Tooltip';  
+import TextField from '@material-ui/core/TextField'; 
+
 import DashboardCard from './Shortener/DashboardCard'; 
+import PageContainer from '../components/PageContainer'; 
+
+import Typography from '@material-ui/core/Typography'; 
 
 const useStyles = makeStyles({
     root: {
@@ -33,7 +42,7 @@ const UtmParameterBuilder = () => {
         <Fragment> 
             <Grid container> 
                 <div className={classes.root}> 
-                    <ToolTip title="utm_campaign"> 
+                    <Tooltip title="utm_campaign"> 
                         <TextField 
                             variant="standard" 
                             label="campaign"
@@ -53,9 +62,9 @@ const UtmParameterBuilder = () => {
                             placeholder="e.g. ACME Campaign, ..."
                             style={{ margin: '10px' }}
                         />
-                    </ToolTip> 
+                    </Tooltip> 
                     
-                    <ToolTip title="utm_source"> 
+                    <Tooltip title="utm_source"> 
                         <TextField 
                             variant="standard" 
                             label="source"
@@ -75,9 +84,9 @@ const UtmParameterBuilder = () => {
                             placeholder="e.g. Facebook, Twitter etc"
                             style={{ margin: '10px' }}
                         />
-                    </ToolTip> 
+                    </Tooltip> 
                     
-                    <ToolTip title="utm_medium"> 
+                    <Tooltip title="utm_medium"> 
                         <TextField 
                             variant="standard" 
                             label="medium"
@@ -97,9 +106,9 @@ const UtmParameterBuilder = () => {
                             placeholder="e.g. Newspaper, Social Media, etc."
                             style={{ margin: '10px' }}
                         />
-                    </ToolTip> 
+                    </Tooltip> 
 
-                    <ToolTip title="utm_term"> 
+                    <Tooltip title="utm_term"> 
                         <TextField 
                             variant="standard" 
                             label="term"
@@ -119,7 +128,7 @@ const UtmParameterBuilder = () => {
                             placeholder="e.g. "
                             style={{ margin: '10px' }}
                         />
-                    </ToolTip>
+                    </Tooltip>
 
                 </div> 
             </Grid>
@@ -127,11 +136,10 @@ const UtmParameterBuilder = () => {
     );
 }
 
-const ModeSelectionRadio = () => {
+const RadioA = () => {
     const [state, dispatch] = useCount();
   
     return (
-      <div className="radioButtonGroup">
         <Radio 
             color="primary"
             value="SHORT"
@@ -146,7 +154,13 @@ const ModeSelectionRadio = () => {
                 })
             }
         />
+    );
+}
 
+const RadioB = () => {
+    const [state, dispatch] = useCount();
+  
+    return (
         <Radio 
             color="primary"
             value="UNGUESSABLE"
@@ -161,6 +175,53 @@ const ModeSelectionRadio = () => {
                 })
             }
         />
+    );
+}
+
+const ModeSelectionRadio = () => {
+    
+    return (
+      <div className="radioButtonGroup">
+          <FormControl component="fieldset">
+            
+            <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
+                <Typography variant="overline" style={{ fontSize: '12px' }}> 
+                    format 
+                </Typography> 
+            </FormLabel>
+
+            <RadioGroup row aria-label="options-radio" name="customized-radios">
+                <FormControlLabel
+                    value="SHORT"
+                    control={<RadioA color="primary" />}
+                    label={
+                        <Typography 
+                        variant="overline" 
+                        style={{ fontSize: '10px' }}
+                        > 
+                            SHORT 
+                        </Typography>
+                    }
+                    labelPlacement="bottom"
+                />
+                
+                <FormControlLabel
+                    value="UNGUESSABLE"
+                    control={
+                        <RadioB color="primary" />
+                    }
+                    label={
+                        <Typography 
+                            variant="overline" 
+                            style={{ fontSize: '10px' }}
+                        > 
+                            CRYPTIC 
+                        </Typography>
+                    }
+                    labelPlacement="bottom"
+                />
+            </RadioGroup>
+        </FormControl> 
     </div> 
     );
  }

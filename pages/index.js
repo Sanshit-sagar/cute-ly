@@ -17,11 +17,8 @@ export default function Index() {
     <div className={classes.footer}> 
     <Container maxWidth="sm">
       <Box my={4}>
-
         <Typography variant="h1"> cute.ly  </Typography> 
         <Typography variant="h5"> brand your links, cutely </Typography>
-       
-        
       </Box>
     </Container>
     </div>

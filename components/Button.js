@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 export default withStyles((theme) => ({
   root: {
     borderRadius: 0,
-    // backgroundColor: theme.palette.secondary.main,
     fontWeight: theme.typography.fontWeightLight,
     fontFamily: theme.typography.fontFamilyPrimary,
     marginRight: theme.spacing(1, 3),

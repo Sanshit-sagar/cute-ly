@@ -1,12 +1,10 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 
 import { AuthProvider } from '../lib/auth';
-import { GlobalContextProvider } from '../components/ContextProvider'; 
 import { ThemeProvider } from "styled-components";
-import { CountProvider } from '../components//CounterContext';
+import { CountProvider } from '../components/SharedContext';
 
-import { GlobalStyles } from "../components/Globalstyle";
 import { lightTheme, darkTheme } from "../components/Themes"
 
 import Toggle from '../components/Toggle'; 
@@ -21,9 +19,7 @@ const App = ({ Component, pageProps }) => {
   return (
     <React.Fragment>
       <ThemeProvider theme={themeMode}>
-        <GlobalStyles/>
-          <GlobalContextProvider> 
-            <CountProvider>
+          <CountProvider>
             <AuthProvider> 
 
               <div className="App">
@@ -33,9 +29,9 @@ const App = ({ Component, pageProps }) => {
                 <Component {...pageProps} />  
               </div>
 
-          </AuthProvider>
+            </AuthProvider>
           </CountProvider>
-        </GlobalContextProvider>
+        
       </ThemeProvider>
     </React.Fragment>
   );

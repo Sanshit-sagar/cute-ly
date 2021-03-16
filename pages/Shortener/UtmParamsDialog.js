@@ -1,5 +1,3 @@
-
-
 import React, { Fragment } from 'react'; 
 
 import Dialog from '@material-ui/core/Dialog';
