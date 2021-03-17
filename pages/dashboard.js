@@ -3,9 +3,6 @@ import Router from 'next/router';
 
 import { useAuth } from '../lib/auth';
 import { useCount } from '../components/SharedContext'; 
-import { makeStyles } from '@material-ui/core/styles';
-
-import Grid from '@material-ui/core/Grid';  
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -14,127 +11,25 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
+import SharedSnackbar from '../components/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';  
 import TextField from '@material-ui/core/TextField'; 
-
 import DashboardCard from './Shortener/DashboardCard'; 
 import PageContainer from '../components/PageContainer'; 
-
 import Typography from '@material-ui/core/Typography'; 
+
+import { makeStyles } from '@material-ui/core/styles'; 
 
 const useStyles = makeStyles({
     root: {
         display: 'flex', 
         flexDirection: 'row', 
         flexWrap: 'wrap', 
-        justifyContent: 'space-around',
-    },    
-    radioButtonGroup: {
-        paddingTop: '5px'
-    }    
+        justifyContent: 'center',
+        margin: '2.5px',
+        width: '100%'
+    },
 });
-
-const UtmParameterBuilder = () => {
-    const classes = useStyles();
-    const [state, dispatch] = useCount();
-
-    return (
-        <Fragment> 
-            <Grid container> 
-                <div className={classes.root}> 
-                    <Tooltip title="utm_campaign"> 
-                        <TextField 
-                            variant="standard" 
-                            label="campaign"
-                            name="campaign"
-                            value={ 
-                                state.utm.campaign 
-                            }
-                            onChange={
-                                (e) => dispatch({ 
-                                    type: 'UPDATE_UTM', 
-                                    payload: { 
-                                        name: 'campaign', 
-                                        value: e.target.value
-                                    }
-                                })
-                            }
-                            placeholder="e.g. ACME Campaign, ..."
-                            style={{ margin: '10px' }}
-                        />
-                    </Tooltip> 
-                    
-                    <Tooltip title="utm_source"> 
-                        <TextField 
-                            variant="standard" 
-                            label="source"
-                            name="source"
-                            value={
-                                state.utm.source
-                            }
-                            onChange={
-                                (e) => dispatch({ 
-                                    type: 'UPDATE_UTM', 
-                                    payload: { 
-                                        name: 'source', 
-                                        value: e.target.value
-                                    }
-                                })
-                            }
-                            placeholder="e.g. Facebook, Twitter etc"
-                            style={{ margin: '10px' }}
-                        />
-                    </Tooltip> 
-                    
-                    <Tooltip title="utm_medium"> 
-                        <TextField 
-                            variant="standard" 
-                            label="medium"
-                            name="medium"
-                            value={
-                                state.utm.medium
-                            }
-                            onChange={
-                                (e) => dispatch({ 
-                                    type: 'UPDATE_UTM', 
-                                    payload: { 
-                                        name: 'medium', 
-                                        value: e.target.value
-                                    }
-                                })
-                            }
-                            placeholder="e.g. Newspaper, Social Media, etc."
-                            style={{ margin: '10px' }}
-                        />
-                    </Tooltip> 
-
-                    <Tooltip title="utm_term"> 
-                        <TextField 
-                            variant="standard" 
-                            label="term"
-                            value={ 
-                                state.utm.term 
-                            }
-                            name="term"
-                            onChange={
-                                (e) => dispatch({ 
-                                    type: 'UPDATE_UTM', 
-                                    payload: { 
-                                        name: 'term', 
-                                        value: e.target.value
-                                    }
-                                })
-                            }
-                            placeholder="e.g. "
-                            style={{ margin: '10px' }}
-                        />
-                    </Tooltip>
-
-                </div> 
-            </Grid>
-        </Fragment>
-    );
-}
 
 const RadioA = () => {
     const [state, dispatch] = useCount();
@@ -185,12 +80,17 @@ const ModeSelectionRadio = () => {
           <FormControl component="fieldset">
             
             <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
-                <Typography variant="overline" style={{ fontSize: '12px' }}> 
+                <Typography variant="overline" style={{ fontSize: '12px', marginLeft: '5px' }}> 
                     format 
                 </Typography> 
             </FormLabel>
 
-            <RadioGroup row aria-label="options-radio" name="customized-radios">
+            <RadioGroup 
+                row 
+                aria-label="options-radio" 
+                name="customized-radios"
+                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}
+            >
                 <FormControlLabel
                     value="SHORT"
                     control={<RadioA color="primary" />}
@@ -226,8 +126,256 @@ const ModeSelectionRadio = () => {
     );
  }
 
+
+const utmFields = [
+    {
+        name: 'campaign', 
+        label: 'Campaign', 
+        placeholder: "e.g. ACME Campaign, ...", 
+        title: 'UTM Parameter - Campaign', 
+        description: 'todo'
+    },
+    { 
+        name: 'source', 
+        label: 'Source', 
+        placeholder: "e.g. Facebook, Twitter etc", 
+        title: 'UTM Parameter - Source', 
+        description: 'todo',
+    },
+    { 
+        name: 'term', 
+        label: 'Term', 
+        placeholder: "e.g TODO", 
+        title: 'UTM Parameter - Term', 
+        description: 'todo',
+    },
+    { 
+        name: 'medium',
+        label: 'Medium', 
+        placeholder: "e.g. Newspaper, Social Media, etc.",
+        title: 'UTM Parameter - Source',
+        description: 'todo', 
+    }
+];
+
+const iosFields = [
+    {
+        name: 'bundleId', 
+        label: 'iOS Bundle ID', 
+        placeholder: "e.g. todo", 
+        title: 'iOS Info - Bundle ID', 
+        description: 'todo'
+    },
+    { 
+        name: 'customScheme', 
+        label: 'iOS Custom Scheme', 
+        placeholder: "e.g. todo", 
+        title: 'UTM Parameter - Source', 
+        description: 'todo',
+    },
+    { 
+        name: 'fallbackLink', 
+        label: 'iOS Fallback Link', 
+        placeholder: "e.g. todo", 
+        title: 'iOS Info - Fallback Link', 
+        description: 'todo',
+    },
+    { 
+        name: 'ipadBundleId',
+        label: 'iOS iPad Bundle ID', 
+        placeholder: "e.g. todo", 
+        title: 'UTM Parameter - iPad Bundle ID',
+        description: 'todo', 
+    }
+];
+
+const UtmForm = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();  
+
+    return (
+       
+        <div className={classes.utmForm}> 
+            {utmFields.map((item) => (
+                <Tooltip title={item.title}> 
+                    <TextField
+                        variant="outlined"
+                        color="primary"
+                        name={item.name}
+                        label={item.label}
+                        value={state.utm[item.name]}
+                        placeholder={item.placeholder} 
+                        style={{ margin: '2.5px'}} 
+                        onChange={
+                            (e) => dispatch({ 
+                                type: 'UPDATE_UTM', 
+                                payload: { 
+                                    name: item.name, 
+                                    value: e.target.value
+                                }
+                            })
+                        }
+                    />
+                </Tooltip>
+            ))} 
+        </div>  
+       
+    );
+}
+
+const IosForm = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();  
+
+    return (
+        <Fragment> 
+            <div className={classes.utmForm}> 
+                {iosFields.map((item) => (
+                    <Tooltip title={item.title}> 
+                        <TextField
+                            variant="outlined"
+                            color="primary"
+                            name={item.name}
+                            label={item.label}
+                            value={state.ios [item.name] }
+                            placeholder={item.placeholder} 
+                            style={{ margin: '2.5px'}} 
+                            onChange={
+                                (e) => dispatch({ 
+                                    type: 'UPDATE_IOS', 
+                                    payload: { 
+                                        name: item.name, 
+                                        value: e.target.value
+                                    }
+                                })
+                            }
+                        />
+                    </Tooltip>
+                ))} 
+            </div>  
+        </Fragment>
+    );
+}
+
+var androidFields = [
+    {
+        name: 'packageName', 
+        label: 'Android Package Name', 
+        placeholder: "e.g. todo", 
+        title: 'Android Info - Package Name', 
+        description: 'todo'
+    },
+    {
+        name: 'fallbackLink', 
+        label: 'Android Fallback Link', 
+        placeholder: "e.g. todo", 
+        title: 'Android Info - Fallback Link', 
+        description: 'todo'
+    },
+    {
+        name: 'minPackageVersionCode', 
+        label: 'Min Package Code', 
+        placeholder: "e.g. todo", 
+        title: 'Android Info - Android Min. Package Version Code', 
+        description: 'Android Min. Package Version Code'
+    },
+]
+
+var metaTagsFields = [ 
+    {
+        name: 'socialTitle',
+        label: 'Social Title', 
+        placeholder: 'e.g. todo',
+        title: 'Social Title', 
+        description: 'The title to use when the Dynamic Link is shared in a social post'
+    },
+    {
+        name: 'socialDescription',
+        label: 'Social Description', 
+        placeholder: 'e.g. todo',
+        title: 'Social Description', 
+        description: 'The description to use when the Dynamic Link is shared in a social post.'
+    },
+    {
+        name: 'socialImageLink',
+        label: 'Social Image Link', 
+        placeholder: 'e.g. facebook.com...',
+        title: 'Social Title', 
+        description: 'The URL to an image related to this link.'
+    }
+]; 
+
+const SocialMetaTagsForm = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();  
+
+    return (
+        <Fragment> 
+            <div className={classes.metaTagsForm}> 
+                {metaTagsFields.map((item) => (
+                    <Tooltip title={item.title}> 
+                        <TextField
+                            variant="outlined"
+                            color="primary"
+                            name={item.name}
+                            label={item.label}
+                            value={state.meta[item.name]}
+                            placeholder={item.placeholder} 
+                            style={{ margin: '2.5px'}} 
+                            onChange={
+                                (e) => dispatch({ 
+                                    type: 'UPDATE_META', 
+                                    payload: { 
+                                        name: item.name, 
+                                        value: e.target.value
+                                    }
+                                })
+                            }
+                        />
+                    </Tooltip>
+                ))} 
+            </div>  
+        </Fragment>
+    );
+}
+
+const AndroidForm = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();  
+
+    return (
+        <Fragment> 
+            <div className={classes.androidForm}> 
+                {androidFields.map((item) => (
+                    <Tooltip title={item.title}> 
+                        <TextField
+                            variant="outlined"
+                            color="primary"
+                            name={item.name}
+                            label={item.label}
+                            value={state.android[item.name]}
+                            placeholder={item.placeholder} 
+                            style={{ margin: '2.5px'}} 
+                            onChange={
+                                (e) => dispatch({ 
+                                    type: 'UPDATE_ANDROID', 
+                                    payload: { 
+                                        name: item.name, 
+                                        value: e.target.value
+                                    }
+                                })
+                            }
+                        />
+                    </Tooltip>
+                ))} 
+            </div>  
+        </Fragment>
+    );
+}
+
+
 function Dashboard () {
-    const { user, loading, signout } = useAuth(); 
+    const { user, loading } = useAuth(); 
  
     if(!user && !loading) {
         Router.push('/')
@@ -235,17 +383,13 @@ function Dashboard () {
     
     return (
         <PageContainer> 
-            { user ? 
-            (
-                <Fragment>
-                    <DashboardCard 
-                        ParamDialog = { UtmParameterBuilder } 
-                        ModeSelector = { ModeSelectionRadio }  
-                    /> 
-                </Fragment> 
-            ) 
-            : null 
-            }
+            <DashboardCard 
+                GoogleAnalyticsForm = { UtmForm } 
+                iOSAnalyticsForm = { IosForm }
+                AndroidAnalyticsForm = { AndroidForm }
+                ModeSelector = { ModeSelectionRadio }  
+            /> 
+            <SharedSnackbar /> 
         </PageContainer>
     ); 
 }

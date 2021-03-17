@@ -2,21 +2,24 @@
 import React from 'react';
 import { useCount } from '../../components/SharedContext'; 
 
+import TuneIcon from '@material-ui/icons/Tune';
+import Typography from '@material-ui/core/Typography'; 
+import FormLabel from '@material-ui/core/FormLabel';
+
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp'; 
-import LinkedInIcon from '@material-ui/icons/LinkedIn'; 
-
-import TuneIcon from '@material-ui/icons/Tune';
-import Typography from '@material-ui/core/Typography'; 
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import AndroidIcon from '@material-ui/icons/Android';
+import ShareIcon from '@material-ui/icons/Share'; 
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -82,37 +85,22 @@ const medias = [
         component: <WhatsAppIconComp />,
     }
 ];
-    
-// const StyledToggleButtonGroup22 = () => {
-//     return (
-//         <ToggleButtonGroup>
-//             { medias.map( (item) => {
-//                 <ToggleButton 
-//                     key={item.name}
-//                     value={item.name}
-//                     onClick={
-//                         (e) => dispatch({ 
-//                             type: 'UPDATE_SOCIAL', 
-//                             payload: { 
-//                                 name: `${item.name}`,  
-//                                 value: true
-//                             }
-//                         })
-//                     }
-//                 > 
-//                     {medias[`${item.name}`]}
-//                 </ToggleButton>
-//             })} 
-//         </ToggleButtonGroup>
-//     ); 
-// }
-
+ 
   
 const ToggleButtonGroup2 = () => {
     const [state, dispatch] = useCount(); 
 
     return (
-        <StyledToggleButtonGroup>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
+                <Typography variant="overline" style={{ fontSize: '12px', marginLeft: '5px' }}> 
+                    SHARE  
+                </Typography> 
+            </FormLabel>
+            
+            <StyledToggleButtonGroup 
+                style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+           
             <ToggleButton 
                 value="facebook"
                 onClick={
@@ -172,25 +160,23 @@ const ToggleButtonGroup2 = () => {
             >
                 { medias[3].component }
             </ToggleButton>
-        </StyledToggleButtonGroup> 
+        </StyledToggleButtonGroup>
+        </div> 
     );
 }
 
+
 const UtmAnalyticsButton = ({ executeOnOpen }) => {
     return (
-        <Button 
-            onClick={executeOnOpen}
-            // size="large" 
-        > 
-            <Typography 
-                variant="overline"
-                style={{ marginRight: '5px' }}
-            > 
-                UTM 
-            </Typography>
+        <React.Fragment>
             
-            <TuneIcon /> 
-        </Button>     
+            <Button 
+                onClick={executeOnOpen}
+            >         
+                <TuneIcon /> 
+            </Button>     
+
+        </React.Fragment>
     );
 }
 
@@ -200,12 +186,11 @@ const IOSAnalyticsButton = ({ executeOnOpen }) => {
             onClick={executeOnOpen}
         > 
             <Typography 
-                variant="overline"
+                variant="Body"
                 style={{ marginRight: '5px' }}> 
                 iOS 
             </Typography>
             
-            <TuneIcon /> 
         </Button>     
     );
 }
@@ -215,18 +200,30 @@ const AndroidAnalyticsButton = ({ executeOnOpen }) => {
         <Button 
             onClick={executeOnOpen}
         > 
-            <Typography 
-                variant="overline"
-                style={{ marginRight: '5px' }}> 
-                Android
-            </Typography>
-            
-            <TuneIcon /> 
+            <AndroidIcon /> 
         </Button>     
     );
 }
 
-const CustomToggleButtonGroup = ({ handleDialogOpen, ModeSelectorComponent, }) => {
+const SocialMetaTagsButton = ({ executeOnOpen }) => {
+    return (
+        <Button onClick={executeOnOpen}>
+            <ShareIcon /> 
+        </Button>
+    );
+}
+
+const CustomDivider = () => {
+    return (
+        <React.Fragment> 
+            <VerticalDivider /> 
+            <VerticalDivider />
+            <VerticalDivider /> 
+        </React.Fragment>
+    )
+}
+
+const CustomToggleButtonGroup = ({ openGoogleDialog, openiOSDialog, openAndroidDialog, openMetadataDialog, ModeSelectorComponent, }) => {
   const classes = useStyles();
   const [state, dispatch] = useCount(); 
 
@@ -237,37 +234,44 @@ const CustomToggleButtonGroup = ({ handleDialogOpen, ModeSelectorComponent, }) =
         style = {{ 
             display: 'flex', 
             flexDirection: 'row',
-            justifyContent: 'space-between'
-        }}
-    >
+            justifyContent: 'flex-start'
+            }}
+        >
          <div style = {{ 
                 display: 'flex', 
                 flexDirection: 'row'
             }}
         >
             <ModeSelectorComponent />
-            <VerticalDivider /> 
-            <UtmAnalyticsButton executeOnOpen={handleDialogOpen} />
-            <VerticalDivider /> 
-           
-            {/* <UtmAnalyticsButton executeOnOpen={handleDialogOpen} /> */}
+            
+            <CustomDivider />
+            
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
+                    <Typography variant="overline" style={{ fontSize: '12px', marginLeft: '5px' }}> 
+                        Analytics  
+                    </Typography> 
+                </FormLabel>
 
-            <VerticalDivider />
+                <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <UtmAnalyticsButton executeOnOpen={openGoogleDialog} />
+                    <IOSAnalyticsButton executeOnOpen={openiOSDialog} />
+                    <AndroidAnalyticsButton executeOnOpen={openAndroidDialog} /> 
+                    <SocialMetaTagsButton executeOnOpen={openMetadataDialog} /> 
+                </div> 
+            </div> 
         </div> 
 
         <ToggleButtonGroup
             size="small"
             value={state.socials}
             exclusive
-        >
-            
-            {/* <IOSAnalyticsButton executeOnOpen={handleDialogOpen} />
-            <VerticalDivider /> 
-            <AndroidAnalyticsButton executeOnOpen={handleDialogOpen} /> */}
+        > 
+            <CustomDivider />
 
-            <VerticalDivider />  
             <ToggleButtonGroup2 /> 
-            <VerticalDivider /> 
+
+            <CustomDivider />
         </ToggleButtonGroup>           
 
     </Paper>

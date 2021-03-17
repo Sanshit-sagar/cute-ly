@@ -5,34 +5,51 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import Typography from '@material-ui/core/Typography'; 
 
-import Button from '@material-ui/core/Button'; 
+import Divider from '@material-ui/core/Divider';
 
-const UtmParamsDialog = ({ open, handleCloseDialogHook, ParamDialogComponent }) => {
+import Button from '@material-ui/core/Button';
+
+const UtmParamsDialog = ({ open, closeHook, AnalyticsForm, name }) => {
+  
     return (
         <Fragment> 
-            <Dialog 
-                onClose={handleCloseDialogHook} 
-                open={open}
+            <Dialog onClose={closeHook} 
+                    open={open}
             > 
-                <DialogTitle> Analytics Parameters </DialogTitle>
+                <DialogTitle> 
+                    <Typography variant="overline" style={{ fontSize: "24px" }} > 
+                        {name}
+                    </Typography>
+                </DialogTitle>
+
+                <Divider /> 
                 
                 <DialogContent> 
                     <DialogContentText> 
-                        <ParamDialogComponent /> 
+
+                        <AnalyticsForm />
+                    
                     </DialogContentText>
                 </DialogContent>
                 
                 <DialogActions> 
-
-                    <Button onClick = { handleCloseDialogHook }> 
+                    <Button 
+                        variant="outlined"
+                        color="primary"
+                        onClick = { closeHook }
+                    > 
                         Cancel
                     </Button>
 
-                    <Button onClick = { handleCloseDialogHook }> 
+                    <Button 
+                        variant="contained"
+                        color="primary"
+                        onClick = { closeHook }
+                    > 
                         Done
                     </Button>
-
                 </DialogActions>
             </Dialog>
         </Fragment>

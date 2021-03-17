@@ -1,4 +1,5 @@
 import 'tailwindcss/tailwind.css'
+import Link from '../components/Link'; 
 
 export default function Landing() {
   return (
@@ -21,13 +22,17 @@ export default function Landing() {
                   </div>
                 </div>
               </div>
+              
               <div class="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
-    
-                <a href="/how-it-works" class="font-large text-gray-500 hover:text-indigo-600">features</a>
-    
-                <a href="/signin" class="font-large text-indigo-600 hover:text-indigo-700"> login </a>
-                
+                <Link href="/how-it-works"> 
+                  <a class="font-large text-gray-500 hover:text-indigo-600"> features </a>
+                </Link>
+
+                <Link href="/signin">
+                  <a class="font-large text-indigo-600 hover:text-indigo-700"> login </a>
+                </Link>
               </div>
+
             </nav>
           </div>
             
@@ -37,15 +42,7 @@ export default function Landing() {
                 <div>
                   <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt=""  />
                 </div>
-                <div class="-mr-2">
-                  <button type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                    <span class="sr-only">Close main menu</span>
-            
-                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
+                
               </div>
               
               <a href="#" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100">
@@ -65,9 +62,11 @@ export default function Landing() {
               </p>
               <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                 <div class="rounded-md shadow">
-                  <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-gray-800 font-medium rounded-md text-gray-100 bg-gray-600 hover:bg-gray-800 md:py-4 md:text-lg md:px-10">
-                    get started
-                  </a>
+                  <Link href="/signin"> 
+                    <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-gray-800 font-medium rounded-md text-gray-100 bg-gray-600 hover:bg-gray-800 md:py-4 md:text-lg md:px-10">
+                      get started
+                    </a>
+                  </Link>
                 </div>
               </div>
             </div>

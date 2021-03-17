@@ -1,25 +1,61 @@
-import React from 'react'; 
-import PageContainer from '../components/PageContainer'; 
+import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
+import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import Typography from '../components/Typography'; 
 
-export default function Tester() {    
+import { useAuth } from '../lib/auth'; 
+
+import PageContainer from '../components/PageContainer';
+import Drawer from '../components/Drawer'; 
+
+const useStyles = makeStyles({ 
+    root: {
+        backgroundColor: 'red',
+    },
+});
+
+function AuthenticatedContent({ user }) {
+    const [data, setData] = useState("Hello"); 
+
     return (
-        <PageContainer>
-            <div> 
-                <h3 class="text-lg leading-6 font-medium text-gray-900">
-                    Last 30 days
-                </h3>
-                <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                    <dt class="text-sm font-medium text-gray-500 truncate">
-                        Total Subscribers
-                    </dt>
-                    <dd class="mt-1 text-3xl font-semibold text-gray-900">
-                        71,897
-                    </dd>
-                    </div>
-                </dl> 
-            </div> 
-    
-        </PageContainer>
+        <Box flexDirection="column">
+            
+            <Typography variant="h1" color="textSecondary"> 
+                Hi, {user.email}
+            </Typography> 
+
+        </Box> 
     );
 }
+
+function Tester() {    
+
+    const classes = useStyles();
+
+    const { user, loading, signout } = useAuth(); 
+
+    if(!loading && !user) {
+        Router.push('/'); 
+    }
+
+    return (
+        <React.Fragment> 
+             <Box bgcolor="white" display="flex" flexDirection="column" alignContent="center" justifyContent="space-evenly"> 
+                { user ? 
+                    (   
+                      <PageContainer> 
+                          <Drawer /> 
+                      </PageContainer>
+                    )
+                    : 
+                    ( 
+                        null
+                    )
+                }
+            </Box> 
+        </React.Fragment>
+    )
+}
+
+export default Tester; 

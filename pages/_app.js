@@ -1,40 +1,53 @@
-
 import React from 'react';
 
 import { AuthProvider } from '../lib/auth';
-import { ThemeProvider } from "styled-components";
 import { CountProvider } from '../components/SharedContext';
+import { GlobalStyles } from "../components/Globalstyle";
+import { ThemeProvider } from "styled-components";
+import { useCount } from '../components/SharedContext'; 
+import { lightTheme, darkTheme } from '../components/Themes'; 
+import Button from '@material-ui/core/Button'; 
 
-import { lightTheme, darkTheme } from "../components/Themes"
+const AppBase = ({ Comp, pageP }) => {
+  const [state, dispatch] = useCount();
+  
+  const handleToggle = (event) => {
+    dispatch({
+        type: "DARKMODE"
+    });
+  } 
 
-import Toggle from '../components/Toggle'; 
-import {useDarkMode} from '../components/useDarkMode'; 
+  const currentTheme = state.dark ? 'Dark' : 'Normal'; 
 
-const App = ({ Component, pageProps }) => {
-  const [theme, themeToggler, mountedComponent] = useDarkMode();
-
-  const themeMode = theme === 'light' ? lightTheme : darkTheme;
-
-  if(!mountedComponent) return <div/>
   return (
-    <React.Fragment>
-      <ThemeProvider theme={themeMode}>
-          <CountProvider>
-            <AuthProvider> 
+      <React.Fragment>
+       <ThemeProvider theme={currentTheme === 'Dark' ? darkTheme : lightTheme}>
+       <GlobalStyles/>
 
-              <div className="App">
-                <div style={{ position: 'absolute', left: '5%', bottom: '10%' }}>
-                  <Toggle theme={theme} toggleTheme={themeToggler}  />
-                </div>   
-                <Component {...pageProps} />  
-              </div>
-
-            </AuthProvider>
-          </CountProvider>
-        
-      </ThemeProvider>
-    </React.Fragment>
+          {/* <Button className="darkModeBtn" variant="outlined" onClick={handleToggle}>Toggle Theme is {currentTheme} </Button>  */}
+          <Comp {...pageP} toggleTheme={handleToggle} />  
+       
+        </ThemeProvider>
+      </React.Fragment>
   );
 }
 
-export default App; 
+export default function App({ Component, pageProps }) {
+ 
+  return (
+    <React.Fragment> 
+      <CountProvider>
+        <AuthProvider> 
+
+          <AppBase 
+            Comp={Component} 
+            pageP={pageProps} 
+          /> 
+        
+        </AuthProvider> 
+      </CountProvider>
+    </React.Fragment>
+  ); 
+}
+
+

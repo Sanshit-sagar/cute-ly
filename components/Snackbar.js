@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ConsecutiveSnackbars() {
+export default function SharedSnackbar() {
   const [state, dispatch] = useCount();
   
   React.useEffect(() => {
@@ -60,14 +60,6 @@ export default function ConsecutiveSnackbars() {
   const classes = useStyles();
   return (
     <div>
-
-      {/* <Button onClick={handleClick('Message A')}>
-        Show message A
-      </Button>
-      <Button onClick={handleClick('Message B')}>
-        Show message B
-      </Button> */}
-
       <Snackbar
         key = {
           state.snackbar.messageInfo ? 
@@ -96,15 +88,16 @@ export default function ConsecutiveSnackbars() {
         action={
           <React.Fragment>
             <Button 
-              color="secondary" 
+              color="textSecondary" 
               size="small" 
               onClick={handleClose}
             >
               UNDO
             </Button>
+            
             <IconButton
               aria-label="close"
-              color="inherit"
+              color="textSecondary"
               className={classes.close}
               onClick={handleClose}
             >

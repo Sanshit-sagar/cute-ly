@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import Link from '@material-ui/core/Link';
+import Router from 'next/router'; 
+
 import Box from '@material-ui/core/Box';
 import Button from './Button'; 
 import Avatar from '@material-ui/core/Avatar';
@@ -11,11 +13,12 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import Home from '../icons/icons'; 
+import { useAuth } from '../lib/auth'; 
+import { useCount } from './SharedContext'; 
 import { Loading, Dashboard, LightMode, DarkMode, Analytics } from '../icons/icons'; 
 import { withStyles, makeStyles } from '@material-ui/core/styles'; 
 
-import { useAuth } from '../lib/auth'; 
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
 const useStyles = makeStyles({
   root: {
@@ -57,6 +60,28 @@ const useStyles = makeStyles({
   }
 });
 
+export function Signout() {
+  const auth = useAuth(); 
+
+  const handleSignOut = () => {
+      auth.signout().then(() => {
+          Router.push('/'); 
+      })
+  }
+
+  return (
+      <Button 
+        variant="standard" 
+        color="secondary" 
+        onClick={handleSignOut}> 
+         <PowerSettingsNewIcon 
+          color="secondary" 
+          style={{ fontSize: '22px' }} 
+        />
+      </Button>
+  )
+}
+
 const LightTooltip = withStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
@@ -91,32 +116,27 @@ const HeaderLink = ({ href, children }) => {
 const Header = ({ props }) => {
   const classes = useStyles(); 
   const [open, setOpen] = useState(false);
+  const [state, dispatch] = useCount(); 
 
   const handleSwitchToggle = () => {
-    const isCurrentlyOpen = open; 
-    if(isCurrentlyOpen) {
-      console.log('Toggle to closed');
-      setOpen(false);
-    } else {
-      console.log('Toggle to open'); //
-      setOpen(true); 
-    }
-  }
+    setOpen(!open); 
+    dispatch({
+      type: "DARKMODE"
+      }
+    );
+  };
 
   const LightDarkModeButton = ({ executeOnClick }) => {
     return (
       <LightTooltip title="Dark Mode"> 
-        { open 
-        ? 
-          <Button onClick={ executeOnClick }> 
-            <LightMode /> 
+          <Button onClick={executeOnClick}> 
+           { 
+              open 
+              ?  <LightMode /> 
+              :  <DarkMode /> 
+           } 
           </Button> 
-        : 
-          <Button onClick={ executeOnClick }> 
-            <DarkMode />
-          </Button>
-        }
-      </LightTooltip>
+      </LightTooltip> 
     ); 
   }
 
@@ -138,20 +158,6 @@ const Header = ({ props }) => {
           <Paper className={classes.profileInfo}> 
             { user ? ( 
               <React.Fragment> 
-                
-                <HeaderLink href='/dashboard'>
-                  <Home />
-                </HeaderLink>
-
-                <HeaderLink href='/analytics'>
-                  <Analytics />
-                </HeaderLink>
-                  
-                <HeaderLink href='/account'>
-                  <Dashboard /> 
-                </HeaderLink>
-                
-                
                 <LightDarkModeButton 
                   executeOnClick = {handleSwitchToggle} 
                 /> 
@@ -176,6 +182,11 @@ const Header = ({ props }) => {
                     </Avatar> 
                   </Button>
                 </LightTooltip>
+
+                <Divider orientation="vertical" flexItem /> 
+
+               
+                <Signout /> 
               </React.Fragment> 
             ) 
             : 

@@ -1,4 +1,3 @@
-
 import React, { 
     useReducer, 
     useContext, 
@@ -6,12 +5,29 @@ import React, {
 } from 'react';
 
 const initialState =  {
+    dark: false, 
     url: '',   
     utm: {
         source: '', 
         medium: '', 
         campaign: '', 
         term: '', 
+    },
+    ios: {
+        bundleId: '', 
+        fallbackLink: '', 
+        ipadBundleId: '', 
+        customScheme: '', 
+    },
+    android: {
+        packageName: '', 
+        fallbackLink: '', 
+        minPackageVersionCode: '', 
+    },
+    meta: {
+        socialTitle: '', 
+        socialDescription: '', 
+        socialImageLink: '',
     },
     mode: "SHORT",
     socials: {
@@ -48,6 +64,27 @@ const reducer = (state, action) => {
                     [action.payload.name]: action.payload.value
                 }
             };
+        case "UPDATE_IOS": 
+            return {
+                ...state, 
+                ios: { 
+                    ...state.ios, 
+                    [action.payload.name]: action.payload.value
+                }
+            };
+        case "UPDATE_ANDROID": 
+            return {
+                ...state, 
+                android: { 
+                    ...state.android, 
+                    [action.payload.name]: action.payload.value
+                }
+            };
+        case "UPDATE_META": 
+            return {
+                ...state, 
+                meta: action.payload.value
+            }
         case "UPDATE_MODE": 
             return {
                 ...state, 
@@ -108,7 +145,12 @@ const reducer = (state, action) => {
                     ...state.snackbar, 
                     messageInfo: undefined
                 }
-            }
+            };
+        case "DARKMODE": 
+            return {
+                ...state, 
+                dark: !state.dark
+            };
         default: 
             throw new Error("Unexpected Input"); 
     }
