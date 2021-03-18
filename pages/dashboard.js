@@ -218,7 +218,7 @@ const UtmForm = () => {
                             label={item.label}
                             value={state.utm[item.name]}
                             placeholder={item.placeholder} 
-                            style={{ margin: '2.5px'}} 
+                            style={{ margin: '7.5px'}} 
                             onChange={handleKeyPress}
                         />
                     </Tooltip>
@@ -246,7 +246,7 @@ const IosForm = () => {
                                 label={item.label}
                                 value={state.ios [item.name] }
                                 placeholder={item.placeholder} 
-                                style={{ margin: '2.5px'}} 
+                                style={{ margin: '7.5px'}} 
                                 onChange={
                                     (e) => dispatch({ 
                                         type: 'UPDATE_IOS', 
@@ -336,7 +336,7 @@ const SocialMetaTagsForm = () => {
                                 label={item.label}
                                 value={state.meta[item.name]}
                                 placeholder={item.placeholder} 
-                                style={{ margin: '2.5px'}} 
+                                style={{ margin: '7.5px'}} 
                                 onChange={
                                     (e) => dispatch({ 
                                         type: 'UPDATE_META', 
@@ -372,7 +372,7 @@ const AndroidForm = () => {
                                 label={item.label}
                                 value={state.android[item.name]}
                                 placeholder={item.placeholder} 
-                                style={{ margin: '2.5px'}} 
+                                style={{ margin: '7.5px'}} 
                                 onChange={
                                     (e) => dispatch({ 
                                         type: 'UPDATE_ANDROID', 

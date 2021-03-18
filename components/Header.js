@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import Link from '@material-ui/core/Link';
 import Router from 'next/router'; 
@@ -10,15 +10,20 @@ import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper'; 
 
+import List from '@material-ui/core/List'; 
+import ListItem from '@material-ui/core/ListItem'; 
+import Collapse from '@material-ui/core/Collapse';
+
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import { useAuth } from '../lib/auth'; 
-import { useCount } from './SharedContext'; 
+import { useCount } from './SharedContext';  
 import { Loading, Dashboard, LightMode, DarkMode, Analytics } from '../icons/icons'; 
 import { withStyles, makeStyles } from '@material-ui/core/styles'; 
 
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import DarkModeSwitch from './DarkModeSwitch'; 
 
 const useStyles = makeStyles({
   root: {
@@ -60,6 +65,33 @@ const useStyles = makeStyles({
   }
 });
 
+function useHover() {
+  const [value, setValue] = useState(false);
+
+  const ref = useRef(null);
+
+  const handleMouseOver = () => setValue(true);
+  const handleMouseOut = () => setValue(false);
+
+  useEffect(
+      () => {
+      const node = ref.current;
+      if (node) {
+          node.addEventListener('mouseover', handleMouseOver);
+          node.addEventListener('mouseout', handleMouseOut);
+
+          return () => {
+          node.removeEventListener('mouseover', handleMouseOver);
+          node.removeEventListener('mouseout', handleMouseOut);
+          };
+      }
+      },
+      [ref.current] 
+  );
+
+  return [ref, value];
+}
+
 export function Signout() {
   const auth = useAuth(); 
 
@@ -90,59 +122,34 @@ const LightTooltip = withStyles((theme) => ({
   },
 }))(Tooltip);
 
-const HeaderLink = ({ href, children }) => {
-  return (
-    <Link 
-      href={href} 
-      mr={4} 
-      fontWeight='light'
-    >
-        <Button 
-          variant="primary" 
-          color="primary" 
-          passHref 
-          style = {{ 
-            marginRight: '10px', 
-            borderRadius: '5px' 
-          }}
-        >
-          { children }
-        </Button>
-     </Link>
-  );
-};
+// const HeaderLink = ({ href, children }) => {
+//   return (
+//     <Link 
+//       href={href} 
+//       mr={4} 
+//       fontWeight='light'
+//     >
+//         <Button 
+//           variant="primary" 
+//           color="primary" 
+//           passHref 
+//           style = {{ 
+//             marginRight: '10px', 
+//             borderRadius: '5px' 
+//           }}
+//         >
+//           { children }
+//         </Button>
+//      </Link>
+//   );
+// };
 
 const Header = ({ props }) => {
   const classes = useStyles(); 
-  const [open, setOpen] = useState(false);
-  const [state, dispatch] = useCount(); 
-
-  const handleSwitchToggle = () => {
-    setOpen(!open); 
-    dispatch({
-      type: "DARKMODE",
-      payload: {
-          message: "Changed Mode",
-          key: new Date().getTime()
-        }
-      }
-    );
-  };
-
   
-  const LightDarkModeButton = ({ executeOnClick }) => {
-    return (
-      <LightTooltip title="Dark Mode"> 
-          <Button onClick={executeOnClick}> 
-           { 
-              open 
-              ?  <LightMode /> 
-              :  <DarkMode /> 
-           } 
-          </Button> 
-      </LightTooltip> 
-    ); 
-  }
+  const [state, dispatch] = useCount(); 
+  const [hoverRef, isHovered] = useHover();
+ 
 
   const { user, loading, signout } = useAuth();
 
@@ -162,15 +169,17 @@ const Header = ({ props }) => {
           <Paper className={classes.profileInfo}> 
             { user ? ( 
               <React.Fragment> 
-                <LightDarkModeButton 
+                {/* <LightDarkModeButton 
                   executeOnClick = {handleSwitchToggle} 
-                /> 
+                />  */}
+                <DarkModeSwitch style={{ backgroundColor: 'red' }} />
 
                 <Divider 
                     orientation="vertical" 
                     flexItem 
                 />
 
+              <div ref={hoverRef}>
                 <LightTooltip 
                   title="View Profile" 
                   aria-label="view-profile"
@@ -185,13 +194,13 @@ const Header = ({ props }) => {
                         }
                       })}
                   >
-                    <Avatar 
-                      className={classes.avatar}
-                    >
-                      { user.email.charAt(0) }
-                    </Avatar> 
+                     
+                      <Avatar className={classes.avatar}>
+                        { user.email.charAt(0) }
+                      </Avatar>  
                   </Button>
                 </LightTooltip>
+              </div> 
 
                 <Divider orientation="vertical" flexItem /> 
 

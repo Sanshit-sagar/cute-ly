@@ -20,6 +20,10 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 const ResultsDialog = ({ message }) => {
     const [state, dispatch] = useCount(); 
 
+    const handleCopyToDashboard = () => {
+        alert("Copying..."); 
+    }
+
     return (
         <React.Fragment> 
             <Dialog 
@@ -57,7 +61,7 @@ const ResultsDialog = ({ message }) => {
                 <DialogActions> 
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', marginRight: '50px' }}> 
-                            <IconButton> 
+                            <IconButton onClick={handleCopyToDashboard}> 
                                 <FileCopyIcon /> 
                             </IconButton> 
                             <IconButton> 
