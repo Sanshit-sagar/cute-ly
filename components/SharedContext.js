@@ -6,7 +6,14 @@ import React, {
 
 const initialState =  {
     dark: false, 
+    showResults: false, 
     url: '',   
+    tagCount: {
+        utm: 0, 
+        ios: 0,
+        android: 0,
+        meta: 0
+    },
     utm: {
         source: '', 
         medium: '', 
@@ -47,6 +54,7 @@ const initialState =  {
         messageInfo: undefined, 
         snackpack: [], 
     },
+    mostRecentResult: null
 }; 
 
 const reducer = (state, action) => {
@@ -83,19 +91,44 @@ const reducer = (state, action) => {
         case "UPDATE_META": 
             return {
                 ...state, 
-                meta: action.payload.value
-            }
+                meta: {
+                    ...state.meta, 
+                    [action.payload.name]: action.payload.value
+                }
+            };
         case "UPDATE_MODE": 
             return {
                 ...state, 
                 mode: action.payload.value
             };
+        case "SHOW_RESULTS": 
+            return {
+                ...state, 
+                showResults: action.payload.value
+            };
+        case "UPDATE_RESULTS":
+            return {
+                ...state, 
+                mostRecentResult: action.payload.value,
+                showResults: true,
+                snackbar: {
+                    ...state.snackbar, 
+                    snackpack: [
+                        ...state.snackbar.snackpack, 
+                        { 
+                            message: action.payload.message, 
+                            key: action.payload.key,  
+                        },
+                    ]
+                }
+            };
         case "UPDATE_SOCIAL": 
             return {
                 ...state,
+                url: (action.payload.prefix + state.url),
                 socials: {
                     ...state.socials, 
-                    [action.payload.name]: action.payload.value,
+                    [action.payload.name]: action.payload.value
                 } 
             };
         case "DB_RESPONSE": 
@@ -149,10 +182,20 @@ const reducer = (state, action) => {
         case "DARKMODE": 
             return {
                 ...state, 
-                dark: !state.dark
+                dark: !state.dark,
+                snackbar: {
+                    ...state.snackbar, 
+                    snackpack: [
+                        ...state.snackbar.snackpack, 
+                        { 
+                            message: action.payload.message, 
+                            key: action.payload.key,  
+                        },
+                    ]
+                }
             };
         default: 
-            throw new Error("Unexpected Input"); 
+            return state; 
     }
 }
 

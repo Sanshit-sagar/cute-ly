@@ -1,29 +1,33 @@
 import React, { Fragment, useState } from 'react'; 
-import { useCount } from '../../components/SharedContext'; 
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button'; 
 import FormControl from '@material-ui/core/FormControl';
 import LanguageIcon from '@material-ui/icons/Language';
-import CustomToggleButtonGroup from './ToggleButtonGroup'; 
-import UtmParamsDialog from './UtmParamsDialog';
 
 import Container from '@material-ui/core/Container'; 
-
 import FilledInput from '@material-ui/core/FilledInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider'; 
 
-import SharedSnackbar from '../../components/Snackbar';
 
-import { createLink } from '../../lib/db'; 
-import { useAuth } from '../../lib/auth'; 
+import { createLink } from '../lib/db'; 
+import { useCount } from './SharedContext'; 
+import { useAuth } from '../lib/auth'; 
+import { shadows } from '@material-ui/system';
+
+
+import SharedSnackbar from './Snackbar'; 
+import CustomToggleButtonGroup from './ToggleButtonGroup'; 
+import UtmParamsDialog from './UtmParamsDialog';
+import ResultsDialog from './ResultsDialog';
 
 const useStyles = makeStyles({
     urlInput: {
@@ -43,7 +47,7 @@ const useStyles = makeStyles({
     dashboardCard: {
         position: 'relative',
         left: '12.5%', 
-        top: '15%',
+        top: '5%',
         width: '75%', 
         height: '57.5%',
         backgroundColor: 'white', 
@@ -187,31 +191,53 @@ const DashboardBase = ({ GoogleForm, iosForm, AndroidForm, MetaForm, ModeSelecto
     );
 }
 
+function SubmitButton() {
+    // const [loading, setLoading] = useState(false); 
+    const [state, dispatch] = useCount();
+    
+    const handleSubmit = async () => {
+        console.log('about to create');
+        const result = await createLink(state); 
+        const updatedResultUrl = result.updatedUrl;
+
+        console.log("About to dispatch: " + updatedResultUrl); 
+
+        dispatch({ 
+            type: 'UPDATE_RESULTS', 
+            payload: {
+                value: updatedResultUrl,
+                message: "New URL: " + (updatedResultUrl),
+                key: new Date().getTime()
+            }
+        })
+    }
+
+    return (
+        <Button
+            size="large" 
+            color="primary" 
+            variant="contained" 
+            onClick={handleSubmit}
+            style={{ marginRight: '10px' }}
+        > 
+            Submit
+        </Button> 
+    );  
+}
+
 const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalyticsForm, MetaTagsDetailsForm, ModeSelector }) => {
     const classes = useStyles(); 
 
     const [state, dispatch] = useCount(); 
-    // const { user, loading, error, signout } = useAuth(); 
-
-    const handleSubmit = () => {
-        console.log('Submitting...');
-        console.log(JSON.stringify(state)); 
-
-        const resp = createLink(state); 
-        console.log("Response..."); 
-        console.log(resp); 
-    }
+    const { user, loading, error, signout } = useAuth(); 
 
     const handleClear = () => {
         alert("Clearing..."); 
     }
 
     return (
-        <Container 
-            display="flex" 
-            justifycontent="center"
-        >
-                <Card className = {classes.dashboardCard}> 
+        <Box boxShadow={15} display="flex" justifycontent="center" className={classes.dashboardCard}>
+                <Card style={{ width: '100%' }}>
                     <CardContent>
                         <Typography 
                             variant="overline"
@@ -229,7 +255,6 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
                     <CardActions style={{ 
                         display: 'flex', 
                         flexDirection: 'column', 
-                        justifyContent: 'flex-start' 
                         }}
                     > 
                         <DashboardBase 
@@ -248,15 +273,7 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
                                 marginRight: '25px'
                             }}
                         >
-                            <Button
-                                size="large" 
-                                color="primary" 
-                                variant="contained" 
-                                onClick={handleSubmit}
-                                style={{ marginRight: '10px' }}
-                            > 
-                                Submit
-                            </Button>
+                           <SubmitButton />
                             <Button
                                 size="large" 
                                 color="primary" 
@@ -268,8 +285,9 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
                         </div>
                     </CardActions>
                 </Card> 
+            <ResultsDialog />
             <SharedSnackbar /> 
-        </Container>
+        </Box>
     )
 }
 

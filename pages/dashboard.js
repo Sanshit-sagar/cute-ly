@@ -1,8 +1,5 @@
-import React, { Fragment } from 'react'; 
+import React, { useState, Fragment } from 'react'; 
 import Router from 'next/router';
-
-import { useAuth } from '../lib/auth';
-import { useCount } from '../components/SharedContext'; 
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -11,14 +8,20 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import SharedSnackbar from '../components/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';  
 import TextField from '@material-ui/core/TextField'; 
-import DashboardCard from './Shortener/DashboardCard'; 
-import PageContainer from '../components/PageContainer'; 
 import Typography from '@material-ui/core/Typography'; 
 
 import { makeStyles } from '@material-ui/core/styles'; 
+
+
+import { useAuth } from '../lib/auth';
+import { useCount } from '../components/SharedContext'; 
+
+import SharedSnackbar from '../components/Snackbar';
+import PageContainer from '../components/PageContainer'; 
+import DashboardCard from '../components/DashboardCard'; 
+import ResultsDialog from '../components/ResultsDialog';
 
 const useStyles = makeStyles({
     root: {
@@ -193,30 +196,33 @@ const UtmForm = () => {
     const classes = useStyles();
     const [state, dispatch] = useCount();  
 
+    const handleKeyPress = (event) => { 
+        dispatch({ 
+            type: 'UPDATE_UTM', 
+            payload: { 
+                name: event.target.name, 
+                value: event.target.value
+            }
+        });
+    }
+
     return (
-       
         <div className={classes.utmForm}> 
             {utmFields.map((item) => (
-                <Tooltip title={item.title}> 
-                    <TextField
-                        variant="outlined"
-                        color="primary"
-                        name={item.name}
-                        label={item.label}
-                        value={state.utm[item.name]}
-                        placeholder={item.placeholder} 
-                        style={{ margin: '2.5px'}} 
-                        onChange={
-                            (e) => dispatch({ 
-                                type: 'UPDATE_UTM', 
-                                payload: { 
-                                    name: item.name, 
-                                    value: e.target.value
-                                }
-                            })
-                        }
-                    />
-                </Tooltip>
+                <div key={item.key}>
+                    <Tooltip title={item.title}> 
+                        <TextField
+                            variant="outlined"
+                            color="primary"
+                            name={item.name}
+                            label={item.label}
+                            value={state.utm[item.name]}
+                            placeholder={item.placeholder} 
+                            style={{ margin: '2.5px'}} 
+                            onChange={handleKeyPress}
+                        />
+                    </Tooltip>
+                </div>
             ))} 
         </div>  
        
@@ -231,26 +237,28 @@ const IosForm = () => {
         <Fragment> 
             <div className={classes.utmForm}> 
                 {iosFields.map((item) => (
-                    <Tooltip title={item.title}> 
-                        <TextField
-                            variant="outlined"
-                            color="primary"
-                            name={item.name}
-                            label={item.label}
-                            value={state.ios [item.name] }
-                            placeholder={item.placeholder} 
-                            style={{ margin: '2.5px'}} 
-                            onChange={
-                                (e) => dispatch({ 
-                                    type: 'UPDATE_IOS', 
-                                    payload: { 
-                                        name: item.name, 
-                                        value: e.target.value
-                                    }
-                                })
-                            }
-                        />
-                    </Tooltip>
+                    <div key={item.key}>
+                        <Tooltip title={item.title}> 
+                            <TextField
+                                variant="outlined"
+                                color="primary"
+                                name={item.name}
+                                label={item.label}
+                                value={state.ios [item.name] }
+                                placeholder={item.placeholder} 
+                                style={{ margin: '2.5px'}} 
+                                onChange={
+                                    (e) => dispatch({ 
+                                        type: 'UPDATE_IOS', 
+                                        payload: { 
+                                            name: item.name, 
+                                            value: e.target.value
+                                        }
+                                    })
+                                }
+                            />
+                        </Tooltip>
+                    </div>
                 ))} 
             </div>  
         </Fragment>
@@ -259,6 +267,7 @@ const IosForm = () => {
 
 var androidFields = [
     {
+        key: 1,
         name: 'packageName', 
         label: 'Android Package Name', 
         placeholder: "e.g. todo", 
@@ -266,6 +275,7 @@ var androidFields = [
         description: 'todo'
     },
     {
+        key: 2,
         name: 'fallbackLink', 
         label: 'Android Fallback Link', 
         placeholder: "e.g. todo", 
@@ -273,6 +283,7 @@ var androidFields = [
         description: 'todo'
     },
     {
+        key: 3,
         name: 'minPackageVersionCode', 
         label: 'Min Package Code', 
         placeholder: "e.g. todo", 
@@ -283,6 +294,7 @@ var androidFields = [
 
 var metaTagsFields = [ 
     {
+        key: 1,
         name: 'socialTitle',
         label: 'Social Title', 
         placeholder: 'e.g. todo',
@@ -290,6 +302,7 @@ var metaTagsFields = [
         description: 'The title to use when the Dynamic Link is shared in a social post'
     },
     {
+        key: 2,
         name: 'socialDescription',
         label: 'Social Description', 
         placeholder: 'e.g. todo',
@@ -297,6 +310,7 @@ var metaTagsFields = [
         description: 'The description to use when the Dynamic Link is shared in a social post.'
     },
     {
+        key: 3,
         name: 'socialImageLink',
         label: 'Social Image Link', 
         placeholder: 'e.g. facebook.com...',
@@ -313,26 +327,28 @@ const SocialMetaTagsForm = () => {
         <Fragment> 
             <div className={classes.metaTagsForm}> 
                 {metaTagsFields.map((item) => (
-                    <Tooltip title={item.title}> 
-                        <TextField
-                            variant="outlined"
-                            color="primary"
-                            name={item.name}
-                            label={item.label}
-                            value={state.meta[item.name]}
-                            placeholder={item.placeholder} 
-                            style={{ margin: '2.5px'}} 
-                            onChange={
-                                (e) => dispatch({ 
-                                    type: 'UPDATE_META', 
-                                    payload: { 
-                                        name: item.name, 
-                                        value: e.target.value
-                                    }
-                                })
-                            }
-                        />
-                    </Tooltip>
+                    <div key={item.key}>
+                        <Tooltip title={item.title}> 
+                            <TextField
+                                variant="outlined"
+                                color="primary"
+                                name={item.name}
+                                label={item.label}
+                                value={state.meta[item.name]}
+                                placeholder={item.placeholder} 
+                                style={{ margin: '2.5px'}} 
+                                onChange={
+                                    (e) => dispatch({ 
+                                        type: 'UPDATE_META', 
+                                        payload: { 
+                                            name: item.name, 
+                                            value: e.target.value
+                                        }
+                                    })
+                                }
+                            />
+                        </Tooltip>
+                    </div>
                 ))} 
             </div>  
         </Fragment>
@@ -347,26 +363,28 @@ const AndroidForm = () => {
         <Fragment> 
             <div className={classes.androidForm}> 
                 {androidFields.map((item) => (
-                    <Tooltip title={item.title}> 
-                        <TextField
-                            variant="outlined"
-                            color="primary"
-                            name={item.name}
-                            label={item.label}
-                            value={state.android[item.name]}
-                            placeholder={item.placeholder} 
-                            style={{ margin: '2.5px'}} 
-                            onChange={
-                                (e) => dispatch({ 
-                                    type: 'UPDATE_ANDROID', 
-                                    payload: { 
-                                        name: item.name, 
-                                        value: e.target.value
-                                    }
-                                })
-                            }
-                        />
-                    </Tooltip>
+                     <div key={item.key}>
+                        <Tooltip title={item.title}> 
+                            <TextField
+                                variant="outlined"
+                                color="primary"
+                                name={item.name}
+                                label={item.label}
+                                value={state.android[item.name]}
+                                placeholder={item.placeholder} 
+                                style={{ margin: '2.5px'}} 
+                                onChange={
+                                    (e) => dispatch({ 
+                                        type: 'UPDATE_ANDROID', 
+                                        payload: { 
+                                            name: item.name, 
+                                            value: e.target.value
+                                        }
+                                    })
+                                }
+                            />
+                        </Tooltip>
+                    </div>
                 ))} 
             </div>  
         </Fragment>
@@ -376,9 +394,19 @@ const AndroidForm = () => {
 
 function Dashboard () {
     const { user, loading } = useAuth(); 
- 
+
+    const [open, setOpen] = useState(false); 
+    const resultMssg = "Hello Hello Hello There"; 
+
+    const handleOpen = () => {
+        setOpen(true); 
+    }
+    const handleClose = () => {
+        setOpen(false); 
+    }
+
     if(!user && !loading) {
-        Router.push('/')
+        Router.push('/');
     }
     
     return (
@@ -387,8 +415,11 @@ function Dashboard () {
                 GoogleAnalyticsForm = { UtmForm } 
                 iOSAnalyticsForm = { IosForm }
                 AndroidAnalyticsForm = { AndroidForm }
+                MetaTagsDetailsForm = { SocialMetaTagsForm }
                 ModeSelector = { ModeSelectionRadio }  
             /> 
+
+            <ResultsDialog />
             <SharedSnackbar /> 
         </PageContainer>
     ); 

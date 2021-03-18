@@ -1,27 +1,36 @@
 import React from 'react';
-import { useAuth } from '../lib/auth'; 
-import Router from 'next/router'
 import PageContainer from '../components/PageContainer';
-import Typography from '../components/Typography';
+import axios from 'axios';
+import useSWR from 'swr'; 
+
+// import { useAuth } from '../lib/auth'; 
+// import Router from 'next/router'
+// import Typography from '../components/Typography';
+
+const fetcher = url => axios.get(url).then(res => res.data)
+
+function Profile() {
+    const { data, error } = useSWR("https://api.github.com/repos/vercel/swr", fetcher);
+
+    if (error) {
+        return <div>failed to load</div>
+    }
+    if (!data) {
+        return <div>loading...</div>
+    }
+      
+    return (
+        <div>hello {data.full_name}!</div>
+    ); 
+}
 
 export default function Account() {
-    const { user, loading } = useAuth(); 
-    if(!user && !loading) {
-        Router.push('/'); 
-    }
+
+   
+    
     return (
         <PageContainer> 
-        { loading ? 
-            <h1> LOADING... </h1> 
-        : 
-            (
-                <React.Fragment> 
-                    <Typography variant="h1"> 
-                        Hi, {user.email} 
-                    </Typography>    
-                </React.Fragment>
-            )
-        }
+            <Profile /> 
         </PageContainer>
     );
 }

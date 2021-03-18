@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Copyright from '../components/Copyright'; 
+// import Copyright from '../components/Copyright'; 
 
 
 import Avatar from '@material-ui/core/Avatar';
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   title: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%', 
     marginBottom: theme.spacing(5),
     textAlign: 'center',
   },
@@ -64,7 +64,7 @@ export default function SignInSide() {
   const auth = useAuth(); 
 
   return (
-    <Grid container component="main" className={classes.root}>
+    <Grid container component="main">
       {/* <CssBaseline /> */}
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -117,25 +117,15 @@ export default function SignInSide() {
             <Box height='20vh'> 
               <Grid container> 
 
-                {/* <Grid item xs> 
-                  <IconButton fullWidth size="large"> 
-                    <LinkedInIcon />
-                  </IconButton>
-                </Grid> */}
                 
                 <Grid item xs> 
-                  <IconButton 
-                    fullWidth 
-                    size="large"
-                  > 
+                  <IconButton> 
                     <FacebookIcon /> 
                   </IconButton>
                 </Grid>
 
                 <Grid item xs> 
                   <IconButton 
-                    fullWidth 
-                    size = "large" 
                     onClick={
                       () => auth.signinWithTwitter('/dashboard')
                     }
@@ -146,8 +136,6 @@ export default function SignInSide() {
 
                 <Grid item xs> 
                   <IconButton
-                    fullWidth
-                    size="large"
                     onClick={
                       () => auth.signinWithGoogle('/dashboard')
                     }
@@ -158,8 +146,6 @@ export default function SignInSide() {
               
                 <Grid item xs> 
                   <IconButton
-                    fullWidth
-                    size="large"
                     onClick = {
                       () => auth.signinWithGitHub('/dashboard')
                     }
@@ -186,10 +172,10 @@ export default function SignInSide() {
                 </Link>
               </Grid>
             </Grid>
-
+{/* 
             <Box mt={5}>
               <Copyright />
-            </Box>
+            </Box> */}
         </div>
       </Grid>
     </Grid>

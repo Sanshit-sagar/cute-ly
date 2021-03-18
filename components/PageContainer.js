@@ -1,6 +1,5 @@
 import React, { useState, setState } from 'react';
 
-import Header from './Header';
 import Box from '@material-ui/core/Box'; 
 import Backdrop from '@material-ui/core/Backdrop'; 
 import Container from '@material-ui/core/Container'; 
@@ -9,16 +8,12 @@ import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 
-import { withStyles } from '@material-ui/core/styles';
-import { makeStyles } from '@material-ui/core/styles'; 
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
 import { useCount } from './SharedContext';
+import Header from './Header';
 
 import { 
     Home, 

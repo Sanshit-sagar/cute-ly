@@ -1,12 +1,11 @@
 import React from 'react';
 
 import { AuthProvider } from '../lib/auth';
-import { CountProvider } from '../components/SharedContext';
-import { GlobalStyles } from "../components/Globalstyle";
+import { CountProvider, useCount } from '../components/SharedContext';
+
 import { ThemeProvider } from "styled-components";
-import { useCount } from '../components/SharedContext'; 
+import { GlobalStyles } from "../components/Globalstyle";
 import { lightTheme, darkTheme } from '../components/Themes'; 
-import Button from '@material-ui/core/Button'; 
 
 const AppBase = ({ Comp, pageP }) => {
   const [state, dispatch] = useCount();
@@ -22,11 +21,8 @@ const AppBase = ({ Comp, pageP }) => {
   return (
       <React.Fragment>
        <ThemeProvider theme={currentTheme === 'Dark' ? darkTheme : lightTheme}>
-       <GlobalStyles/>
-
-          {/* <Button className="darkModeBtn" variant="outlined" onClick={handleToggle}>Toggle Theme is {currentTheme} </Button>  */}
+        <GlobalStyles/>
           <Comp {...pageP} toggleTheme={handleToggle} />  
-       
         </ThemeProvider>
       </React.Fragment>
   );

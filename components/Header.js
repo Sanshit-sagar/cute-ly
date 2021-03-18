@@ -71,7 +71,6 @@ export function Signout() {
 
   return (
       <Button 
-        variant="standard" 
         color="secondary" 
         onClick={handleSignOut}> 
          <PowerSettingsNewIcon 
@@ -121,11 +120,16 @@ const Header = ({ props }) => {
   const handleSwitchToggle = () => {
     setOpen(!open); 
     dispatch({
-      type: "DARKMODE"
+      type: "DARKMODE",
+      payload: {
+          message: "Changed Mode",
+          key: new Date().getTime()
+        }
       }
     );
   };
 
+  
   const LightDarkModeButton = ({ executeOnClick }) => {
     return (
       <LightTooltip title="Dark Mode"> 
@@ -174,6 +178,12 @@ const Header = ({ props }) => {
                   <Button 
                     margin="dense" 
                     className={classes.responsiveButton}
+                    onClick={(e) => dispatch({
+                        type: 'SHOW_RESULTS', 
+                        payload: {
+                          value: true
+                        }
+                      })}
                   >
                     <Avatar 
                       className={classes.avatar}
