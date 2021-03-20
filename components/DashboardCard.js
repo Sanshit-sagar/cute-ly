@@ -46,7 +46,7 @@ const useStyles = makeStyles({
         left: '12.5%', 
         top: '5%',
         width: '75%', 
-        height: '57.5%',
+        height: '60%',
         backgroundColor: 'white', 
         border: 'thin solid black', 
         borderRadius: "5px", 
@@ -189,7 +189,6 @@ const DashboardBase = ({ GoogleForm, iosForm, AndroidForm, MetaForm, ModeSelecto
 }
 
 function SubmitButton() {
-    // const [loading, setLoading] = useState(false); 
     const [state, dispatch] = useCount();
     
     const handleSubmit = async () => {
@@ -229,7 +228,9 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
     const { user, loading, error, signout } = useAuth(); 
 
     const handleClear = () => {
-        alert("Clearing..."); 
+        dispatch({ 
+            type: "DARKMODE"
+        })
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, { useState, setState } from 'react';
+import React from 'react';
 
 import Box from '@material-ui/core/Box'; 
 import Backdrop from '@material-ui/core/Backdrop'; 
@@ -8,15 +8,12 @@ import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 
-import Switch from '@material-ui/core/Switch';
-
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
 import { useCount } from './SharedContext';
 import Header from './Header';
 
 import { 
-    Home, 
     Dashboard, 
     Analytics 
 } from '../icons/icons'; 
@@ -33,59 +30,22 @@ const useStyles = makeStyles((theme) => ({
         height: '50%', 
     },
     exampleWrapper: {
-      position: 'relative',
-      marginTop: theme.spacing(3),
+      position: 'absolute',
+      right: '100px', 
+      bottom: '75px',
       height: 380,
     },
     speedDial: {
       position: 'absolute',
       '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
+        bottom: theme.spacing(0),
+        right: theme.spacing(0),
       },
     },
 }));
 
-const DarkModeSwitch = withStyles((theme) => ({
-    root: {
-      width: 28,
-      height: 16,
-      padding: 0,
-      display: 'flex',
-    },
-    switchBase: {
-      padding: 2,
-      color: theme.palette.grey[500],
-      '&$checked': {
-        transform: 'translateX(12px)',
-        color: theme.palette.common.white,
-        '& + $track': {
-          opacity: 1,
-          backgroundColor: theme.palette.primary.main,
-          borderColor: theme.palette.primary.main,
-        },
-      },
-    },
-    thumb: {
-      width: 12,
-      height: 12,
-      boxShadow: 'none',
-    },
-    track: {
-      border: `1px solid ${theme.palette.grey[500]}`,
-      borderRadius: 16 / 2,
-      opacity: 1,
-      backgroundColor: theme.palette.common.white,
-    },
-    checked: {},
-  }))(Switch);
-
   
 const actions = [
-    {   icon: <Home />, 
-        name: 'Home', 
-        route: '/account' 
-    },
     { 
         icon:  <Analytics />, 
         name: 'Analytics', 
@@ -131,6 +91,7 @@ function SpeedDials() {
                                 key={action.name}
                                 icon={action.icon}
                                 tooltipTitle={action.name}
+                                tooltipPlacement="right"
                                 onClick={(e) => router.push(action.route)} 
                             />
                         ))
@@ -144,12 +105,11 @@ function SpeedDials() {
 
 const PageContainer = ({ children }) => {
     const classes =  useStyles();
-    const [state, dispatch] = useCount(); 
 
     return (
         <div className={classes.root}> 
             <Container 
-                maxWidth="lg" 
+                maxWidth="xlg" 
             >
                 <div style={{ 
                     width: '100%',
@@ -158,7 +118,6 @@ const PageContainer = ({ children }) => {
                     justifyContent: 'stretch'
                 }}>
                     <Header style={{ 
-                        backgroundColor: 'blue', 
                         display: 'flex', 
                         flexDirection: 'row', 
                         justifyContent: 'space-between'
@@ -180,9 +139,12 @@ const PageContainer = ({ children }) => {
                             {children}
                         </Box>
 
-                        <SpeedDials  />
+                        <SpeedDials />
                     </div>  
+
+                    
                 </div> 
+               
             </Container> 
         </div> 
     );

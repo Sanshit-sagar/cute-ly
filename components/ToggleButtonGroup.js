@@ -10,6 +10,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp'; 
@@ -18,8 +20,6 @@ import AndroidIcon from '@material-ui/icons/Android';
 import AppleIcon from '@material-ui/icons/Apple';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -91,22 +91,26 @@ const socialMediaDetails = [
         key: 1,
         name: 'linkedin',
         component: <LinkedinIconComp />,
-        title: 'LinkedIn'
+        title: 'LinkedIn',
+        prefix: 'https://www.linkedin.com/sharing/share-offsite/?url='
     },{
         key: 2,
         name: 'facebook',
         component: <FacebookIconComp />,
-        title:'Facebook'
+        title:'Facebook',
+        prefix: 'https://www.facebook.com/sharer/sharer.php?u='
     },{
         key: 3,
         name: 'twitter',
         component: <TwitterIconComp />, 
-        title: 'Twitter'
+        title: 'Twitter',
+        prefix: ''
     },{
         key: 4,
         name: 'whatsapp',
         component: <WhatsAppIconComp />,
-        title: 'WhatsApp'
+        title: 'WhatsApp',
+        prefix: ''
     }
 ];
 
@@ -125,15 +129,17 @@ const SocialMediaButtonGroup = () => {
                     {socialMediaDetails.map((item) => (
                         <Tooltip title={item.title}> 
                             <Button 
+                                name={item.name}
                                 size="small"
                                 color="primary"
                                 onClick={(e) => dispatch({ 
-                                        type: 'UPDATE_SOCIAL',
-                                        payload: {
-                                            name: item.name, 
-                                            value: !state.socials[item.name]
-                                        }
-                                    })}
+                                    type: 'UPDATE_SOCIAL',
+                                    payload: {
+                                        name: item.name,
+                                        value: !state.socials[item.name],
+                                        prefix: item.prefix
+                                    }})
+                                }
                             >
                                 <FormControlLabel 
                                     value="female" 
@@ -157,15 +163,24 @@ const SocialMediaButtonGroup = () => {
         </StyledToggleButtonGroup>
     ); 
 }
- 
+function isEmptyValue(value) {
+    return (
+                value === undefined || 
+                value === null      || 
+                value === NaN       || 
+                typeof value === 'string' && value.trim().length() === 0
+            );
+    }
+
 const UtmAnalyticsButton = ({ executeOnOpen }) => {
     const [on, setOn] = useState(false);
+    const [state, dispatch] = useCount(); 
 
     const handleClick = () => {
         setOn(!on); 
         executeOnOpen(); 
     }
-    
+
     return (
         <Tooltip title="Google Analytics Info"> 
             <Button 
@@ -175,13 +190,13 @@ const UtmAnalyticsButton = ({ executeOnOpen }) => {
             >
                 <FormControlLabel 
                     value="utm" 
-                    control = {<PlayArrowIcon />}
+                    control = {<PlayArrowIcon style={{ color: 'black' }} />}
                     label={
                         <Typography 
                             variant="overline"
-                            style={{ fontSize: '8px' }}
+                            style={{ fontSize: '8px', color: 'black' }}
                         > 
-                            UTM 
+                            Google 
                         </Typography>
                     }
                     labelPlacement="bottom"
@@ -208,11 +223,11 @@ const IOSAnalyticsButton = ({ executeOnOpen }) => {
             >
                 <FormControlLabel 
                     value="ios" 
-                    control={<AppleIcon />}
+                    control={<AppleIcon style={{ color: 'black' }} />}
                     label={
                         <Typography 
                             variant="overline"
-                            style={{ fontSize: '8px' }}
+                            style={{ fontSize: '8px', color: 'black' }}
                         > 
                             iOS 
                         </Typography>
@@ -242,11 +257,11 @@ const AndroidAnalyticsButton = ({ executeOnOpen }) => {
             >
                 <FormControlLabel 
                     value="android" 
-                    control={<AndroidIcon />}
+                    control={<AndroidIcon style={{ color: 'black' }}/>}
                     label={
                         <Typography 
                             variant="overline"
-                            style={{ fontSize: '8px' }}
+                            style={{ fontSize: '8px', color: 'black' }}
                         > 
                             Android
                         </Typography>
@@ -275,11 +290,11 @@ const SocialMetaTagsButton = ({ executeOnOpen }) => {
             >
                 <FormControlLabel 
                     value="meta" 
-                    control={<LocalOfferIcon />}
+                    control={<LocalOfferIcon style={{ color: 'black' }}/>}
                     label={
                         <Typography 
                             variant="overline"
-                            style={{ fontSize: '8px' }}
+                            style={{ fontSize: '8px', color: 'black' }}
                         > 
                             Meta 
                         </Typography>

@@ -1,10 +1,13 @@
 import React from 'react'; 
+import Router from 'next/router';
 import firebase from '../lib/firebase';
-import Router from 'next/router'
+import { DataGrid } from '@material-ui/data-grid';
+
 
 import { useAuth } from '../lib/auth'; 
+
+import SharedSnackbar from '../components/Snackbar';
 import PageContainer from '../components/PageContainer';
-import { DataGrid } from '@material-ui/data-grid';
 
 class AnalyticsBase extends React.Component {
     constructor(props) {
@@ -55,31 +58,31 @@ class AnalyticsBase extends React.Component {
     render() {
         return (
            <PageContainer height="100%" width="100%"> 
-              
-                <DataGrid
-                    columns={[
-                        { field: 'id', width: 75},
-                        { field: 'suffix', width: 120 },
-                        { field: 'originalUrl', width: 225 },
-                        { field: 'medium', width: 120 },
-                        { field: 'term', width: 120 },
-                        { field: 'source', width: 120 },
-                        { field: 'campaign', width: 120 },
-                        { field: 'timestamp', width: 200 },
-                    ]}
-                    checkboxSelection
-                    pagination
-                    rows={this.state.links}
-                    pageSize={20} 
-                    rowsPerPageOptions={[10, 20, 40]} 
-                    loading={this.state.loading}
-                    disableMultipleSelection={true}
-                    onFilterModelChange={() => this.handleTransformation("filter")}
-                    onSelectionChange={(newSelection) => {
-                        handleSelectionChange(newSelection.rows);
-                    }}
-                />
-                  
+                <div style={{ height: '85%', width: '75%', marginLeft: '12.5%'}}> 
+                    <DataGrid
+                        columns={[
+                            { field: 'id', width: 75},
+                            { field: 'suffix', width: 120 },
+                            { field: 'originalUrl', width: 225 },
+                            { field: 'medium', width: 120 },
+                            { field: 'term', width: 120 },
+                            { field: 'source', width: 120 },
+                            { field: 'campaign', width: 120 },
+                            { field: 'timestamp', width: 200 },
+                        ]}
+                        checkboxSelection
+                        pagination
+                        rows={this.state.links}
+                        pageSize={20} 
+                        rowsPerPageOptions={[10, 20, 40]} 
+                        loading={this.state.loading}
+                        disableMultipleSelection={true}
+                        onFilterModelChange={() => this.handleTransformation("filter")}
+                        onSelectionChange={(newSelection) => {
+                            handleSelectionChange(newSelection.rows);
+                        }}
+                    />
+                </div> 
            </PageContainer> 
         )
     }
@@ -95,6 +98,7 @@ const Analytics = () => {
     return (
         <React.Fragment>
             <AnalyticsBase /> 
+            <SharedSnackbar /> 
         </React.Fragment>
     );
 }

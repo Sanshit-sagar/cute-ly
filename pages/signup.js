@@ -7,9 +7,9 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '../Components/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Copyright from '../components/Copyright'; 
+
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -120,9 +120,6 @@ const useStyles = makeStyles((theme) => ({
             </Grid>
        
         </div>
-        <Box mt={5}>
-          <Copyright />
-        </Box>
       </Container>
     );
   }

@@ -7,7 +7,7 @@ import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../components/Globalstyle";
 import { lightTheme, darkTheme } from '../components/Themes'; 
 
-const AppBase = ({ Comp, pageP }) => {
+const AppBase = ({ AppComp, AppPageProps }) => {
   const [state, dispatch] = useCount();
   
   const handleToggle = (event) => {
@@ -22,7 +22,7 @@ const AppBase = ({ Comp, pageP }) => {
       <React.Fragment>
        <ThemeProvider theme={currentTheme === 'Dark' ? darkTheme : lightTheme}>
         <GlobalStyles/>
-          <Comp {...pageP} toggleTheme={handleToggle} />  
+          <AppComp {...AppPageProps} toggleTheme={handleToggle} />  
         </ThemeProvider>
       </React.Fragment>
   );
@@ -36,8 +36,8 @@ export default function App({ Component, pageProps }) {
         <AuthProvider> 
 
           <AppBase 
-            Comp={Component} 
-            pageP={pageProps} 
+            AppComp={Component} 
+            AppPageProps={pageProps} 
           /> 
         
         </AuthProvider> 

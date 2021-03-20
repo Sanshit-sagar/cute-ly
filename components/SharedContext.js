@@ -8,11 +8,12 @@ const initialState =  {
     dark: false, 
     showResults: false, 
     url: '',   
+    prefixes: [],
     tagCount: {
         utm: 0, 
         ios: 0,
         android: 0,
-        meta: 0
+        meta: 0,
     },
     utm: {
         source: '', 
@@ -125,11 +126,14 @@ const reducer = (state, action) => {
         case "UPDATE_SOCIAL": 
             return {
                 ...state,
-                url: (action.payload.prefix + state.url),
+                prefixes: [
+                    ...state.prefixes, 
+                    action.payload.prefix
+                ],
                 socials: {
                     ...state.socials, 
                     [action.payload.name]: action.payload.value
-                } 
+                },
             };
         case "DB_RESPONSE": 
             return {
@@ -183,16 +187,6 @@ const reducer = (state, action) => {
             return {
                 ...state, 
                 dark: !state.dark,
-                snackbar: {
-                    ...state.snackbar, 
-                    snackpack: [
-                        ...state.snackbar.snackpack, 
-                        { 
-                            message: action.payload.message, 
-                            key: action.payload.key,  
-                        },
-                    ]
-                }
             };
         default: 
             return state; 

@@ -13,16 +13,44 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton'; 
 
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import StarIcon from '@material-ui/icons/Star';
-import ShareIcon from '@material-ui/icons/Share';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+
+const useCopyToClipboard = text => {
+    const copyToClipboard = str => {
+      const el = document.createElement('textarea');
+      el.value = str;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      const selected =
+        document.getSelection().rangeCount > 0
+          ? document.getSelection().getRangeAt(0)
+          : false;
+      el.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(el);
+      if (selected) {
+        document.getSelection().removeAllRanges();
+        document.getSelection().addRange(selected);
+      }
+      return success;
+    };
+  
+    const [copied, setCopied] = React.useState(false);
+  
+    const copy = React.useCallback(() => {
+      if (!copied) setCopied(copyToClipboard(text));
+    }, [text]);
+    React.useEffect(() => () => setCopied(false), [text]);
+  
+    return [copied, copy];
+};
 
 const ResultsDialog = ({ message }) => {
     const [state, dispatch] = useCount(); 
 
-    const handleCopyToDashboard = () => {
-        alert("Copying..."); 
-    }
+    const resultDisplayed = state.mostRecentResult;
+    const [copied, copy] = useCopyToClipboard(`${resultDisplayed}`);
 
     return (
         <React.Fragment> 
@@ -49,11 +77,9 @@ const ResultsDialog = ({ message }) => {
                 <Divider /> 
                 <DialogContent> 
                     <DialogContentText> 
-                        {/* <div> 
-                            <p> {generateList} </p>
-                        </div> */}
-                        <Typography variant="body1"> 
+                        <Typography variant="body1" class="copyText"> 
                            { state.mostRecentResult }
+                           <span> {copied && 'Copied!' } </span>
                         </Typography>   
                     </DialogContentText>    
                 </DialogContent>
@@ -61,17 +87,8 @@ const ResultsDialog = ({ message }) => {
                 <DialogActions> 
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', marginRight: '50px' }}> 
-                            <IconButton onClick={handleCopyToDashboard}> 
+                            <IconButton onClick={copy}> 
                                 <FileCopyIcon /> 
-                            </IconButton> 
-                            <IconButton> 
-                                <StarIcon /> 
-                            </IconButton> 
-                            <IconButton> 
-                                <ShareIcon /> 
-                            </IconButton> 
-                            <IconButton>  
-                                <DeleteForeverIcon /> 
                             </IconButton> 
                         </div>
 

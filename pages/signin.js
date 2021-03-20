@@ -10,8 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-// import Copyright from '../components/Copyright'; 
-
 
 import Avatar from '@material-ui/core/Avatar';
 import FacebookIcon from '@material-ui/icons/Facebook'; 
@@ -65,19 +63,20 @@ export default function SignInSide() {
 
   return (
     <Grid container component="main">
-      {/* <CssBaseline /> */}
+      
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
+
           </Avatar>
           <Typography className={classes.title} component="h1" variant="h5">
-            sign in
+            Sign In
           </Typography>
          
             <TextField
-              variant="outlined"
+              variant="filled"
               margin="normal"
               required
               fullWidth
@@ -90,7 +89,7 @@ export default function SignInSide() {
               autoFocus
             />
             <TextField
-              variant="outlined"
+              variant="filled"
               margin="normal"
               required
               fullWidth
@@ -109,6 +108,7 @@ export default function SignInSide() {
               variant="outlined"
               color="primary"
               className={classes.submit}
+              size="large"
               onClick={(e) => auth.signinWithEmail(email, password, '/dashboard')}
             >
               sign in
@@ -172,10 +172,7 @@ export default function SignInSide() {
                 </Link>
               </Grid>
             </Grid>
-{/* 
-            <Box mt={5}>
-              <Copyright />
-            </Box> */}
+
         </div>
       </Grid>
     </Grid>
