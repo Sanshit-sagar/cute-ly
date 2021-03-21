@@ -7,18 +7,10 @@ import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-
-import Avatar from '@material-ui/core/Avatar';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import SvgIcon from '@material-ui/core/SvgIcon';
-
-import { makeStyles } from '@material-ui/core/styles';
 
 import FacebookIcon from '@material-ui/icons/Facebook'; 
-import GitHubIcon from '@material-ui/icons/GitHub';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import GoogleIcon from '../icons/icons'; 
+import { makeStyles } from '@material-ui/core/styles';
 
 import { useAuth } from '../lib/auth'; 
 
@@ -68,9 +60,7 @@ export default function SignInSide() {
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
-            {/* <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
-            </Avatar> */}
+          
             <Typography className={classes.title} component="h2" variant="h2">
               Sign In
             </Typography>
@@ -145,18 +135,6 @@ export default function SignInSide() {
                 <Typography variant="h5" style={{ fontSize: '18px' }}> G </Typography>
               </Button>
 
-              {/* <Button 
-                fullWidth
-                size="large" 
-                variant="contained"
-                color="primary"
-                onClick={
-                  () => auth.signinWithGoogle('/dashboard')
-                }
-                style={{ margin: '5px'}}
-              >
-                <Git />
-              </Button> */}
             </Box>
 
             <Grid container>

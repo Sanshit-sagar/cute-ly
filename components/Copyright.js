@@ -10,7 +10,6 @@ export default function Copyright() {
              sanshitsagar.com
         </Link>{' '}
             {new Date().getFullYear()}
-            {/* {'.'} */}
       </Typography>
     );
 }
