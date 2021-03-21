@@ -16,11 +16,12 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider'; 
+import { shadows } from '@material-ui/system';
 
 import { createLink } from '../lib/db'; 
 import { useCount } from './SharedContext'; 
 import { useAuth } from '../lib/auth'; 
-import { shadows } from '@material-ui/system';
+
 import SharedSnackbar from './Snackbar'; 
 import CustomToggleButtonGroup from './ToggleButtonGroup'; 
 import UtmParamsDialog from './UtmParamsDialog';
@@ -105,11 +106,6 @@ const DashboardBase = ({ GoogleForm, iosForm, AndroidForm, MetaForm, ModeSelecto
         setMetaOpen(false);
     }
 
-    // const testURL = () => {
-    //     return (
-    //         state.url.length > 0 && !validUrlPattern.test(state.url)
-    //     ); 
-    // }
 
     const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
     return (
@@ -211,7 +207,7 @@ function SubmitButton() {
         })
     }
     const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
-    
+
     return (
         <Button
             size="large" 

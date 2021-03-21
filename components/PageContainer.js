@@ -123,8 +123,6 @@ const PageContainer = ({ children }) => {
                         justifyContent: 'space-between'
                     }} /> 
 
-
-
                     <div style={{ 
                         marginTop: '50px',
                         display: 'flex', 
