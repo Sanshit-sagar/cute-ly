@@ -1,100 +1,118 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Router from 'next/router'; 
+import Link from 'next/link'; 
 import Button from './Button'; 
-import Divider from '@material-ui/core/Divider'; 
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper'; 
+
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import GithubIcon from '@material-ui/icons/Github'; 
 
 import { useAuth } from '../lib/auth'; 
 import { useCount } from './SharedContext';  
-import { Loading } from '../icons/icons'; 
-import { makeStyles } from '@material-ui/core/styles'; 
+import { makeStyles } from '@material-ui/core/styles';
 
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import DarkModeButton from './DarkModeButton'; 
-import ProfileButton from './ProfileButton'; 
+import {LightMode, DarkMode} from '../icons/icons'; 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
+    flexGrow: 1,
   },
-  cardContainer: {
-    paddingTop: '5px', 
-    marginTop: '15px', 
-    height: '10vh',
-    display: 'flex', 
-    flexDirection: 'row', 
-    justifyContent: 'space-between',
+  menuButton: {
+    marginRight: theme.spacing(2),
+    color: 'white'
   },
-  profileInfo: {
-    border: 'thin solid black', 
-    borderRadius: '5px', 
-    display: 'flex', 
-    flexDirection: 'row', 
-    justifyContent: 'flex-end', 
+  title: {
+    flexGrow: 1,
   },
-});
+}));
 
-export function Signout() {
+const Header = ({ props }) => {
+
+  const classes = useStyles(); 
   const auth = useAuth(); 
 
+  const [state, dispatch] = useCount(); 
+  const [on, setOn] = useState(false); 
+
+  const handleMenu = () => {
+    alert('handling menu'); 
+  }
+
   const handleSignOut = () => {
-      auth.signout().then(() => {
-          Router.push('/'); 
-      })
+    auth.signout().then(() => {
+        Router.push('/'); 
+    })
+  }
+
+  const getTheme = () => {
+      if(on) {
+          return "Light Mode";
+      }
+      return "Dark Mode"; 
+  }
+
+  const toggleTheme = () => {
+      setOn(!on);
+      dispatch({
+          type: "DARKMODE"
+      });
+      dispatch({
+          type: "SNACKBAR_TRIGGER",
+          payload: {
+              message: "Theme Changed to " + getTheme() + "!",
+              key: new Date().getTime().toString()
+          }
+      });
+  }
+
+  const handleNavToGithub = () => {
+    Router.push("https://www.github.com/Sanshit-sagar/cute.ly-app");
   }
 
   return (
-      <Button 
-        color="secondary" 
-        onClick={handleSignOut}> 
-         <PowerSettingsNewIcon 
-          color="secondary" 
-        />
-      </Button>
-  )
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <Link href="/dashboard">
+            <Typography variant="h6" className={classes.title}>
+              cute.ly
+            </Typography>
+          </Link>
+          
+          <Button
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+          </Button> 
+
+          <Button color="inherit" onClick={toggleTheme}> 
+            { on ? <DarkMode /> : <LightMode /> }
+          </Button>
+
+          <Button onClick={handleNavToGithub}> 
+            <GithubIcon /> 
+          </Button>
+
+          <Button 
+            color="inherit" 
+            onClick={handleSignOut}> 
+            <PowerSettingsNewIcon 
+              color="inherit" 
+            />
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </div>
+
+  );
 }
-
-
-const Header = ({ props }) => {
-  const classes = useStyles(); 
-  const [state, dispatch] = useCount(); 
-  const { user, loading, signout } = useAuth();
-
-  return (
-    <Container className={classes.cardContainer}>
-        <Typography 
-          variant="overline" 
-          color="primary" 
-          style = {{ fontSize: '32px' }}
-        > 
-          cute.ly
-        </Typography>
-
-        
-          <Paper className={classes.profileInfo}> 
-            { user ? ( 
-              <React.Fragment> 
-                <DarkModeButton />
-                  
-                  <Divider orientation="vertical" flexItem  />
-                   
-                      <ProfileButton />
-                   
-                  <Divider orientation="vertical" flexItem /> 
-
-                <Signout /> 
-              </React.Fragment> 
-            ) 
-            : 
-              <Loading /> 
-            } 
-
-          </Paper> 
-      </Container>
-  )
-};
 
 export default Header;

@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '../components/Button';
 import TextField from '../components/TextField';
 import Link from '../components/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
+
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
 import { makeStyles } from '@material-ui/core/styles';
+
+import { useAuth } from '../lib/auth';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,7 +37,21 @@ const useStyles = makeStyles((theme) => ({
   
   export default function SignUp() {
     const classes = useStyles();
-  
+
+    const [email, setEmail] =  useState(""); 
+    const [password, setPassword] = useState(""); 
+    const [firstName, setFirstName] = useState(""); 
+    const [lastName, setLastName] = useState("");
+
+    const auth = useAuth(); 
+
+    // const handleSubmit = () => {
+    //   console.log("Submitting..."); 
+    //   console.log(email + ", " + password); 
+
+    //   ;
+    // }
+
     return (
       <Container component="main" maxWidth="xs">
        
@@ -57,6 +73,8 @@ const useStyles = makeStyles((theme) => ({
                   fullWidth
                   id="firstName"
                   label="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   autoFocus
                 />
               </Grid>
@@ -68,6 +86,8 @@ const useStyles = makeStyles((theme) => ({
                   id="lastName"
                   label="Last Name"
                   name="lastName"
+                  value={lastName} 
+                  onChange={(e) => setLastName(e.target.value)}
                   autoComplete="lname"
                 />
               </Grid>
@@ -79,6 +99,8 @@ const useStyles = makeStyles((theme) => ({
                   id="email"
                   label="Email Address"
                   name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
                 />
               </Grid>
@@ -92,6 +114,8 @@ const useStyles = makeStyles((theme) => ({
                   label="Password"
                   type="password"
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                 />
               </Grid>
@@ -106,6 +130,7 @@ const useStyles = makeStyles((theme) => ({
               size="large"
               variant="outlined"
               color="primary"
+              onClick={(e) => auth.signupWithEmailAndPassword(email, password, '/dashboard')}
               className={classes.submit}
             >
               Sign Up

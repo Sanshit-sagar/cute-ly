@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
     },
     exampleWrapper: {
       position: 'absolute',
-      right: '100px', 
-      bottom: '75px',
+      right: '50px', 
+      bottom: '25px',
       height: 380,
     },
     speedDial: {
@@ -109,7 +109,7 @@ const PageContainer = ({ children }) => {
     return (
         <div className={classes.root}> 
             <Container 
-                maxWidth="lg" 
+                maxWidth="xl" 
             >
                 <div style={{ 
                     width: '100%',

@@ -9,6 +9,9 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Dialog from '@material-ui/core/Dialog'; 
+import DialogTitle from '@material-ui/core/DialogTitle'; 
+import TextField from '@material-ui/core/TextField'; 
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
@@ -20,6 +23,7 @@ import AndroidIcon from '@material-ui/icons/Android';
 import AppleIcon from '@material-ui/icons/Apple';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import { DialogActions, DialogContent } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -116,7 +120,20 @@ const socialMediaDetails = [
 
 const SocialMediaButtonGroup = () => {
     const [state, dispatch] = useCount(); 
+    const [open, setOpen] = useState(false); 
+    const [twitterText, setTwitterText] = useState(''); 
+
+    const handleDialogClose = () => {
+        setOpen(false); 
+    }
+
+    const handleUpdateTweetDetails = () => {
+        setOpen(false); 
+        alert("Updating Tweet Details"); 
+    }
+
     return (
+    <>
         <StyledToggleButtonGroup>
             <div style = {{ display: 'flex', flexDirection: 'column' }}>
                 <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
@@ -132,14 +149,24 @@ const SocialMediaButtonGroup = () => {
                                 name={item.name}
                                 size="small"
                                 color="primary"
-                                onClick={(e) => dispatch({ 
-                                    type: 'UPDATE_SOCIAL',
-                                    payload: {
-                                        name: item.name,
-                                        value: !state.socials[item.name],
-                                        prefix: item.prefix
-                                    }})
-                                }
+                                onClick={(e) => { 
+                                    dispatch({ 
+                                        type: 'UPDATE_SOCIAL',
+                                        payload: {
+                                            name: item.name,
+                                            value: !state.socials[item.name],
+                                            prefix: item.prefix
+                                        }})
+                                    
+                                    if(item.name==='twitter') {
+                                        if(!state.socials.twitter) {
+                                            setOpen(true); 
+                                        } else {
+                                            //clear twitter data here via dispatch
+                                            alert('Clearing twitter data'); 
+                                        }
+                                    } 
+                                }}
                             >
                                 <FormControlLabel 
                                     value="female" 
@@ -161,6 +188,33 @@ const SocialMediaButtonGroup = () => {
                 </div> 
             </div> 
         </StyledToggleButtonGroup>
+
+      
+            <Dialog 
+                open={open} 
+                onClose={handleDialogClose}
+            > 
+                <DialogTitle>
+                    Tweet Content
+                </DialogTitle> 
+                <DialogContent> 
+                    <TextField 
+                        fullWidth 
+                        multiline 
+                        value={twitterText} 
+                        onChange={(e) => {setTwitterText(e.target.value)}}
+                    /> 
+                </DialogContent>
+                <DialogActions> 
+                    <Button onClick={handleDialogClose}> 
+                        Cancel
+                    </Button>
+                    <Button onClick={handleUpdateTweetDetails}>
+                        Done
+                    </Button> 
+                </DialogActions>
+            </Dialog>
+    </>
     ); 
 }
 function isEmptyValue(value) {
@@ -344,9 +398,9 @@ const CustomToggleButtonGroup = ({ openGoogleDialog, openiOSDialog, openAndroidD
             </div> 
         </StyledToggleButtonGroup>
        
-            <CustomDivider />
-            <SocialMediaButtonGroup /> 
-            <CustomDivider />
+        <CustomDivider />
+        <SocialMediaButtonGroup /> 
+        <CustomDivider />
     </Paper>
   );
 }
