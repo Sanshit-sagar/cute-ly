@@ -128,7 +128,7 @@ export default function SignInSide() {
                   </IconButton>
                 </Grid>
 
-                <Grid item xs> 
+                {/* <Grid item xs> 
                   <IconButton 
                     onClick={
                       () => auth.signinWithTwitter('/dashboard')
@@ -136,7 +136,7 @@ export default function SignInSide() {
                   > 
                     <TwitterIcon /> 
                   </IconButton>
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs> 
                   <IconButton
@@ -148,7 +148,7 @@ export default function SignInSide() {
                   </IconButton>
                 </Grid>
               
-                <Grid item xs> 
+                {/* <Grid item xs> 
                   <IconButton
                     onClick = {
                       () => auth.signinWithGitHub('/dashboard')
@@ -158,7 +158,7 @@ export default function SignInSide() {
                       <GitHubIcon /> 
                     </SvgIcon>
                   </IconButton>
-                </Grid>
+                </Grid> */}
                 
               </Grid>
             </Box>
