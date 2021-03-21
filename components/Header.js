@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import GithubIcon from '@material-ui/icons/Github'; 
+// import GithubIcon from '@material-ui/icons/Github'; 
 
 import { useAuth } from '../lib/auth'; 
 import { useCount } from './SharedContext';  
@@ -97,9 +97,9 @@ const Header = ({ props }) => {
             { on ? <DarkMode /> : <LightMode /> }
           </Button>
 
-          <Button onClick={handleNavToGithub}> 
+          {/* <Button onClick={handleNavToGithub}> 
             <GithubIcon /> 
-          </Button>
+          </Button> */}
 
           <Button 
             color="inherit" 
