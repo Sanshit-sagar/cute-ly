@@ -6,6 +6,7 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import Brightness2Icon from '@material-ui/icons/Brightness2';
+import Image from 'next/image'; 
 
 export const Home = () => {
     return ( <HomeIcon/> ); 
@@ -29,6 +30,16 @@ export const LightMode = () => {
 
 export const DarkMode = () => {
     return (<Brightness2Icon /> );
+}
+
+export function GoogleIcon() {
+    return (
+        <div>
+            <Image 
+                src="/OfficialGoogleLogo.svg"
+            />
+        </div>
+    ); 
 }
 
 export default Home;  

@@ -18,6 +18,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import FacebookIcon from '@material-ui/icons/Facebook'; 
 import GitHubIcon from '@material-ui/icons/GitHub';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import GoogleIcon from '../icons/icons'; 
 
 import { useAuth } from '../lib/auth'; 
 
@@ -70,7 +71,7 @@ export default function SignInSide() {
             {/* <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar> */}
-            <Typography className={classes.title} component="h1" variant="h2">
+            <Typography className={classes.title} component="h2" variant="h2">
               Sign In
             </Typography>
          
@@ -118,29 +119,44 @@ export default function SignInSide() {
             <br />
 
             <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '50px' }}>
-              <Button size="large" variant="contained" color="primary">
-                <FacebookIcon 
-                  onClick={
+              <Button 
+                fullWidth
+                size="large"
+                variant="contained"
+                color="primary"
+                onClick={
                     () => auth.signinWithFacebook('/dashboard')
-                  }
-                /> 
+                }
+                style={{ margin: '5px'}}
+              >
+                <FacebookIcon /> 
               </Button>
           
-              <Button size="large" variant="contained" color="primary">
-                <GitHubIcon 
-                  onClick={
-                    () => auth.signinWithGoogle('/dashboard')
-                  }
-                /> 
+              <Button 
+                fullWidth
+                size="large"
+                variant="contained"
+                color="primary"
+                onClick = {
+                  () => auth.signinWithGoogle('/dashboard')
+                }
+                style={{ margin: '5px'}}
+              >
+                <Typography variant="h5" style={{ fontSize: '18px' }}> G </Typography>
               </Button>
 
-              <Button size="large" variant="contained" color="primary">
-                <TwitterIcon 
-                  onClick={
-                    () => auth.signinWithGoogle('/dashboard')
-                  }
-                /> 
-              </Button>
+              {/* <Button 
+                fullWidth
+                size="large" 
+                variant="contained"
+                color="primary"
+                onClick={
+                  () => auth.signinWithGoogle('/dashboard')
+                }
+                style={{ margin: '5px'}}
+              >
+                <Git />
+              </Button> */}
             </Box>
 
             <Grid container>

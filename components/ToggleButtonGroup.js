@@ -9,21 +9,16 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Dialog from '@material-ui/core/Dialog'; 
-import DialogTitle from '@material-ui/core/DialogTitle'; 
-import TextField from '@material-ui/core/TextField'; 
+
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-import FacebookIcon from '@material-ui/icons/Facebook';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import WhatsAppIcon from '@material-ui/icons/WhatsApp'; 
-import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import AndroidIcon from '@material-ui/icons/Android';
 import AppleIcon from '@material-ui/icons/Apple';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import { DialogActions, DialogContent } from '@material-ui/core';
+
+import SocialMediaButtonGroup from './SocialMediaButtonGroup'; 
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,6 +32,21 @@ const useStyles = makeStyles((theme) => ({
   shortenUrlButton: {
       maxHeight: '10px',
   },
+  cardRoot: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  cardTitle: {
+    fontSize: 14,
+  },
+  cardPos: {
+    marginBottom: 12,
+  },
+
 }));
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
@@ -71,152 +81,6 @@ const CustomDivider = () => {
     )
 }
 
-function LinkedinIconComp() {
-    const [state, dispatch] = useCount(); 
-    return (<LinkedInIcon style={{ color: state.socials.linkedin ? '#005cc5' : '#000' }} />); 
-}
-
-function FacebookIconComp() {
-    const [state, dispatch] = useCount(); 
-    return (<FacebookIcon style={{ color: state.socials.facebook ? '#4861ac' : '#000' }} />); 
-}
-
-function TwitterIconComp() {
-    const [state, dispatch] = useCount(); 
-    return (<TwitterIcon   style={{ color: state.socials.twitter ? '#009dff' : '#000' }} />); 
-}
-function WhatsAppIconComp() {
-    const [state, dispatch] = useCount(); 
-    return (<WhatsAppIcon style={{ color: state.socials.whatsapp ? '#00d85a' : '#000' }} />); 
-}
-
-const socialMediaDetails = [
-    {
-        key: 1,
-        name: 'linkedin',
-        component: <LinkedinIconComp />,
-        title: 'LinkedIn',
-        prefix: 'https://www.linkedin.com/sharing/share-offsite/?url='
-    },{
-        key: 2,
-        name: 'facebook',
-        component: <FacebookIconComp />,
-        title:'Facebook',
-        prefix: 'https://www.facebook.com/sharer/sharer.php?u='
-    },{
-        key: 3,
-        name: 'twitter',
-        component: <TwitterIconComp />, 
-        title: 'Twitter',
-        prefix: ''
-    },{
-        key: 4,
-        name: 'whatsapp',
-        component: <WhatsAppIconComp />,
-        title: 'WhatsApp',
-        prefix: ''
-    }
-];
-
-const SocialMediaButtonGroup = () => {
-    const [state, dispatch] = useCount(); 
-    const [open, setOpen] = useState(false); 
-    const [twitterText, setTwitterText] = useState(''); 
-
-    const handleDialogClose = () => {
-        setOpen(false); 
-    }
-
-    const handleUpdateTweetDetails = () => {
-        setOpen(false); 
-        alert("Updating Tweet Details"); 
-    }
-
-    return (
-    <>
-        <StyledToggleButtonGroup>
-            <div style = {{ display: 'flex', flexDirection: 'column' }}>
-                <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
-                    <Typography variant="overline"> 
-                        Share
-                    </Typography> 
-                </FormLabel>
-          
-                <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    {socialMediaDetails.map((item) => (
-                        <Tooltip title={item.title}> 
-                            <Button 
-                                name={item.name}
-                                size="small"
-                                color="primary"
-                                onClick={(e) => { 
-                                    dispatch({ 
-                                        type: 'UPDATE_SOCIAL',
-                                        payload: {
-                                            name: item.name,
-                                            value: !state.socials[item.name],
-                                            prefix: item.prefix
-                                        }})
-                                    
-                                    if(item.name==='twitter') {
-                                        if(!state.socials.twitter) {
-                                            setOpen(true); 
-                                        } else {
-                                            //clear twitter data here via dispatch
-                                            alert('Clearing twitter data'); 
-                                        }
-                                    } 
-                                }}
-                            >
-                                <FormControlLabel 
-                                    value="female" 
-                                    control={item.component}
-                                    label={
-                                        <Typography 
-                                            variant="overline"
-                                            style={{ fontSize: '8px', color:'#000' }}
-                                        > 
-                                            {item.name}
-                                        </Typography>
-                                    }
-                                    labelPlacement="bottom"
-                                />
-                            </Button>
-                        </Tooltip>
-                        
-                    ))} 
-                </div> 
-            </div> 
-        </StyledToggleButtonGroup>
-
-      
-            <Dialog 
-                open={open} 
-                onClose={handleDialogClose}
-            > 
-                <DialogTitle>
-                    Tweet Content
-                </DialogTitle> 
-                <DialogContent> 
-                    <TextField 
-                        fullWidth 
-                        multiline 
-                        value={twitterText} 
-                        onChange={(e) => {setTwitterText(e.target.value)}}
-                    /> 
-                </DialogContent>
-                <DialogActions> 
-                    <Button onClick={handleDialogClose}> 
-                        Cancel
-                    </Button>
-                    <Button onClick={handleUpdateTweetDetails}>
-                        Done
-                    </Button> 
-                </DialogActions>
-            </Dialog>
-    </>
-    ); 
-}
 function isEmptyValue(value) {
     return (
                 value === undefined || 

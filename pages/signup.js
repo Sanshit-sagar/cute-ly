@@ -45,13 +45,6 @@ const useStyles = makeStyles((theme) => ({
 
     const auth = useAuth(); 
 
-    // const handleSubmit = () => {
-    //   console.log("Submitting..."); 
-    //   console.log(email + ", " + password); 
-
-    //   ;
-    // }
-
     return (
       <Container component="main" maxWidth="xs">
        
