@@ -120,7 +120,11 @@ export default function SignInSide() {
                 
                 <Grid item xs> 
                   <IconButton> 
-                    <FacebookIcon /> 
+                    <FacebookIcon 
+                      onClick={
+                        () => auth.signinWithFacebook('/dashboard')
+                      }
+                    /> 
                   </IconButton>
                 </Grid>
 
