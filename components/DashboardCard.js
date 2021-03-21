@@ -105,6 +105,12 @@ const DashboardBase = ({ GoogleForm, iosForm, AndroidForm, MetaForm, ModeSelecto
         setMetaOpen(false);
     }
 
+    // const testURL = () => {
+    //     return (
+    //         state.url.length > 0 && !validUrlPattern.test(state.url)
+    //     ); 
+    // }
+
     const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
     return (
         <Fragment> 
@@ -130,10 +136,7 @@ const DashboardBase = ({ GoogleForm, iosForm, AndroidForm, MetaForm, ModeSelecto
                             color="primary"
                             variant="standard"
                             placeholde="Enter or Type a Valid URL"
-                            error=
-                            {
-                                state.url.length > 0 && !validUrlPattern.test(state.url
-                            )}
+                            error={state.url.length > 0 && !validUrlPattern.test(state.url)}
                             endAdornment = {
                                 <InputAdornment 
                                     position="end"
@@ -180,7 +183,7 @@ const DashboardBase = ({ GoogleForm, iosForm, AndroidForm, MetaForm, ModeSelecto
                     open={metaOpen} 
                     closeHook={handleMetaCloseDialog} 
                     AnalyticsForm={MetaForm} 
-                    name="Social Meta Tag Parameters"
+                    name="Social Meta Tags"
                 />
 
                 </Container>
@@ -207,7 +210,8 @@ function SubmitButton() {
             }
         })
     }
-
+    const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
+    
     return (
         <Button
             size="large" 
@@ -215,6 +219,7 @@ function SubmitButton() {
             variant="contained" 
             onClick={handleSubmit}
             style={{ marginRight: '10px' }}
+            disabled={state.url.length > 0 && !validUrlPattern.test(state.url)}
         > 
             Submit
         </Button> 
@@ -229,7 +234,7 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
 
     const handleClear = () => {
         dispatch({ 
-            type: "DARKMODE"
+            type: "CLEAR"
         })
     }
 
@@ -271,7 +276,7 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
                                 marginRight: '25px'
                             }}
                         >
-                           <SubmitButton />
+                            <SubmitButton />
                             <Button
                                 size="large" 
                                 color="primary" 

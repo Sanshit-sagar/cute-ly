@@ -24,7 +24,7 @@ export default function Landing() {
               </div>
               
               <div class="hidden md:block md:pr-4 md:space-x-8">
-                <Link href="#"> 
+                <Link href="/users"> 
                   <a class="font-large text-gray-500 hover:text-indigo-600"> features </a>
                 </Link>
 

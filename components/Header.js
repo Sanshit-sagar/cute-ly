@@ -80,7 +80,9 @@ const Header = ({ props }) => {
                 <DarkModeButton />
                   
                   <Divider orientation="vertical" flexItem  />
-                    <ProfileButton />
+                   
+                      <ProfileButton />
+                   
                   <Divider orientation="vertical" flexItem /> 
 
                 <Signout /> 

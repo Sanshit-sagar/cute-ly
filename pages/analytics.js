@@ -58,7 +58,7 @@ class AnalyticsBase extends React.Component {
     render() {
         return (
            <PageContainer height="100%" width="100%"> 
-                <div style={{ height: '85%', width: '75%', marginLeft: '12.5%'}}> 
+                <div style={{ height: '85%', width: '85%', marginLeft: '7.5%'}}> 
                     <DataGrid
                         columns={[
                             { field: 'id', width: 75},

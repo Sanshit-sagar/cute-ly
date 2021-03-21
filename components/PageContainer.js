@@ -109,7 +109,7 @@ const PageContainer = ({ children }) => {
     return (
         <div className={classes.root}> 
             <Container 
-                maxWidth="xlg" 
+                maxWidth="lg" 
             >
                 <div style={{ 
                     width: '100%',

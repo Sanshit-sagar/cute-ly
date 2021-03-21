@@ -20,8 +20,10 @@ const useStyles = makeStyles((theme) => ({
     profilePreviewButton: {
         display: 'flex', 
         flexDirection: 'row', 
-        justifyContent: 'space-evenly', 
-        width: '80%'
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '10px', 
+        width: '100%'
     },
     profileList: {
         backgroundColor: '#fff', 
@@ -83,7 +85,13 @@ const UserAvatar = () => {
     return (
         <div ref={hoverRef} className={classes.root}>
             <div className={classes.profilePreviewButton}> 
-                <TextField disabled variant="standard" color="primary" value={user.email} /> 
+                <TextField 
+                    disabled 
+                    variant="standard" 
+                    color="primary" 
+                    value={user.email}
+                    style={{ width: '70%', marginRight: '10%', marginLeft: '10%' }}
+                /> 
                 <Avatar variant="rounded"> 
                     {user && (user.email.charAt(0))}
                 </Avatar>

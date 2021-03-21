@@ -30,6 +30,9 @@ const useStyles = makeStyles({
         margin: '2.5px',
         width: '100%'
     },
+    utmForm: {
+        display: 'flex', flexDirection: 'row', flexWrap: 'wrap', width: '450px', justifyContent: 'space-around'
+    }
 });
 
 const RadioA = () => {
@@ -223,7 +226,7 @@ const SocialMetaTagsForm = () => {
 
     return (
         <Fragment> 
-            <div className={classes.metaTagsForm}> 
+            <div className={classes.utmForm}> 
                 {metaTagsFields.map((item) => (
                     <div key={item.key}>
                         <Tooltip title={item.title}> 
@@ -259,7 +262,7 @@ const AndroidForm = () => {
 
     return (
         <Fragment> 
-            <div className={classes.androidForm}> 
+            <div className={classes.utmForm}> 
                 {androidFields.map((item) => (
                      <div key={item.key}>
                         <Tooltip title={item.title}> 

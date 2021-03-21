@@ -8,7 +8,7 @@ const initialState =  {
     dark: false, 
     showResults: false, 
     url: '',   
-    prefixes: [],
+    prefixes: {},
     tagCount: {
         utm: 0, 
         ios: 0,
@@ -60,6 +60,59 @@ const initialState =  {
 
 const reducer = (state, action) => {
     switch(action.type) {
+        case "CLEAR": 
+            return {
+                showResults: false, 
+                url: '',   
+                prefixes: {},
+                tagCount: {
+                    utm: 0, 
+                    ios: 0,
+                    android: 0,
+                    meta: 0,
+                },
+                utm: {
+                    source: '', 
+                    medium: '', 
+                    campaign: '', 
+                    term: '', 
+                },
+                ios: {
+                    bundleId: '', 
+                    fallbackLink: '', 
+                    ipadBundleId: '', 
+                    customScheme: '', 
+                },
+                android: {
+                    packageName: '', 
+                    fallbackLink: '', 
+                    minPackageVersionCode: '', 
+                },
+                meta: {
+                    socialTitle: '', 
+                    socialDescription: '', 
+                    socialImageLink: '',
+                },
+                mode: "SHORT",
+                socials: {
+                    facebook: false, 
+                    twitter: false, 
+                    whatsapp: false, 
+                    linkedin: false, 
+                    email: false, 
+                    google: false, 
+                }, 
+                snackbar: {
+                    open: false, 
+                    messageInfo: undefined, 
+                    snackpack: [], 
+                },
+                mostRecentResult: null,
+                responseData: {
+                    payload: '', 
+                    timestamp: '',  
+                }
+            };
         case "UPDATE_URL":  
             return {
                 ...state,
@@ -126,14 +179,14 @@ const reducer = (state, action) => {
         case "UPDATE_SOCIAL": 
             return {
                 ...state,
-                prefixes: [
-                    ...state.prefixes, 
-                    action.payload.prefix
-                ],
                 socials: {
                     ...state.socials, 
                     [action.payload.name]: action.payload.value
                 },
+                prefixes: {
+                    ...state.prefixes, 
+                    [action.payload.prefix]: true
+                }
             };
         case "DB_RESPONSE": 
             return {

@@ -1,6 +1,7 @@
 import React from 'react';
+
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -86,14 +87,7 @@ export default function SharedSnackbar() {
         }
         action={
           <React.Fragment>
-            <Button 
-              color="textSecondary" 
-              size="small" 
-              onClick={handleClose}
-            >
-              UNDO
-            </Button>
-            
+         
             <IconButton
               aria-label="close"
               color="textSecondary"

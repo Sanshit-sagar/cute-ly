@@ -62,25 +62,25 @@ export const androidFields = [
     {
         key: 1,
         name: 'packageName', 
-        label: 'Android Package Name', 
+        label: 'Package Name', 
         placeholder: "e.g. todo", 
-        title: 'Android Info - Package Name', 
+        title: 'Package Name', 
         description: 'todo'
     },
     {
         key: 2,
         name: 'fallbackLink', 
-        label: 'Android Fallback Link', 
+        label: 'Fallback Link', 
         placeholder: "e.g. todo", 
-        title: 'Android Info - Fallback Link', 
+        title: 'Fallback Link', 
         description: 'todo'
     },
     {
         key: 3,
-        name: 'minPackageVersionCode', 
-        label: 'Min Package Code', 
+        name: 'VersionCode', 
+        label: 'Code', 
         placeholder: "e.g. todo", 
-        title: 'Android Info - Android Min. Package Version Code', 
+        title: 'Package Version', 
         description: 'Android Min. Package Version Code'
     },
 ];
