@@ -68,11 +68,12 @@ export default function SharedSnackbar() {
         }
         anchorOrigin = {{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'center',
         }}
         open = {
           state.snackbar.open
         }
+
         autoHideDuration={2000}
         onClose={ 
           handleClose
@@ -93,6 +94,7 @@ export default function SharedSnackbar() {
               color="textSecondary"
               className={classes.close}
               onClick={handleClose}
+              color="secondary"
             >
               <CloseIcon />
             </IconButton>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React  from 'react';
+import { useCopyToClipboard } from 'react-use'; 
 import { useCount } from './SharedContext'; 
 
 import Dialog from '@material-ui/core/Dialog';
@@ -11,46 +12,24 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton'; 
-
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 
-const useCopyToClipboard = text => {
-    const copyToClipboard = str => {
-      const el = document.createElement('textarea');
-      el.value = str;
-      el.setAttribute('readonly', '');
-      el.style.position = 'absolute';
-      el.style.left = '-9999px';
-      document.body.appendChild(el);
-      const selected =
-        document.getSelection().rangeCount > 0
-          ? document.getSelection().getRangeAt(0)
-          : false;
-      el.select();
-      const success = document.execCommand('copy');
-      document.body.removeChild(el);
-      if (selected) {
-        document.getSelection().removeAllRanges();
-        document.getSelection().addRange(selected);
-      }
-      return success;
-    };
-  
-    const [copied, setCopied] = React.useState(false);
-  
-    const copy = React.useCallback(() => {
-      if (!copied) setCopied(copyToClipboard(text));
-    }, [text]);
-    React.useEffect(() => () => setCopied(false), [text]);
-  
-    return [copied, copy];
-};
-
-const ResultsDialog = ({ message }) => {
+const ResultsDialog = () => {
     const [state, dispatch] = useCount(); 
+    const [copyState, copyToClipboard] = useCopyToClipboard();
 
-    const resultDisplayed = state.mostRecentResult;
-    const [copied, copy] = useCopyToClipboard(`${resultDisplayed}`);
+    const handleCopy = () => {
+        console.log("Copying...");
+        copyToClipboard(state.mostRecentResult); 
+        
+        if(copyState.error) {
+            alert('Unable to copy value:' + copyState.error.message);
+        } else if(copyState.value) {
+            alert('Copied... ' + copyState.value.substring(copyState.value.length - 7));
+        } else {
+            console.log('Nothing to copy...'); 
+        }
+    }
 
     return (
         <React.Fragment> 
@@ -79,15 +58,15 @@ const ResultsDialog = ({ message }) => {
                     <DialogContentText> 
                         <Typography variant="body1" class="copyText"> 
                            { state.mostRecentResult }
-                           <span> {copied && 'Copied!' } </span>
                         </Typography>   
                     </DialogContentText>    
                 </DialogContent>
 
                 <DialogActions> 
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        
                         <div style={{ display: 'flex', flexDirection: 'row', marginRight: '50px' }}> 
-                            <IconButton onClick={copy}> 
+                            <IconButton onClick={handleCopy}> 
                                 <FileCopyIcon /> 
                             </IconButton> 
                         </div>

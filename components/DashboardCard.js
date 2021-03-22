@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'; 
+import React, { Fragment, useState, useEffect } from 'react'; 
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button'; 
@@ -17,6 +17,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider'; 
 import { shadows } from '@material-ui/system';
+import TextField from '@material-ui/core/TextField'; 
 
 import { createLink } from '../lib/db'; 
 import { useCount } from './SharedContext'; 
@@ -44,10 +45,10 @@ const useStyles = makeStyles({
     }, 
     dashboardCard: {
         position: 'relative',
-        left: '12.5%', 
+        left: '2.5%',
         top: '5%',
-        width: '75%', 
-        height: '60%',
+        width: '95%', 
+        height: '65%',
         backgroundColor: 'white', 
         border: 'thin solid black', 
         borderRadius: "5px", 
@@ -189,6 +190,7 @@ const DashboardBase = ({ GoogleForm, iosForm, AndroidForm, MetaForm, ModeSelecto
 
 function SubmitButton() {
     const [state, dispatch] = useCount();
+    const [result, setResult] = useState(''); 
     
     const handleSubmit = async () => {
         console.log('about to create');
@@ -196,6 +198,7 @@ function SubmitButton() {
         const updatedResultUrl = result.updatedUrl;
 
         console.log("About to dispatch: " + updatedResultUrl); 
+        setResult(updatedResultUrl);
 
         dispatch({ 
             type: 'UPDATE_RESULTS', 
@@ -209,16 +212,19 @@ function SubmitButton() {
     const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
     return (
-        <Button
-            size="large" 
-            color="primary" 
-            variant="contained" 
-            onClick={handleSubmit}
-            style={{ marginRight: '10px' }}
-            disabled={state.url.length > 0 && !validUrlPattern.test(state.url)}
-        > 
-            Submit
-        </Button> 
+        <React.Fragment>
+            <Button
+                size="large" 
+                color="primary" 
+                variant="contained" 
+                onClick={handleSubmit}
+                style={{ marginRight: '10px' }}
+                disabled={state.url.length > 0 && !validUrlPattern.test(state.url)}
+            > 
+                Submit
+            </Button> 
+           
+         </React.Fragment>
     );  
 }
 
@@ -226,7 +232,7 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
     const classes = useStyles(); 
 
     const [state, dispatch] = useCount(); 
-    const { user, loading, error, signout } = useAuth(); 
+    // const { user, loading, error, signout } = useAuth(); 
 
     const handleClear = () => {
         dispatch({ 
@@ -235,8 +241,10 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
     }
 
     return (
-        <Box boxShadow={15} display="flex" justifycontent="center" className={classes.dashboardCard}>
+        <Box boxShadow={15} display="flex" flexDirection='column' justifycontent="center" className={classes.dashboardCard}>
+            
                 <Card style={{ width: '100%' }}>
+                    
                     <CardContent>
                         <Typography 
                             variant="overline"
@@ -244,11 +252,9 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
                                 fontSize: '16px' 
                             }}
                         >
-                            URL Shortener
+                            URL Modifier
                         </Typography>
-
                         <Divider /> 
-
                     </CardContent>
 
                     <CardActions style={{ 
@@ -284,7 +290,10 @@ const DashboardCard = ({ GoogleAnalyticsForm, iOSAnalyticsForm, AndroidAnalytics
                         </div>
                     </CardActions>
                 </Card> 
-            <ResultsDialog />
+                
+                {/* <TextField multiline fullWidth variant="standard" disabled value="Hello Hello" />  */}
+
+            <ResultsDialog /> 
             <SharedSnackbar /> 
         </Box>
     )

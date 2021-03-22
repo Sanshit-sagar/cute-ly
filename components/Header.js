@@ -86,8 +86,8 @@ const Header = ({ props }) => {
 
   return (
     <div className={classes.root}>
-      <AppBar color="inherit" position="sticky" style={{ width: '425px', borderRadius: '2.5px', float: 'right' }}>
-        <Toolbar style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
+      <AppBar color="inherit" position="sticky" style={{ borderRadius: '2.5px' }}>
+        <Toolbar style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
          
           
           <Button
@@ -95,28 +95,32 @@ const Header = ({ props }) => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleMenu}
-              variant="outlined"
+              variant="standard"
+              style={{ margin: '2px' }}
             >
               <AccountCircle />
           </Button> 
 
           <Button 
-            variant="outlined"
+            variant="standard"
             onClick={toggleTheme}
+            style={{ margin: '2px' }}
           > 
             { on ? <DarkMode /> : <LightMode /> }
           </Button>
 
           <Button 
-            variant="outlined" 
+            variant="standard" 
             onClick={handleNavToGithub}
+            style={{ margin: '2px' }}
           > 
             <GitHubIcon /> 
           </Button>
 
           <Button 
-            variant="outlined"
+            variant="standard"
             onClick={handleSignOut}
+            style={{ margin: '2px' }}
           > 
             <PowerSettingsNewIcon 
               color="inherit" 

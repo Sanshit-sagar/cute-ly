@@ -8,6 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField'; 
 import Typography from '@material-ui/core/Typography'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Box from '@material-ui/core/Box';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'; 
 
@@ -172,7 +173,7 @@ const UtmForm = () => {
                             label={item.label}
                             value={state.utm[item.name]}
                             placeholder={item.placeholder} 
-                            style={{ margin: '7.5px'}} 
+                             
                             onChange={handleKeyPress}
                         />
                     </Tooltip>
@@ -305,6 +306,7 @@ function Dashboard () {
     
     return (
         <PageContainer> 
+        
             <DashboardCard 
                 GoogleAnalyticsForm = { UtmForm } 
                 iOSAnalyticsForm = { IosForm }
@@ -312,9 +314,18 @@ function Dashboard () {
                 MetaTagsDetailsForm = { SocialMetaTagsForm }
                 ModeSelector = { ModeSelectionRadio }  
             /> 
-
+            {/* <TextField 
+                multiline 
+                // fullWidth 
+                variant="outlined" 
+                color="textSecondary"
+                disabled 
+                value={state.url}
+                style={{ marginTop: '100px', width: '600px'}} 
+            />  */}
             <ResultsDialog />
             <SharedSnackbar /> 
+            
         </PageContainer>
     ); 
 }
