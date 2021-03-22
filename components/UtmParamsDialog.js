@@ -9,43 +9,51 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 
+import { Card, CardActions, CardContent, CardHeader } from '@material-ui/core'; 
+
 const UtmParamsDialog = ({ open, closeHook, AnalyticsForm, name }) => {
   
     return (
         <Fragment> 
-            <Dialog onClose={closeHook} 
-                    open={open}
+            <Dialog 
+                onClose={closeHook} 
+                open={open}
             > 
-                <DialogTitle> 
-                    <Typography variant="overline" style={{ fontSize: "24px" }} > 
-                        {name}
-                    </Typography>
-                </DialogTitle>
+               
+                <Card>  
+                    <CardContent> 
+                        <Typography 
+                            variant="h5" 
+                            style={{ fontSize: "16px" }}
+                        > 
+                            {name}
+                        </Typography>
+                        
+                        <Divider /> 
 
-                <Divider /> 
+                        <AnalyticsForm/>
+                    </CardContent>
                 
-                <DialogContent>
-                    <AnalyticsForm/>
-                </DialogContent>
-                
-                <DialogActions> 
-                    <Button 
-                        variant="outlined"
-                        color="primary"
-                        onClick = { closeHook }
-                    > 
-                        Cancel
-                    </Button>
+                    <CardActions> 
+                        <Button 
+                            variant="outlined"
+                            color="primary"
+                            onClick = { closeHook }
+                        > 
+                            Cancel
+                        </Button>
 
-                    <Button 
-                        variant="contained"
-                        color="primary"
-                        onClick = { closeHook }
-                    > 
-                        Done
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                        <Button 
+                            variant="contained"
+                            color="primary"
+                            onClick = { closeHook }
+                        > 
+                            Done
+                        </Button>
+                    </CardActions>
+                </Card> 
+               
+            </Dialog> 
         </Fragment>
     );
 }

@@ -183,10 +183,7 @@ const reducer = (state, action) => {
                     ...state.socials, 
                     [action.payload.name]: action.payload.value
                 },
-                prefixes: {
-                    ...state.prefixes, 
-                    [action.payload.prefix]: true
-                }
+                url: action.payload.prefix + state.url
             };
         case "DB_RESPONSE": 
             return {

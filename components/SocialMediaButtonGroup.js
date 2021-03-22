@@ -7,7 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 
 import TextField from '@material-ui/core/TextField'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { FormControlLabel, FormLabel, Typography, Tooltip, Button, Box } from '@material-ui/core'; 
+import { FormControlLabel, FormHelperText, FormLabel, Typography, Tooltip, Button, Box } from '@material-ui/core'; 
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -111,27 +111,35 @@ const socialMediaDetails = [
     }
 ];
 
+const encodeForWhatsapp = (num, mssg) => {
+    const text = "https://api.whatsapp.com/send?phone=" + num + "text=" + mssg;
+    return encodeURI(text); 
+}
+
 const WhatsappDialog = ({ open, handleClose }) => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
     
-    const [phoneNumber, setPhoneNumber] = useState(); 
+    const [phoneNumber, setPhoneNumber] = useState(''); 
     const [message, setMessage] = useState();
 
     const handleSubmit = () => {
         handleClose(); 
+        
         dispatch({ 
             type: 'UPDATE_SOCIAL',
             payload: {
                 name: 'whatsapp',
-                value: true,
+                value: !state.socials.whatsapp,
                 prefix: ''
         }});
-        alert('Submitting!');
+
+        var urlEncodedMessage = encodeForWhatsapp(phoneNumber, message); 
+        alert(urlEncodedMessage); 
     }
 
     const handleNumberChange = (event) => {
-        setPhoneNumber(event.target.value);
+        setPhoneNumber('+' + event.target.value.substring(1));
     }
 
     const regex = /([+]?\d{1,2}[.-\s]?)?(\d{3}[.-]?){2}\d{4}/;
@@ -158,10 +166,11 @@ const WhatsappDialog = ({ open, handleClose }) => {
                             size="small"
                             color="primary"
                             label="Recipient's Phone Number"
-                            value={phoneNumber}
+                            value={'+' + phoneNumber.substring(1)}
                             onChange={handleNumberChange}
                             error={!regex.test(phoneNumber)}
                         />
+                        <FormHelperText> Include the Country Code </FormHelperText>
 
                         <TextField 
                             variant="filled"

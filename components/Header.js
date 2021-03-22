@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-// import GithubIcon from '@material-ui/icons/Github'; 
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 import { useAuth } from '../lib/auth'; 
 import { useCount } from './SharedContext';  
@@ -20,6 +20,7 @@ import {LightMode, DarkMode} from '../icons/icons';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    borderRadius: '5px'
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -69,41 +70,54 @@ const Header = ({ props }) => {
       });
   }
 
+  const HeaderLogo = () => {
+    return (
+      <Link href="/dashboard">
+        <Typography variant="h6" className={classes.title}>
+          cute.ly
+        </Typography>
+      </Link>
+    );
+  }
+
   const handleNavToGithub = () => {
     Router.push("https://www.github.com/Sanshit-sagar/cute.ly-app");
   }
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Link href="/dashboard">
-            <Typography variant="h6" className={classes.title}>
-              cute.ly
-            </Typography>
-          </Link>
+      <AppBar color="inherit" position="sticky" style={{ width: '425px', borderRadius: '2.5px', float: 'right' }}>
+        <Toolbar style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
+         
           
           <Button
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleMenu}
-              color="inherit"
+              variant="outlined"
             >
               <AccountCircle />
           </Button> 
 
-          <Button color="inherit" onClick={toggleTheme}> 
+          <Button 
+            variant="outlined"
+            onClick={toggleTheme}
+          > 
             { on ? <DarkMode /> : <LightMode /> }
           </Button>
 
-          {/* <Button onClick={handleNavToGithub}> 
-            <GithubIcon /> 
-          </Button> */}
+          <Button 
+            variant="outlined" 
+            onClick={handleNavToGithub}
+          > 
+            <GitHubIcon /> 
+          </Button>
 
           <Button 
-            color="inherit" 
-            onClick={handleSignOut}> 
+            variant="outlined"
+            onClick={handleSignOut}
+          > 
             <PowerSettingsNewIcon 
               color="inherit" 
             />
