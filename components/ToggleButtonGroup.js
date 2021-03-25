@@ -10,7 +10,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import AndroidIcon from '@material-ui/icons/Android';
@@ -19,12 +18,12 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 import SocialMediaButtonGroup from './SocialMediaButtonGroup'; 
+import OtherOptionsButtonGroup from './OtherOptionsButtonGroup'; 
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     display: 'flex',
     border: `1px solid ${theme.palette.divider}`,
-    flexWrap: 'wrap',
   },
   divider: {
     margin: theme.spacing(1, 0.5),
@@ -96,15 +95,15 @@ const UtmAnalyticsButton = ({ executeOnOpen }) => {
 
     const handleClick = () => {
         setOn(!on); 
-        executeOnOpen(); 
+        executeOnOpen("utm"); 
     }
 
     return (
         <Tooltip title="Google Analytics Info"> 
             <Button 
-                size="small"
+                size="large"
                 color="primary"
-                onClick={handleClick}
+                onClick={(e) => handleClick()}
             >
                 <FormControlLabel 
                     value="utm" 
@@ -129,15 +128,15 @@ const IOSAnalyticsButton = ({ executeOnOpen }) => {
 
     const handleClick = () => {
         setOn(!on); 
-        executeOnOpen(); 
+        executeOnOpen("ios"); 
     }
 
     return (
         <Tooltip title="iOS Info"> 
             <Button 
-                size="small"
+                size="large"
                 color="primary"
-                onClick={handleClick}
+                onClick={(e) => handleClick()}
             >
                 <FormControlLabel 
                     value="ios" 
@@ -163,15 +162,15 @@ const AndroidAnalyticsButton = ({ executeOnOpen }) => {
 
     const handleClick = () => {
         setOn(!on); 
-        executeOnOpen(); 
+        executeOnOpen("android"); 
     }
 
     return (
         <Tooltip title="Android Info"> 
             <Button 
-                size="small"
+                size="large"
                 color="primary"
-                onClick={handleClick}
+                onClick={(e) => handleClick()}
             >
                 <FormControlLabel 
                     value="android" 
@@ -196,15 +195,15 @@ const SocialMetaTagsButton = ({ executeOnOpen }) => {
 
     const handleClick = () => {
         setOn(!on); 
-        executeOnOpen(); 
+        executeOnOpen("meta"); 
     }
 
     return (
         <Tooltip title="Social Meta Tag Info"> 
             <Button 
-                size="small"
+                size="large"
                 color="primary"
-                onClick={handleClick}
+                onClick={(e) => handleClick()}
             >
                 <FormControlLabel 
                     value="meta" 
@@ -224,48 +223,34 @@ const SocialMetaTagsButton = ({ executeOnOpen }) => {
     );
 }
 
-const CustomToggleButtonGroup = ({ openGoogleDialog, openiOSDialog, openAndroidDialog, openMetadataDialog, ModeSelectorComponent, }) => {
+const CustomToggleButtonGroup = ({ handleOpen }) => {
   const classes = useStyles();
   const [state, dispatch] = useCount(); 
 
   return (
-    <Paper 
-        elevation={0} 
-        className={classes.paper}
-        style = {{ 
-            display: 'flex', 
-            flexDirection: 'row',
-            justifyContent: 'flex-start'
-            }}
-        >
-     
-        <ModeSelectorComponent />
-        <CustomDivider />
-        
         <StyledToggleButtonGroup>
-            <div style = {{ display: 'flex', flexDirection: 'column' }}>
-                <FormLabel 
-                    component="legend" 
-                    style={{ marginLeft: '5px' }}
-                > 
-                    <Typography variant="overline"> 
-                        Analytics
-                    </Typography> 
-                </FormLabel>
+            <Paper elevation={3} className={classes.paper}>
+                <div style = {{ display: 'flex', flexDirection: 'column' }}>
+                    <FormLabel 
+                        component="legend" 
+                        style={{ marginLeft: '15px' }}
+                    > 
+                        <Typography variant="overline"> 
+                            Analytics
+                        </Typography> 
+                    </FormLabel>
 
-                <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <UtmAnalyticsButton executeOnOpen={openGoogleDialog} />
-                    <IOSAnalyticsButton executeOnOpen={openiOSDialog} />
-                    <AndroidAnalyticsButton executeOnOpen={openAndroidDialog} /> 
-                    <SocialMetaTagsButton executeOnOpen={openMetadataDialog} /> 
+                    <Divider /> 
+
+                    <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <UtmAnalyticsButton executeOnOpen={handleOpen} />
+                        <IOSAnalyticsButton executeOnOpen={handleOpen} />
+                        <AndroidAnalyticsButton executeOnOpen={handleOpen} /> 
+                        <SocialMetaTagsButton executeOnOpen={handleOpen} /> 
+                    </div> 
                 </div> 
-            </div> 
+            </Paper>
         </StyledToggleButtonGroup>
-       
-        <CustomDivider />
-        <SocialMediaButtonGroup /> 
-        <CustomDivider />
-    </Paper>
   );
 }
 

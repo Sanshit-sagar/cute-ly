@@ -197,10 +197,11 @@ function SocialAuthButtonGroup() {
 
 export default function Login() {
     return (
-        <div class="min-h-screen bg-indigo-700 flex">
+        <div style={{ backgroundColor: '#1eb980'}}>
+        <div class="min-h-screen flex">
             <div class="flex-1 flex flex-col justify-space-between py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
                 <div class="mx-auto w-full max-w-sm lg:w-96">     
-                    <Card>
+                    <Card style={{ backgroundColor: 'white' }}>
                         
                         <CardContent>
                             <LoginFormHeader /> 
@@ -212,5 +213,6 @@ export default function Login() {
                 </div>
             </div>
         </div> 
+        </div>
     ); 
 }

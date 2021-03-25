@@ -7,9 +7,11 @@ import React, {
 const initialState =  {
     dark: false, 
     showResults: false, 
+    copyToClipboard: false,
     url: '',   
-    prefixes: {},
-    tagCount: {
+    nickname: '', 
+    generatedUrls: [],
+    counts: {
         utm: 0, 
         ios: 0,
         android: 0,
@@ -26,6 +28,8 @@ const initialState =  {
         fallbackLink: '', 
         ipadBundleId: '', 
         customScheme: '', 
+        ipadFallbackLink: '',
+        appStoreId: '',
     },
     android: {
         packageName: '', 
@@ -52,7 +56,7 @@ const initialState =  {
     },
     snackbar: {
         open: false, 
-        messageInfo: undefined, 
+        messageInfo: {}, 
         snackpack: [], 
     },
     mostRecentResult: null
@@ -62,10 +66,12 @@ const reducer = (state, action) => {
     switch(action.type) {
         case "CLEAR": 
             return {
+                copyToClipboard: false,
                 showResults: false, 
                 url: '',   
-                prefixes: {},
-                tagCount: {
+                nickname: '', 
+                generatedUrls: [],
+                counts: {
                     utm: 0, 
                     ios: 0,
                     android: 0,
@@ -82,6 +88,8 @@ const reducer = (state, action) => {
                     fallbackLink: '', 
                     ipadBundleId: '', 
                     customScheme: '', 
+                    ipadFallbackLink: '',
+                    appStoreId: '',
                 },
                 android: {
                     packageName: '', 
@@ -104,7 +112,7 @@ const reducer = (state, action) => {
                 }, 
                 snackbar: {
                     open: false, 
-                    messageInfo: undefined, 
+                    messageInfo: {}, 
                     snackpack: [], 
                 },
                 mostRecentResult: null,
@@ -118,36 +126,65 @@ const reducer = (state, action) => {
                 ...state,
                  url: action.payload.target.value
             };
+        case "UPDATE_NICKNAME":  
+            return {
+                ...state,
+                 nickname: action.payload.value
+            };
         case "UPDATE_UTM": 
             return {
                 ...state, 
-                utm: { 
-                    ...state.utm, 
-                    [action.payload.name]: action.payload.value
+                utm: {
+                    source: action.payload.source,
+                    medium: action.payload.medium,
+                    term: action.payload.term,
+                    campaign: action.payload.campaign
+                },
+                counts: {
+                    ...state.counts,
+                    utm: action.payload.count
                 }
             };
         case "UPDATE_IOS": 
             return {
                 ...state, 
-                ios: { 
-                    ...state.ios, 
-                    [action.payload.name]: action.payload.value
+                ios: {
+                    fallbackLink: action.payload.fallbackLink,
+                    ipadFallbackLink: action.payload.ipadFallbackLink,
+                    bundleId: action.payload.bundleId,
+                    ipadBundleId: action.payload.ipadBundleId,
+                    customScheme: action.payload.customScheme,
+                    appStoreId: action.payload.appStoreId,
+                },
+                counts: {
+                    ...state.counts,
+                    ios: action.payload.count
                 }
             };
         case "UPDATE_ANDROID": 
             return {
                 ...state, 
                 android: { 
-                    ...state.android, 
-                    [action.payload.name]: action.payload.value
+                    fallbackLink: action.payload.fallbackLink, 
+                    minPackageVersionCode: action.payload.minPackageVersionCode,
+                    packageName: action.payload.packageName,
+                },
+                counts: {
+                    ...state.counts,
+                    android: action.payload.count
                 }
             };
         case "UPDATE_META": 
             return {
                 ...state, 
                 meta: {
-                    ...state.meta, 
-                    [action.payload.name]: action.payload.value
+                    imageLink: action.payload.imageLink,
+                    description: action.payload.description,
+                    title: action.payload.title,
+                },
+                counts: {
+                    ...state.counts,
+                    meta: action.payload.count
                 }
             };
         case "UPDATE_MODE": 
@@ -175,6 +212,11 @@ const reducer = (state, action) => {
                         },
                     ]
                 }
+            };
+        case "COPY_TO_CLIPBOARD": 
+            return {
+                ...state, 
+                copyToClipboard: action.payload.value
             };
         case "UPDATE_SOCIAL": 
             return {
@@ -205,7 +247,7 @@ const reducer = (state, action) => {
             return {
                 ...state, 
                 snackbar: {
-                    ...state.snackbar, 
+                    ...state.snackbar,
                     snackpack: [
                         ...state.snackbar.snackpack, 
                         { 
@@ -237,6 +279,14 @@ const reducer = (state, action) => {
             return {
                 ...state, 
                 dark: !state.dark,
+            };
+        case "GENERATE":
+            return {
+                ...state,
+                generatedUrls: [
+                    ...state.generatedUrls,
+                    action.payload.newUrl
+                ]
             };
         default: 
             return state; 

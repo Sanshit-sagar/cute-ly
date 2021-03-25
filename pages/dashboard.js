@@ -8,7 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField'; 
 import Typography from '@material-ui/core/Typography'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import Box from '@material-ui/core/Box';
+import {Grid, Paper} from '@material-ui/core';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'; 
 
@@ -19,10 +19,11 @@ import SharedSnackbar from '../components/Snackbar';
 import PageContainer from '../components/PageContainer'; 
 import DashboardCard from '../components/DashboardCard'; 
 import ResultsDialog from '../components/ResultsDialog';
-
+import UrlModifier from '../components/Composites/UrlModifier'; 
 import { iosFields, androidFields, metaTagsFields, utmFields } from '../constants/analyticsFields'; 
+import { theme } from '../tailwind.config';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex', 
         flexDirection: 'row', 
@@ -32,120 +33,19 @@ const useStyles = makeStyles({
         width: '100%'
     },
     utmForm: {
-        display: 'flex', flexDirection: 'row', flexWrap: 'wrap', width: '450px', justifyContent: 'space-around'
-    }
-});
-
-const RadioA = () => {
-    const [state, dispatch] = useCount();
-  
-    return (
-        <Radio 
-            color="primary"
-            value="SHORT"
-            name="radio-short"
-            checked = {
-                state.mode === 'SHORT'
-            }
-            onChange={(e) => 
-                dispatch({ 
-                    'type'  : 'UPDATE_MODE', 
-                    payload : e.target 
-                })
-            }
-        />
-    );
-}
-
-const RadioB = () => {
-    const [state, dispatch] = useCount();
-  
-    return (
-        <Radio 
-            color="primary"
-            value="UNGUESSABLE"
-            name="radio-unguessable"
-            checked = {
-                state.mode === 'UNGUESSABLE'
-            }
-            onChange={(e) => 
-                dispatch({ 
-                    'type'  : 'UPDATE_MODE', 
-                    payload : e.target 
-                })
-            }
-        />
-    );
-}
-
-
-const StyledToggleButtonGroup = withStyles((theme) => ({
-    grouped: {
-      margin: theme.spacing(0.5),
-      border: 'none',
-      '&:not(:first-child)': {
-        borderRadius: theme.shape.borderRadius,
-      },
-      '&:first-child': {
-        borderRadius: theme.shape.borderRadius,
-      },
+        display: 'flex', 
+        flexDirection: 'row', 
+        flexWrap: 'wrap', 
+        width: '450px', 
+        justifyContent: 'space-around',
     },
-}))(ToggleButtonGroup);
-
-
-const ModeSelectionRadio = () => {
-    
-    return (
-    <StyledToggleButtonGroup>
-        <div style = {{ display: 'flex', flexDirection: 'column' }}>
-            <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
-                <Typography variant="overline"> 
-                    options
-                </Typography> 
-            </FormLabel>
-    
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Tooltip title="Short format (4 chars)"> 
-                    <FormControlLabel
-                        value="SHORT"
-                        control={<RadioA color="primary" />}
-                        label={
-                            <Typography 
-                            variant="overline" 
-                            style={{ fontSize: '10px' }}
-                            > 
-                                SHORT 
-                            </Typography>
-                        }
-                        labelPlacement="bottom"
-                    />
-                </Tooltip> 
-                
-
-                <Tooltip title="Unguessable format (16 chars)">
-                    <FormControlLabel
-                        value="UNGUESSABLE"
-                        control={
-                            <RadioB color="primary" />
-                        }
-                        label={
-                            <Typography 
-                                variant="overline" 
-                                style={{ fontSize: '10px' }}
-                            > 
-                                CRYPTIC 
-                            </Typography>
-                        }
-                        labelPlacement="bottom"
-                    />
-                </Tooltip>
-            </div>
-
-        </div>  
-    </StyledToggleButtonGroup> 
-    );
- }
-
+    paper: {
+        padding: theme.spacing(1),
+    },
+    inputPaper: {
+        backgroundColor: theme.palette.primary.dark,
+    },
+}));
 
 const UtmForm = () => {
     const classes = useStyles();
@@ -162,24 +62,41 @@ const UtmForm = () => {
     }
 
     return (
-        <div className={classes.utmForm}> 
-            {utmFields.map((item) => (
-                <div key={item.key}>
-                    <Tooltip title={item.title}> 
-                        <TextField
-                            variant="outlined"
-                            color="primary"
-                            name={item.name}
-                            label={item.label}
-                            value={state.utm[item.name]}
-                            placeholder={item.placeholder} 
-                             
-                            onChange={handleKeyPress}
-                        />
-                    </Tooltip>
-                </div>
-            ))} 
-        </div>  
+        <Grid container> 
+            <Paper elevation={5} className={classes.paper}>
+                <div className={classes.utmForm}> 
+                    <Paper elevation={5} className={classes.inputPaper}>
+                        <Grid 
+                            direction="row" 
+                            justify="space-around" 
+                            alignItems="center" 
+                            wrap="wrap" 
+                            spacing={1}
+                        >
+                            {utmFields.map((item) => (
+                                <Grid item>
+                                    <Paper>
+                                        <div key={item.key}>
+                                            <Tooltip title={item.title}> 
+                                                <TextField
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    name={item.name}
+                                                    label={item.label}
+                                                    value={state.utm[item.name]}
+                                                    placeholder={item.placeholder} 
+                                                    onChange={handleKeyPress}
+                                                />
+                                            </Tooltip>
+                                        </div>
+                                    </Paper>
+                                </Grid>
+                            ))} 
+                        </Grid>
+                    </Paper>
+                </div> 
+            </Paper>
+        </Grid>
        
     );
 }
@@ -307,25 +224,10 @@ function Dashboard () {
     return (
         <PageContainer> 
         
-            <DashboardCard 
-                GoogleAnalyticsForm = { UtmForm } 
-                iOSAnalyticsForm = { IosForm }
-                AndroidAnalyticsForm = { AndroidForm }
-                MetaTagsDetailsForm = { SocialMetaTagsForm }
-                ModeSelector = { ModeSelectionRadio }  
-            /> 
-            {/* <TextField 
-                multiline 
-                // fullWidth 
-                variant="outlined" 
-                color="textSecondary"
-                disabled 
-                value={state.url}
-                style={{ marginTop: '100px', width: '600px'}} 
-            />  */}
+            <UrlModifier />
+              
             <ResultsDialog />
             <SharedSnackbar /> 
-            
         </PageContainer>
     ); 
 }

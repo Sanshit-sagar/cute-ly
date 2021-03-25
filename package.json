@@ -14,6 +14,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.3",
+    "@material-ui/x-grid-data-generator": "^4.0.0-alpha.23",
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindui/react": "^0.1.1",
     "axios": "^0.21.1",

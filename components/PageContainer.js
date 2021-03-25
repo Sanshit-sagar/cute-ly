@@ -1,49 +1,44 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 
-import Box from '@material-ui/core/Box'; 
-import Paper from '@material-ui/core/Paper'; 
-import Typography from '@material-ui/core/Typography';
-import Backdrop from '@material-ui/core/Backdrop'; 
 import Container from '@material-ui/core/Container'; 
-
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import Card from '@material-ui/core/Card';
-
-import { shadows } from '@material-ui/system';
-
-import { makeStyles } from '@material-ui/core/styles';
-import { useRouter } from 'next/router';
-import { useCount } from './SharedContext';
-import Header from './Header';
-
+import Backdrop from '@material-ui/core/Backdrop';
 import { 
     Dashboard, 
     Analytics 
-} from '../icons/icons'; 
+} from '../icons/icons';
+
+import { makeStyles } from '@material-ui/core/styles';
+import { useRouter } from 'next/router';
+
+import Header from './Header';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      transform: 'translateZ(0px)',
-      flexGrow: 1,
+        transform: 'translateZ(0px)',
+        flexGrow: 1,
+    },
+    pageContainer: {
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'space-between',
+        paddingTop: '10px',
+        paddingBottom: '10px',
     },
     header: {
-        height: '35%',
+        display: 'flex', 
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+        borderRadius: '10px',
     },
     speedDial: {
-      position: 'absolute',
-      '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-        bottom: theme.spacing(0),
-        right: theme.spacing(0),
-      },
+        marginTop: '20px',
+        borderRadius: '10px',
     },
-    pageTitle: {
-        margin: '0px'
-    }
 }));
 
-  
 const actions = [
     { 
         icon:  <Analytics />, 
@@ -55,25 +50,14 @@ const actions = [
         name: 'Dashboard', 
         route: '/dashboard'
     },
-]; 
-  
-function SpeedDials() {
+];
+
+const SpeedDials = ({ open, handleOpen, handleClose }) => {
     const classes = useStyles();
     const router = useRouter();
-    const [open, setOpen] = React.useState(false);
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
-    const handleOpen = () => {
-      setOpen(true);
-    };
   
     return (
         <div className={classes.root}>
-            <Backdrop open={open} />
-               
             <SpeedDial
                 ariaLabel="speedial-menu"
                 className={classes.speedDial}
@@ -83,7 +67,7 @@ function SpeedDials() {
                 icon={
                     <SpeedDialIcon /> 
                 }
-                direction="up" 
+                direction="left" 
             >   {
                     actions.map((action) => (
                         <SpeedDialAction
@@ -92,6 +76,7 @@ function SpeedDials() {
                             tooltipTitle={action.name}
                             tooltipPlacement="right"
                             onClick={(e) => router.push(action.route)} 
+                            style={{ color: 'white'}}
                         />
                     ))
                 }
@@ -100,50 +85,40 @@ function SpeedDials() {
     );
 }
 
-
 const PageContainer = ({ children }) => {
     const classes =  useStyles();
+    const [speedDialOpen, setSpeedDialOpen] = useState(false); 
+
+    const handleSpeedDialOpen = () => {
+        setSpeedDialOpen(true); 
+    }
+    const handleSpeedDialClose = () => {
+        setSpeedDialOpen(false); 
+    }
 
     return (
         <div className={classes.root}> 
+            <Backdrop open={speedDialOpen} />
             <Container 
-                maxWidth="100%"
-                maxHeight="100%"
-
+                maxWidth="xl"
+                maxheight="100%"
+                className={classes.pageContainer}
             >
-                <div style={{ 
-                    width: '100%',
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    justifyContent: 'space-evenly'
-                }}>
-                    <Header style={{ 
-                        display: 'flex', 
-                        flexDirection: 'row', 
-                        justifyContent: 'space-between',
-                        borderRadius: '10px'
-                    }} /> 
-
-                    {/* <div style={{ 
-                        display: 'flex', 
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                    }}> */}
-
-                        <Box boxShadow={20}
-                            bgcolor="#4842b8"
-                            height='70vh'
-                            width='100%'
-                            marginTop='2.5%'
-                            borderRadius={10}
-                        >
-                            {children}
-                             
-                        </Box>        
-
-                        {/* <SpeedDials />   */}
-                    {/* </div>   */}
-                </div> 
+                <div>
+                    <Header className={classes.header} />
+                    
+                    <div className={classes.children}>
+                        {children}
+                    </div>
+                </div>
+                <div>
+                    <SpeedDials 
+                        open={speedDialOpen}
+                        handleOpen={handleSpeedDialOpen}
+                        handleClose={handleSpeedDialClose}
+                        className={classes.speedDial}
+                    /> 
+                </div>
             </Container> 
         </div> 
     );

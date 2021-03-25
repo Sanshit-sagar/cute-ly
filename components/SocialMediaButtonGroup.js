@@ -4,10 +4,15 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle'; 
 import DialogContent from '@material-ui/core/DialogTitle'; 
 import DialogActions from '@material-ui/core/DialogActions';
+import Divider from '@material-ui/core/Divider'; 
 
 import TextField from '@material-ui/core/TextField'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { FormControlLabel, FormHelperText, FormLabel, Typography, Tooltip, Button, Box } from '@material-ui/core'; 
+import { 
+    FormControlLabel, FormHelperText, FormLabel, 
+    Typography, Tooltip, 
+    Button, Box, Paper, Grid
+} from '@material-ui/core'; 
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -30,8 +35,21 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
   },
   cardPos: {
-    marginBottom: 12,
-  }
+    // marginBottom: 12,
+  },
+paper: {
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(1),
+    backgroundColor: '#fff',
+},
+paperPurple: {
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.primary.dark,
+},
+  button: {
+      height: '100%',
+  },
 })); 
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
@@ -51,7 +69,7 @@ function LinkedinIconComp() {
     const [state, dispatch] = useCount(); 
     return (
         <LinkedInIcon 
-            style={{ color: state.socials.linkedin ? '#005cc5' : '#000' }} 
+            style={{ color: state.socials.linkedin ? '#005cc5' : '#000', fontSize: '24px'}} 
         />
     ); 
 }
@@ -60,7 +78,7 @@ function FacebookIconComp() {
     const [state, dispatch] = useCount(); 
     return (
         <FacebookIcon 
-            style={{ color: state.socials.facebook ? '#4861ac' : '#000' }} 
+            style={{ color: state.socials.facebook ? '#4861ac' : '#000', fontSize: '24px' }} 
         />
     ); 
 }
@@ -69,7 +87,7 @@ function TwitterIconComp() {
     const [state, dispatch] = useCount(); 
     return (
         <TwitterIcon 
-            style={{ color: state.socials.twitter ? '#009dff' : '#000' }} 
+            style={{ color: state.socials.twitter ? '#009dff' : '#000', fontSize: '24px'}} 
         />
     ); 
 }
@@ -77,7 +95,7 @@ function WhatsAppIconComp() {
     const [state, dispatch] = useCount(); 
     return (
         <WhatsAppIcon 
-            style={{ color: state.socials.whatsapp ? '#00d85a' : '#000' }} 
+            style={{ color: state.socials.whatsapp ? '#00d85a' : '#000', fontSize: '24px'}} 
         />
     ); 
 }
@@ -150,7 +168,9 @@ const WhatsappDialog = ({ open, handleClose }) => {
             onClose={handleClose}
         > 
             <DialogTitle>
-                Share on Whatsapp
+                <Typography variant="h4">
+                    Share on Whatsapp
+                </Typography>
             </DialogTitle> 
 
             <DialogContent> 
@@ -163,7 +183,7 @@ const WhatsappDialog = ({ open, handleClose }) => {
                         <TextField 
                             variant="filled"
                             margin="dense"
-                            size="small"
+                            size="large"
                             color="primary"
                             label="Recipient's Phone Number"
                             value={'+' + phoneNumber.substring(1)}
@@ -203,6 +223,12 @@ const WhatsappDialog = ({ open, handleClose }) => {
     );
 }
 
+function fixedEncodeURIComponent(str) {
+    return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
+  }
+
 const TwitterDialog = ({ open, handleClose }) => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
@@ -211,17 +237,23 @@ const TwitterDialog = ({ open, handleClose }) => {
     const [charsRemaining, setCharsRemaining] = useState(280 - message.length); 
 
     const handleSubmit = () => {
-        var messageVal = message.substring(state.url.length); 
-         //set state.modifiedURL to url + "text=" + encoded(mssg)
+        var twitterPrefix = 'https://twitter.com/intent/tweet?text=';
+        var encodedUrlMessage = twitterPrefix + fixedEncodeURIComponent(state.url + 'text=' + message);
 
-        handleClose();
         dispatch({ 
             type: 'UPDATE_SOCIAL',
             payload: {
                 name: 'twitter',
-                value: !state.socials.twitter,
+                value: true,
                 prefix: ''
         }});
+        dispatch({
+            type: 'GENERATE',
+            payload: {
+                newUrl: encodedUrlMessage
+        }});
+
+        handleClose();
     }
 
     const handleInputChange = (e) => {
@@ -235,65 +267,96 @@ const TwitterDialog = ({ open, handleClose }) => {
             onClose={handleClose}
         > 
             <DialogTitle>
-                Share on Twitter
+                <Typography variant="h4">
+                    Share on Twitter
+                </Typography>
             </DialogTitle> 
 
             <DialogContent> 
-                <Card 
-                    className={classes.cardRoot}
-                    variant="outlined"
-                >
-                    <CardContent>
-                        <Typography 
-                            className={classes.cardTitle}
-                            color="textPrimary"
-                            gutterBottom
-                        >
-                            Your Message
-                        </Typography>
-                        <Typography variant="subtitle1" color="textSecondary" style={{fontSize: "12px"}} > 
-                            Links that exceed 32 characters are automatically shortened or truncated.
-                        </Typography>
-                        <br /> 
-                       
-                        <TextField 
-                            multiline
-                            fullWidth
-                            margin="normal"
-                            size="large"
-                            variant="filled"
-                            color="primary"
-                            value={message}
-                            onChange={handleInputChange}
-                        /> 
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}> 
-                            <TextField 
-                                disabled
-                                variant="standard"
-                                margin="dense"
-                                size="small"
-                                value={charsRemaining + " chars remaining"}
-                                style={{ width: '150px' }}
-                            /> 
-                        </div>
-                        
-                    </CardContent>
-                </Card> 
+                <Paper elevation={5} className={classes.paperPurple}>
+                    <Grid container spacing={1}>
+                        <Paper elevation={5} className={classes.paper}>
+                            <Grid 
+                                container
+                                direction="row"
+                                justify="space-around"
+                                wrap='wrap'
+                            >
+                                <Grid item>
+                                    <Typography 
+                                        className={classes.cardTitle}
+                                        color="textPrimary"
+                                        gutterBottom
+                                    >
+                                        Your Message
+                                    </Typography>
+                                    <Typography variant="subtitle1" color="textSecondary" style={{fontSize: "12px"}} > 
+                                        Links that exceed 32 characters are automatically shortened or truncated.
+                                    </Typography>
+                                    <TextField 
+                                        multiline
+                                        fullWidth
+                                        margin="normal"
+                                        size="large"
+                                        variant="filled"
+                                        color="primary"
+                                        value={message}
+                                        onChange={handleInputChange}
+                                    /> 
+                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}> 
+                                        <TextField 
+                                            disabled
+                                            variant="standard"
+                                            margin="dense"
+                                            size="small"
+                                            value={charsRemaining + " chars remaining"}
+                                        /> 
+                                    </div>
+                                </Grid>
+                            </Grid>
+                        </Paper> 
+                    </Grid> 
+                </Paper>    
             </DialogContent>
 
             <DialogActions> 
-                <Button onClick={handleClose}> 
-                    Cancel
-                </Button>
-                <Button onClick={handleSubmit}>
-                    Done
-                </Button> 
+                <Grid 
+                    container 
+                    direction="row" 
+                    justify="flex-end" 
+                    alignItems="center" 
+                    spacing={2}
+                >
+                    <Grid item>
+                        <Button 
+                            variant="outlined"
+                            color="primary"
+                            size="large"
+                            margin="normal"
+                            onClick={handleClose}
+                        > 
+                            <Typography variant="button"> Cancel </Typography>
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button 
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            margin="normal"
+                            onClick={handleSubmit}
+                        > 
+                            <Typography variant="button"> Generate </Typography>
+                        </Button>
+                    </Grid>
+                </Grid>
             </DialogActions>
         </Dialog>
     );
 }
 
 const SocialMediaButtonGroup = () => {
+    const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
 
     const [openTwitter, setOpenTwitter] = useState(false); 
@@ -325,77 +388,82 @@ const SocialMediaButtonGroup = () => {
     }
 
     return (
-    <>
-        <StyledToggleButtonGroup>
-            <div style = {{ display: 'flex', flexDirection: 'column' }}>
-                <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
-                    <Typography variant="overline"> 
-                        Share
-                    </Typography> 
-                </FormLabel>
-          
-                <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    {socialMediaDetails.map((item) => (
-                        <Tooltip title={item.title}> 
-                            <Button 
-                                name={item.name}
-                                size="small"
-                                color="primary"
-                                onClick={(e) => { 
-                                    if(item.name==='twitter') {
-                                        if(!state.socials.twitter) {
-                                            setOpenTwitter(true); 
+        <Fragment>
+            <StyledToggleButtonGroup>
+                <Paper elevation={3} className={classes.paper}>
+                <div style = {{ display: 'flex', flexDirection: 'column' }}>
+                    <FormLabel component="legend" style={{ marginLeft: '15px' }}> 
+                        <Typography variant="overline"> 
+                            Share
+                        </Typography> 
+                    </FormLabel>
+
+                    <Divider /> 
+            
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        {socialMediaDetails.map((item) => (
+                        <div style={{ marginTop: '17.5px', marginRight: '5px' }}> 
+                            <Tooltip title={item.title}> 
+                                <Button 
+                                    name={item.name}
+                                    size="large"
+                                    color="primary"
+                                    onClick={(e) => { 
+                                        if(item.name==='twitter') {
+                                            if(!state.socials.twitter) {
+                                                setOpenTwitter(true); 
+                                            } else {
+                                                clearTwitterData(); 
+                                            }
+                                        } else if(item.name==='whatsapp') {
+                                            if(!state.socials.whatsapp) {
+                                                setOpenWhatsapp(true); 
+                                            } else {
+                                                alert('Clearing whatsapp data')
+                                            }
                                         } else {
-                                            clearTwitterData(); 
+                                            dispatch({ 
+                                                type: 'UPDATE_SOCIAL',
+                                                payload: {
+                                                    name: item.name,
+                                                    value: !state.socials[item.name],
+                                                    prefix: item.prefix
+                                            }})
                                         }
-                                    } else if(item.name==='whatsapp') {
-                                        if(!state.socials.whatsapp) {
-                                            setOpenWhatsapp(true); 
-                                        } else {
-                                            alert('Clearing whatsapp data')
+                                    }}
+                                    style={{ height: '100%'}}
+                                >
+                                    <FormControlLabel 
+                                        control={item.component}
+                                        label={
+                                            <Typography 
+                                                variant="overline"
+                                                style={{ fontSize: '8px', color:'#000' }}
+                                            > 
+                                                {item.name}
+                                            </Typography>
                                         }
-                                    } else {
-                                        dispatch({ 
-                                            type: 'UPDATE_SOCIAL',
-                                            payload: {
-                                                name: item.name,
-                                                value: !state.socials[item.name],
-                                                prefix: item.prefix
-                                        }})
-                                    }
-                                }}
-                            >
-                                <FormControlLabel 
-                                    value="female" 
-                                    control={item.component}
-                                    label={
-                                        <Typography 
-                                            variant="overline"
-                                            style={{ fontSize: '8px', color:'#000' }}
-                                        > 
-                                            {item.name}
-                                        </Typography>
-                                    }
-                                    labelPlacement="bottom"
-                                />
-                            </Button>
-                        </Tooltip>
-                        
-                    ))} 
+                                        labelPlacement="bottom"
+                                    />
+                                </Button>
+                            </Tooltip>
+                        </div>
+                        ))} 
+                    </div> 
                 </div> 
-            </div> 
-        </StyledToggleButtonGroup>
+                </Paper>
+            </StyledToggleButtonGroup>
 
-        <TwitterDialog 
-            open={openTwitter}
-            handleClose={handleCloseTwitter}
-        />
+            <TwitterDialog 
+                open={openTwitter}
+                handleClose={handleCloseTwitter}
+            />
 
-        <WhatsappDialog 
-            open={openWhatsapp} 
-            handleClose={handleCloseWhatsapp}
-        />
-    </>
+            <WhatsappDialog 
+                open={openWhatsapp} 
+                handleClose={handleCloseWhatsapp}
+            />
+        </Fragment>
     ); 
 }
 

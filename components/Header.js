@@ -11,6 +11,10 @@ import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
+import IconButton from '@material-ui/core/IconButton';
+
+import MenuIcon from '@material-ui/icons/Menu';
+
 import { useAuth } from '../lib/auth'; 
 import { useCount } from './SharedContext';  
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    color: 'white'
   },
   title: {
     flexGrow: 1,
@@ -39,9 +42,6 @@ const Header = ({ props }) => {
   const [state, dispatch] = useCount(); 
   const [on, setOn] = useState(false); 
 
-  const handleMenu = () => {
-    alert('handling menu'); 
-  }
 
   const handleSignOut = () => {
     auth.signout().then(() => {
@@ -70,14 +70,11 @@ const Header = ({ props }) => {
       });
   }
 
-  const HeaderLogo = () => {
-    return (
-      <Link href="/dashboard">
-        <Typography variant="h6" className={classes.title}>
-          cute.ly
-        </Typography>
-      </Link>
-    );
+  const getHeaderColor = () => {
+    return on ? '#fff' : '#363537'; 
+  }
+  const getIconColor = () => {
+    return on ? '#363537' : '#fff'; 
   }
 
   const handleNavToGithub = () => {
@@ -86,46 +83,61 @@ const Header = ({ props }) => {
 
   return (
     <div className={classes.root}>
-      <AppBar color="inherit" position="sticky" style={{ borderRadius: '2.5px' }}>
-        <Toolbar style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
-         
+      <AppBar 
+        position="sticky"
+        style={{ 
+          borderRadius: '2.5px', 
+          backgroundColor: getHeaderColor(), 
+          borderRadius: '5px'
+        }}
+      >
+        <Toolbar style={{ 
+          display: 'flex', 
+          flexDirection: 'row', 
+          justifyContent: 'flex-end'}}
+        >
           
-          <Button
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              variant="standard"
-              style={{ margin: '2px' }}
-            >
-              <AccountCircle />
-          </Button> 
+            <Button 
+              variant="outlined"
+              color="primary"
+              onClick={handleNavToGithub}
+              style={{ margin: '2px', borderRadius: '5px' }}
+            > 
+              <GitHubIcon style={{ color: getIconColor() }}/> 
+            </Button>
 
-          <Button 
-            variant="standard"
-            onClick={toggleTheme}
-            style={{ margin: '2px' }}
-          > 
-            { on ? <DarkMode /> : <LightMode /> }
-          </Button>
 
-          <Button 
-            variant="standard" 
-            onClick={handleNavToGithub}
-            style={{ margin: '2px' }}
-          > 
-            <GitHubIcon /> 
-          </Button>
+            <Button 
+              variant="outlined"
+              onClick={toggleTheme}
+              color="primary"
+              style={{ margin: '2px', borderRadius: '5px' }}
+            > 
+              { 
+              on  
+              ? <DarkMode  style={{ color: getIconColor() }} /> 
+              : <LightMode  style={{ color: getIconColor() }} /> 
+              }
+            </Button>
 
-          <Button 
-            variant="standard"
-            onClick={handleSignOut}
-            style={{ margin: '2px' }}
-          > 
-            <PowerSettingsNewIcon 
-              color="inherit" 
-            />
-          </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleNavToGithub}
+              style={{ margin: '2px', borderRadius: '5px' }}
+            > 
+              <AccountCircle  style={{ color: getIconColor() }} />
+            </Button>
+
+            <Button 
+              variant="outlined"
+              color="primary"
+              onClick={handleSignOut}
+              style={{ margin: '2px', borderRadius: '5px' }}
+            > 
+              <PowerSettingsNewIcon style={{ color: getIconColor() }} />
+            </Button>
+         
         </Toolbar>
       </AppBar>
     </div>
