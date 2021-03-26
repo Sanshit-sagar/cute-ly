@@ -34,7 +34,6 @@ function useSnackbar() {
     const setUrl = (updatedUrl) => {
         dispatch({'type': 'EDIT_URL', 'payload': updatedUrl });
     }
-
  
     return {
         state, 

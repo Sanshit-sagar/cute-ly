@@ -37,12 +37,16 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         border: `1px solid ${theme.palette.divider}`,
         padding: theme.spacing(1),
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        minHeight: '90%',
+        maxHeight: '90%',
     },
     paperPurple: {
         border: `1px solid ${theme.palette.divider}`,
         padding: theme.spacing(2),
         backgroundColor: theme.palette.primary.dark,
+        minHeight: '100%',
+        maxHeight: '100%',
     },
 }));
 
@@ -144,13 +148,13 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const GooglePlayAnalyticsButton = () => {
         return (
-        <div style={{ marginTop: '10px', marginRight: '5px' }}>
+        <div style={{ marginRight: '5px' }}>
             <Tooltip title="Google Analytics Info"> 
                 <Button 
                     size="large"
                     color="primary"
                     onClick={() => handleOpen("google")}
-                    style={{ height: '100%', backgroundColor: (globalState.counts.utm >=1 && 'white') }}
+                    style={{ paddingTop: '7.5px', height: '100%' }}
                 >
                     <FormControlLabel 
                         value="utm" 
@@ -171,7 +175,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                         label={
                             <Typography 
                                 variant="overline"
-                                style={{ fontSize: '8px', color: 'black' }}
+                                style={{ fontSize: '8px' }}
                             > 
                                 Google 
                             </Typography>
@@ -186,13 +190,13 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const AppleAnalyticsButton = () => {
         return (
-        <div style={{ marginTop: '10px', marginRight: '5px' }}>
+        <div style={{ marginRight: '5px' }}>
             <Tooltip title="iOS Info"> 
                 <Button 
                     size="large"
                     color="primary"
                     onClick={() => handleOpen("apple")}
-                    style={{ height: '100%', backgroundColor: (globalState.counts.ios >=1 && 'white') }}
+                    style={{ paddingTop: '7.5px', height: '100%' }}
                 >
                     <FormControlLabel 
                         value="ios" 
@@ -213,7 +217,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                         label={
                             <Typography 
                                 variant="overline"
-                                style={{ fontSize: '8px', color: 'black' }}
+                                style={{ fontSize: '8px' }}
                             > 
                                 iOS 
                             </Typography>
@@ -228,13 +232,13 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const AndroidAnalyticsButton = () => {
         return (
-        <div style={{ marginTop: '10px', marginRight: '5px' }}>
+        <div style={{ marginRight: '5px' }}>
             <Tooltip title="Android Info"> 
                 <Button 
                     size="large"
                     color="primary"
                     onClick={() => handleOpen('android')}
-                    style={{ height: '100%', backgroundColor: (globalState.counts.android >=1 && 'white') }}
+                    style={{ paddingTop: '7.5px', height: '100%' }}
                 >
                     <FormControlLabel 
                         value="android" 
@@ -255,7 +259,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                         label={
                             <Typography 
                                 variant="overline"
-                                style={{ fontSize: '8px', color: 'black' }}
+                                style={{ fontSize: '8px' }}
                             > 
                                 Android
                             </Typography>
@@ -270,13 +274,13 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const SocialMetaTagsButton = () => {
         return (
-        <div style={{ marginTop: '10px', marginRight: '5px' }}>
+        <div style={{ marginRight: '5px' }}>
             <Tooltip title="Social Meta Info"> 
                 <Button 
                     size="large"
                     color="primary"
                     onClick={() => handleOpen('meta')}
-                    style={{ height: '100%',  backgroundColor: (globalState.counts.meta >=1 && 'white')}}
+                    style={{ paddingTop: '7.5px', height: '100%' }}
                 >
                     <FormControlLabel 
                         value="meta" 
@@ -297,7 +301,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                         label={
                             <Typography 
                                 variant="overline"
-                                style={{ fontSize: '8px', color: 'black' }}
+                                style={{ fontSize: '8px' }}
                             > 
                                 Social
                             </Typography>
@@ -364,7 +368,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
                         <Divider /> 
                 
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', minHeight: '100%', maxHeight: '100%'}}>
                            <GooglePlayAnalyticsButton /> 
                            <AppleAnalyticsButton /> 
                            <AndroidAnalyticsButton />

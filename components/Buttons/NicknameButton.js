@@ -21,13 +21,13 @@ const NicknameButton = ({ handleClick }) => {
     }
 
     return (
-        <div style={{  marginTop: '17.5px', marginRight: '5px' }}> 
+        <div style={{  marginRight: '5px' }}> 
             <Tooltip title="Name me"> 
                 <Button 
                     size="large"
                     color="primary"
                     onClick={handleStarred}
-                    style={{ height: '100%'}}
+                    style={{ marginTop: '5px', height: '100%'}}
                 > 
                     <FormControlLabel 
                         value="meta" 

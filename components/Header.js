@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
 
 import Router from 'next/router'; 
-import Link from 'next/link'; 
-import Button from './Button'; 
 
+import Button from '@material-ui/core/Button'; 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import GitHubIcon from '@material-ui/icons/GitHub';
-
-import IconButton from '@material-ui/core/IconButton';
-
-import MenuIcon from '@material-ui/icons/Menu';
 
 import { useAuth } from '../lib/auth'; 
 import { useCount } from './SharedContext';  
@@ -101,7 +96,7 @@ const Header = ({ props }) => {
               variant="outlined"
               color="primary"
               onClick={handleNavToGithub}
-              style={{ margin: '2px', borderRadius: '5px' }}
+              style={{ margin: '5px', borderRadius: '5px' }}
             > 
               <GitHubIcon style={{ color: getIconColor() }}/> 
             </Button>
@@ -111,7 +106,7 @@ const Header = ({ props }) => {
               variant="outlined"
               onClick={toggleTheme}
               color="primary"
-              style={{ margin: '2px', borderRadius: '5px' }}
+              style={{ margin: '5px', borderRadius: '5px' }}
             > 
               { 
               on  
@@ -124,7 +119,7 @@ const Header = ({ props }) => {
               variant="outlined"
               color="primary"
               onClick={handleNavToGithub}
-              style={{ margin: '2px', borderRadius: '5px' }}
+              style={{ margin: '5px', borderRadius: '5px' }}
             > 
               <AccountCircle  style={{ color: getIconColor() }} />
             </Button>
@@ -133,7 +128,7 @@ const Header = ({ props }) => {
               variant="outlined"
               color="primary"
               onClick={handleSignOut}
-              style={{ margin: '2px', borderRadius: '5px' }}
+              style={{ margin: '5px', borderRadius: '5px' }}
             > 
               <PowerSettingsNewIcon style={{ color: getIconColor() }} />
             </Button>

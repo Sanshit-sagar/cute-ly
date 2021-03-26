@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper } from '@material-ui/core'; 
 
 import { useAuth } from '../lib/auth';
-
 import CustomDataGrid from '../components/DataGrid/CustomDataGrid';
 import SharedSnackbar from '../components/Snackbar';
 import PageContainer from '../components/PageContainer';

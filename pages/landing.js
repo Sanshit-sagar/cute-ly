@@ -19,7 +19,7 @@ export default function Landing() {
               <div class="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
                 <a href="#" class="font-medium text-gray-700 hover:text-gray-900"> Features </a>
                 <a href="#" class="font-medium text-gray-700 hover:text-gray-900"> Sign up </a>
-                <a href="/signin" class="font-medium text-indigo-900 hover:text-indigo-500"> Log in </a>
+                <a href="/login" class="font-medium text-indigo-900 hover:text-indigo-500"> Log in </a>
               </div> 
             </nav>
           </div>

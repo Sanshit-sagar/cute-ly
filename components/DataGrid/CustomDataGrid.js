@@ -14,6 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import LaunchIcon from '@material-ui/icons/Launch'; 
 import CustomNoRowsOverlay from './CustomOverlays'; 
 import StarIcon from '@material-ui/icons/Star';
+import SearchIcon from '@material-ui/icons/Search'; 
 
 import {  
     GridOverlay,
@@ -32,19 +33,20 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     paperDataGrid: {
-        height: '65vh', 
+        height: '57.5vh', 
         width: '1330px',
-        margin: theme.spacing(1),
+        margin: theme.spacing(0.75),
         backgroundColor: '#fff',
     },
     paperHeader: {
-        height: '52.5px',
+        height: '45px',
         width: '1330px', 
-        margin: theme.spacing(1),
+        margin: theme.spacing(0.5),
         backgroundColor: theme.palette.background.paper,
     },
     headerButton: {
-        margin: theme.spacing(1),
+        height: '40px',
+        margin: '2.25px',
     },
     destinationLink: {
         color: theme.palette.secondary.dark,
@@ -87,7 +89,7 @@ function CustomLoadingOverlay() {
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
-            <GridDensitySelector />
+            {/* <GridDensitySelector /> */}
             <GridColumnsToolbarButton />
             <GridFilterToolbarButton />
         </GridToolbarContainer>
@@ -123,32 +125,105 @@ const LibrarySizeButton = ({ length }) => {
     );
 }
 
+const SearchLinksButton = () => {
+    const classes = useStyles(); 
+
+    return (
+        <Button
+            variant="outlined"
+            color="primary"
+            className={classes.headerButton}
+        >
+            <SearchIcon /> 
+        </Button> 
+    ); 
+}
+
 const handleNavigatetToModifiedUrl = () => {
     alert('Hello');
 }
 
-const RenderedParameters = ({ params }) => {
-    const data = params.value; 
+const getChipColor = (item) => {
+    if(item && item.group) {
+        if(item.group === 'utm') {
+            return "#363537";
+        } else if(item.group ==='ios') {
+            return "blue";
+        } else if(item.group === 'android') {
+            return "green"; 
+        }
+    } else {
+        return "yellow";
+    }
+}
+
+const CustomAdditionalParametersChip = ({ data }) => {
+    if(!data || !data?.length || data?.length <= 0) {
+        return null; 
+    } 
+
     return (
-        <div style={{ display: 'flex', maxWidth: '400px', flexDirection: 'row', flexWrap: 'wrap' }}>
-            <Chip avatar={<Avatar>M</Avatar>} variant="outlined" label={ data[0].value } size="small" color="default" style={{ margin: '2.5px' }}/> 
-            <Chip avatar={<Avatar>S</Avatar>} variant="outlined" label={ data[1].value } size="small" color="default" style={{ margin: '2.5px' }}/> 
-            <Chip avatar={<Avatar>C</Avatar>} variant="outlined" label={ data[2].value } size="small" color="default" style={{ margin: '2.5px' }}/> 
-            <Chip avatar={<Avatar>T</Avatar>} variant="outlined" label={ data[2].value } size="small" color="default" style={{ margin: '2.5px' }}/> 
-        </div>
+        <Chip
+            avatar={
+                <Avatar>
+                    {data.length}
+                </Avatar>
+            }
+            variant="filled"
+            label={data.length - 3}
+            size="small"
+            color="secondary"
+            style={{ margin: '2.5px' }}
+        /> 
+    )
+}
+
+const CustomParameterChip = ({ item }) => {
+    return (
+        <Chip 
+            avatar={
+                <Avatar>
+                    {item.key.charAt(0).toUpperCase()}
+                </Avatar>
+            } 
+            variant="outlined"
+            label={ 
+                item.value.length >= 8 ? (item.value.substring(0,8) + "...") : item.value
+            } 
+            size="small" 
+            color="secondary"
+            style={{
+                margin:'2.5px'
+            }}
+        />
     );
 }
 
-        
+const RenderUtmParameters = ({ data }) => {
+    
+    return (
+        <div style={{ display: 'flex', maxWidth: '250px', flexDirection: 'row', flexWrap: 'wrap' }}>
+            {   data.length >= 0 && data[0] && data[0].value && data[0].value?.length &&  <CustomParameterChip item={data[0]} index={0} /> }
+            {   data.length >= 1 && data[1] && data[1].value && data[1].value?.length &&  <CustomParameterChip item={data[1]} index={1} /> }
+            {   data.length >= 2 && data[2] && data[2].value && data[2].value?.length &&  <CustomParameterChip item={data[2]} index={2} /> }
+            {   data.length > 3 && <Chip label={"+" + (data.length-3)} size="small" variant="outlined" style={{ margin: '2.5px' }} /> }
+        </div>
+    );
+}  
 
 const columns = [
     { 
         field: 'nickname', 
         headerName: 'Nickname', 
-        width: 200,
+        width: 125,
+        renderCell: (params) => (
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <p> {params.value} </p> 
+            </div>
+        )
     }, {
         field: 'modifiedUrl', 
-        headerName: 'Modified URL', 
+        headerName: 'Slug', 
         width: 225,
         renderCell: (params) => (
             <Button
@@ -170,17 +245,60 @@ const columns = [
             </Button>
         ),
     }, { 
-        field: 'analyticsData', 
-        headerName: 'Parameters', 
-        width: 250,
+        field: 'utmNN', 
+        headerName: 'UTM Parameters', 
+        width: 225,
         renderCell: (params) => (
-            <div key={params.value[0].key}>
-                <p> 
-                    <RenderedParameters params={params} />  
-                </p> 
+            <div>
+            {
+                params.value  && params.value ?
+                <div>
+                    <RenderUtmParameters data={params.value} /> 
+                </div>
+                :
+                <div>
+                    <Button> X </Button>
+                </div>
+            }
             </div>
         ),
-    },{ 
+    }, { 
+        field: 'iosNN', 
+        headerName: 'iOS Parameters', 
+        width: 225,
+        renderCell: (params) => (
+            <div>
+            {
+                params.value  && params.value ?
+                <div>
+                    <RenderUtmParameters data={params.value} /> 
+                </div>
+                :
+                <div>
+                    <Button> X </Button>
+                </div>
+            }
+            </div>
+        ),
+    }, { 
+        field: 'androidNN', 
+        headerName: 'Android Parameters', 
+        width: 225,
+        renderCell: (params) => (
+            <div>
+            {
+                params.value  && params.value ?
+                <div>
+                    <RenderUtmParameters data={params.value} /> 
+                </div>
+                :
+                <div>
+                    <Button> X </Button>
+                </div>
+            }
+            </div>
+        ),
+    },  { 
         field: 'originalUrl', 
         headerName: 'Destination URL', 
         width: 200,
@@ -202,26 +320,42 @@ const columns = [
         field: 'newDate', 
         headerName: 'Timestamp', 
         width: 200,
-    }, 
+    },
 ];
 
 function getRows(allLinks) {
     const rows = []; 
-    let newData = []; 
 
     allLinks.forEach((item) => {
         const dateStr =  new Date(item['timestamp']).toLocaleString();
-
+        let utmNN =[];
+        let iosNN =[];
+        let androidNN = [];
+        let metaNN = []; 
+        
         if(item && item.analyticsData) {
             const analyticsData = item['analyticsData']; 
-            
-            newData = analyticsData;
+
+            analyticsData.forEach((item) => {
+                if(item.group === 'utm') {
+                    utmNN.push(item);
+                } else if(item.group === 'ios') {
+                    iosNN.push(item);
+                } else if(item.group === 'android') {
+                    androidNN.push(item);
+                } else {
+                    metaNN.push(item); 
+                }
+            });
         } 
 
         rows.push({
             ...item,
             newDate: dateStr,
-            analyticsData: newData,
+            utmNN,
+            iosNN,
+            androidNN,
+            metaNN,
         }); 
     }); 
 
@@ -233,18 +367,20 @@ const CustomDataGrid = ({ loading, userDetails, allLinks, linksMap }) => {
     
     return (
         <Grid container direction="column" justify="center" alignItems="center">
-            <Grid item>
-                <Paper elevation={10} className={classes.paperHeader}>
-                    <Grid container direction="row" justify="flex-end" allItems="center">
-                        <Grid item>
-                            <StarredItemsButton email={userDetails.email} /> 
-                        </Grid>
-                        <Grid item>
-                            <LibrarySizeButton length={allLinks.length} />
-                        </Grid>
+           
+            <Paper elevation={10} className={classes.paperHeader}>
+                <Grid container direction="row" justify="space-between" alignItems="flex-start">
+                    <Grid item>
+                        <LibrarySizeButton length={allLinks.length} />
                     </Grid>
-                </Paper>
-            </Grid>
+                    
+                    <Grid item>
+                        <SearchLinksButton />
+                        <StarredItemsButton email={userDetails.email} /> 
+                    </Grid>
+                </Grid>
+            </Paper>
+            
            
             <Grid item>
                 <Paper elevation={5} className={classes.paperDataGrid}>

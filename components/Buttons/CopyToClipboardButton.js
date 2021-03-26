@@ -22,12 +22,13 @@ const CopyToClipboardButton = ({ handleClick }) => {
     }
     
     return (
-        <div style={{  marginTop: '17.5px', marginRight: '5px' }}> 
+        <div style={{  marginRight: '5px' }}> 
             <Tooltip title="Copy to clipboard"> 
                 <Button 
                     size="large"
                     color="primary"
                     onClick={handleCopyToClipboard}
+                    style={{ marginTop: '5px' , height: '100%'}}
                 > 
                     <FormControlLabel 
                         value="meta" 

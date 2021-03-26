@@ -10,12 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { 
     FormControlLabel, FormHelperText, FormLabel, 
-    Typography, Tooltip, 
-    Button, Box, Paper, Grid
-} from '@material-ui/core'; 
-
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+    Typography, Tooltip, Link,
+    Button, Paper, Grid
+} from '@material-ui/core';
 
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
@@ -24,8 +21,8 @@ import LinkedInIcon from '@material-ui/icons/LinkedIn';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-import { useCount } from './SharedContext'; 
-import { Error } from '@material-ui/icons';
+import { createLink } from '../lib/db'; 
+import { useCount } from './SharedContext';
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -134,27 +131,77 @@ const encodeForWhatsapp = (num, mssg) => {
     return encodeURI(text); 
 }
 
+function SubmitButtonWhatsapp(props) {
+    const [state, dispatch] = useCount(); 
+    const regex = /([+]?\d{1,2}[.-\s]?)?(\d{3}[.-]?){2}\d{4}/;
+    
+    const handleSubmit = async () => {
+        const encodedMessageUrl = encodeForWhatsapp(props.phoneNumber, props.message);
+
+        dispatch({
+            type: 'UPDATE_URL',
+            payload: {
+                target: {
+                    value: encodedMessageUrl,
+                },
+            },
+        }); 
+
+
+        const result = await createLink(state); 
+        const updatedResultUrl = result.updatedUrl;
+
+        dispatch({
+            type: 'UPDATE_PURL',
+            payload: {
+                value: encodedMessageUrl,
+            },
+        }); 
+
+        dispatch({ 
+            type: 'UPDATE_RESULTS', 
+            payload: {
+                value: updatedResultUrl,
+            },
+        });
+
+        dispatch({ 
+            type: 'UPDATE_SOCIAL',
+            payload: {
+                name: 'whatsapp',
+                value: true,
+                prefix: ''
+        }});
+
+        props.handleClose(); 
+    }
+
+    return (
+        <Button 
+            size="large"
+            variant="contained" 
+            color="primary" 
+            margin="normal"
+            onClick={handleSubmit} 
+            disabled={!regex.test(props.phoneNumber) || props.message.length===0}
+        >
+            <Typography 
+                variant="button" 
+                color="textSecondary"
+            > 
+                Generate 
+            </Typography>
+        </Button> 
+    )
+ }
+
+
 const WhatsappDialog = ({ open, handleClose }) => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
     
     const [phoneNumber, setPhoneNumber] = useState(''); 
-    const [message, setMessage] = useState();
-
-    const handleSubmit = () => {
-        handleClose(); 
-        
-        dispatch({ 
-            type: 'UPDATE_SOCIAL',
-            payload: {
-                name: 'whatsapp',
-                value: !state.socials.whatsapp,
-                prefix: ''
-        }});
-
-        var urlEncodedMessage = encodeForWhatsapp(phoneNumber, message); 
-        alert(urlEncodedMessage); 
-    }
+    const [message, setMessage] = useState('');
 
     const handleNumberChange = (event) => {
         setPhoneNumber('+' + event.target.value.substring(1));
@@ -174,50 +221,73 @@ const WhatsappDialog = ({ open, handleClose }) => {
             </DialogTitle> 
 
             <DialogContent> 
-                <Card 
-                    className={classes.cardRoot}
-                    variant="outlined"
-                >
-                    <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
-                        
-                        <TextField 
-                            variant="filled"
-                            margin="dense"
-                            size="large"
-                            color="primary"
-                            label="Recipient's Phone Number"
-                            value={'+' + phoneNumber.substring(1)}
-                            onChange={handleNumberChange}
-                            error={!regex.test(phoneNumber)}
-                        />
-                        <FormHelperText> Include the Country Code </FormHelperText>
+                <Paper elevation={5} className={classes.paperPurple}>
+                    <Grid container spacing={1}>
+                        <Paper elevation={5} className={classes.paper}>
+                            <Grid 
+                                container
+                                direction="row"
+                                justify="space-around"
+                                wrap='wrap'
+                            >
+                                <Grid item>
+                                    <Typography 
+                                        className={classes.cardTitle}
+                                        color="textPrimary"
+                                        gutterBottom
+                                    >
+                                        WhatsApp Message Details
+                                    </Typography>
+                                    <Typography variant="subtitle1" color="textSecondary" style={{fontSize: "12px"}} > 
+                                        The Recipient's phone number needs to include a country code  
+                                    </Typography>
+                                    <TextField 
+                                        fullWidth
+                                        variant="filled"
+                                        margin="dense"
+                                        size="large"
+                                        color="primary"
+                                        label="Recipient's Phone Number"
+                                        value={phoneNumber}
+                                        onChange={handleNumberChange}
+                                        error={!regex.test(phoneNumber)}
+                                    />
+                                    <FormHelperText> Include the Country Code </FormHelperText>
 
-                        <TextField 
-                            variant="filled"
-                            margin="normal"
-                            size="large"
-                            color="primary"
-                            label="Your Message" 
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                        />
-
-                    </CardContent> 
-                </Card> 
-            </DialogContent> 
+                                    <TextField 
+                                        fullWidth
+                                        variant="filled"
+                                        margin="normal"
+                                        size="large"
+                                        color="primary"
+                                        label="Your Message" 
+                                        value={message}
+                                        onChange={(e) => setMessage(e.target.value)}
+                                    />
+                                </Grid> 
+                            </Grid> 
+                        </Paper> 
+                    </Grid> 
+                </Paper> 
+            </DialogContent>
 
             <DialogActions> 
-                <Button variant="contained" onClick={handleClose}> 
-                    Cancel
-                </Button>
                 <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={handleSubmit} 
-                    disabled={!regex.test(phoneNumber) || message?.length===0}
-                >
-                    Done
-                </Button> 
+                    size="large"
+                    variant="outlined" 
+                    color="primary"
+                    margin="normal"
+                    onClick={handleClose}
+                > 
+                    <Typography variant="button" color="textSecondary"> Cancel </Typography>
+                </Button>
+
+                <SubmitButtonWhatsapp 
+                    message={message}
+                    phoneNumber={phoneNumber}
+                    handleClose={handleClose}
+                /> 
+                
             </DialogActions>
         </Dialog> 
     );
@@ -227,38 +297,196 @@ function fixedEncodeURIComponent(str) {
     return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
-  }
+}
 
-const TwitterDialog = ({ open, handleClose }) => {
-    const classes = useStyles(); 
+function SubmitButton(props) {
     const [state, dispatch] = useCount(); 
     
-    const [message, setMessage] = useState(state.url);
-    const [charsRemaining, setCharsRemaining] = useState(280 - message.length); 
+    const handleSubmit = async () => {
+        const encodedMessageUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + fixedEncodeURIComponent(state.url + props.message); 
 
-    const handleSubmit = () => {
-        var twitterPrefix = 'https://twitter.com/intent/tweet?text=';
-        var encodedUrlMessage = twitterPrefix + fixedEncodeURIComponent(state.url + 'text=' + message);
+        dispatch({
+            type: 'UPDATE_URL',
+            payload: {
+                target: {
+                    value: encodedMessageUrl,
+                },
+            },
+        }); 
+
+        const result = await createLink(state); 
+        const updatedResultUrl = result.updatedUrl;
+
+        dispatch({
+            type: 'UPDATE_PURL',
+            payload: {
+                value: encodedMessageUrl,
+            },
+        }); 
+
+        dispatch({ 
+            type: 'UPDATE_RESULTS', 
+            payload: {
+                value: updatedResultUrl,
+            },
+        });
 
         dispatch({ 
             type: 'UPDATE_SOCIAL',
             payload: {
-                name: 'twitter',
+                name: 'facebook',
                 value: true,
-                prefix: ''
-        }});
-        dispatch({
-            type: 'GENERATE',
-            payload: {
-                newUrl: encodedUrlMessage
+                prefix: 'https://www.facebook.com/sharer/sharer.php?u='
         }});
 
-        handleClose();
+        props.handleClose(); 
     }
 
-    const handleInputChange = (e) => {
-        setMessage(e.target.value);
-        setCharsRemaining(280 - message.length); 
+    return (
+        <Button 
+            variant="contained" 
+            color="primary" 
+            size="large" 
+            margin="normal"
+            onClick={() => handleSubmit()}
+            style={{ marginLeft: '10px', marginTop: '5px' }}
+        > 
+            <Typography variant="button" color='textSecondary'> 
+                Generate 
+            </Typography>
+        </Button>
+    )
+ }
+ 
+ function FacebookSubmitButton(props) {
+    const [state, dispatch] = useCount(); 
+    
+    const handleSubmit = async () => {
+        // const facebookUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + state.url;  
+
+        // const result = await createLink(state, 'facebook'); 
+        // const updatedResultUrl = result.updatedUrl;
+
+        dispatch({
+            type: 'UPDATE_URL',
+            payload: {
+                target: {
+                    value: props.facebookUrl,
+                },
+            },
+        }); 
+
+        props.handleClose(); 
+    }
+
+    return (
+        <Button 
+            variant="contained" 
+            color="primary" 
+            size="large" 
+            margin="normal"
+            onClick={() => handleSubmit()}
+            style={{ marginLeft: '10px', marginTop: '5px' }}
+        > 
+            <Typography variant="button" color='textSecondary'> 
+                Generate 
+            </Typography>
+        </Button>
+    );
+ }
+
+ const FacebookDialog = ({ open, handleClose }) => {
+     const classes = useStyles(); 
+     const [state, dispatch] = useCount(); 
+     const currUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + state.url; 
+
+     return (
+        <Dialog 
+            open={open} 
+            onClose={handleClose}
+        > 
+            <DialogTitle>
+                <div style={{ maxWidth: '400px'}}>
+                    <Typography variant="h4" color="textPrimary">
+                        Generate Facebook Link?
+                    </Typography>
+                    <Typography variant="subtitle" color="textSecondary">
+                        This is what your link will look like, do you want to proceed? 
+                    </Typography>
+                </div>
+            </DialogTitle> 
+
+            <DialogContent> 
+                <Paper elevation={5} className={classes.paperPurple}>
+                    <Grid container spacing={1}>
+                        <Paper elevation={5} className={classes.paper}>
+                            <Grid 
+                                container
+                                direction="row"
+                                justify="space-around"
+                                wrap='wrap'
+                            >
+                                <Grid item>
+                                    <TextField 
+                                        disabled
+                                        fullWidth
+                                        variant="outlined"
+                                        label="DestinationUrl"
+                                        value={currUrl}
+                                        size="large"
+                                        margin="dense"
+                                        style={{ width: '450px'}}
+                                    />
+                                </Grid> 
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </Paper>
+            </DialogContent>
+
+            <DialogActions> 
+                <Grid 
+                    container 
+                    direction="row" 
+                    justify="flex-end" 
+                    alignItems="center" 
+                    spacing={2}
+                >
+                    <Grid item>
+                        <Button 
+                            variant="outlined"
+                            color="primary"
+                            size="large"
+                            margin="normal"
+                            onClick={handleClose}
+                        > 
+                            <Typography variant="button" color="textSecondary"> Cancel </Typography>
+                        </Button>
+                    </Grid>
+                    <Grid item>
+
+                        <FacebookSubmitButton 
+                            facebookUrl={currUrl}
+                            handleClose={handleClose}
+                        />
+
+                    </Grid>
+                </Grid>
+            </DialogActions>
+        </Dialog>
+     ); 
+ }
+
+const TwitterDialog = ({ open, handleClose }) => {
+    const classes = useStyles(); 
+    const [state, dispatch] = useCount(); 
+
+    const [message, setMessage] = useState('');
+    const [charsRemaining, setCharsRemaining] = useState(280);
+
+    const handleInputChange = (event) => {
+        setMessage(event.target.value); 
+        setCharsRemaining(280 - (message ? message.length : 0)); 
     }
 
     return (
@@ -335,19 +563,16 @@ const TwitterDialog = ({ open, handleClose }) => {
                             margin="normal"
                             onClick={handleClose}
                         > 
-                            <Typography variant="button"> Cancel </Typography>
+                            <Typography variant="button" color="textSecondary"> Cancel </Typography>
                         </Button>
                     </Grid>
                     <Grid item>
-                        <Button 
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            margin="normal"
-                            onClick={handleSubmit}
-                        > 
-                            <Typography variant="button"> Generate </Typography>
-                        </Button>
+
+                        <SubmitButton 
+                            message={message}
+                            handleClose={handleClose}
+                        />
+
                     </Grid>
                 </Grid>
             </DialogActions>
@@ -361,9 +586,17 @@ const SocialMediaButtonGroup = () => {
 
     const [openTwitter, setOpenTwitter] = useState(false); 
     const [openWhatsapp, setOpenWhatsapp] = useState(false); 
+    const [openFacebook, setOpenFacebook] = useState(false); 
+
 
     const handleCloseTwitter = () => {
         setOpenTwitter(false); 
+    }
+    const handleCloseWhatsapp = () => {
+        setOpenWhatsapp(false); 
+    }
+    const handleCloseFacebook = () => {
+        setOpenFacebook(false); 
     }
 
     const clearTwitterData = () => {
@@ -377,16 +610,47 @@ const SocialMediaButtonGroup = () => {
         dispatch({
             type: 'SNACKBAR_TRIGGER', 
             payload: {
-                message: 'Excluding Twitter Data',
+                message: 'Clearing Twitter Data',
                 key: new Date().getTime().toString()
             }
         });
     }
 
-    const handleCloseWhatsapp = () => {
-        setOpenWhatsapp(false); 
+    const clearWhatsappData = () => {
+        dispatch({
+            type: 'UPDATE_SOCIAL',
+            payload: {
+                name: 'whatsapp',
+                value: false,
+                prefix: '',
+            }});
+        dispatch({
+            type: 'SNACKBAR_TRIGGER', 
+            payload: {
+                message: 'Clearing WhatsApp Data',
+                key: new Date().getTime().toString()
+            }
+        });
     }
 
+    const clearFacebookData = () => {
+        dispatch({
+            type: 'UPDATE_SOCIAL',
+            payload: {
+                name: 'facebook',
+                value: false,
+                prefix: '',
+            }});
+        dispatch({
+            type: 'SNACKBAR_TRIGGER',
+            payload: {
+                message: 'Clearing Facebook Data',
+                key: new Date().getTime().toString()
+            },
+        });
+    }
+
+   
     return (
         <Fragment>
             <StyledToggleButtonGroup>
@@ -402,12 +666,13 @@ const SocialMediaButtonGroup = () => {
             
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                         {socialMediaDetails.map((item) => (
-                        <div style={{ marginTop: '17.5px', marginRight: '5px' }}> 
+                        <div style={{ marginTop: '7.5px', marginRight: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}> 
                             <Tooltip title={item.title}> 
                                 <Button 
                                     name={item.name}
                                     size="large"
                                     color="primary"
+                                    disabled={state.url.length === 0}
                                     onClick={(e) => { 
                                         if(item.name==='twitter') {
                                             if(!state.socials.twitter) {
@@ -419,26 +684,24 @@ const SocialMediaButtonGroup = () => {
                                             if(!state.socials.whatsapp) {
                                                 setOpenWhatsapp(true); 
                                             } else {
-                                                alert('Clearing whatsapp data')
+                                                clearWhatsappData(); 
                                             }
-                                        } else {
-                                            dispatch({ 
-                                                type: 'UPDATE_SOCIAL',
-                                                payload: {
-                                                    name: item.name,
-                                                    value: !state.socials[item.name],
-                                                    prefix: item.prefix
-                                            }})
-                                        }
+                                        } else if(item.name==='facebook') {
+                                            if(!state.socials.facebook) {
+                                                setOpenFacebook(true);
+                                            } else {
+                                                clearFacebookData(); 
+                                            }
+                                        } 
                                     }}
-                                    style={{ height: '100%'}}
+                                    style={{ paddingTop: '7.5px', height: '100%'}}
                                 >
                                     <FormControlLabel 
                                         control={item.component}
                                         label={
                                             <Typography 
                                                 variant="overline"
-                                                style={{ fontSize: '8px', color:'#000' }}
+                                                style={{ fontSize: '8px' }}
                                             > 
                                                 {item.name}
                                             </Typography>
@@ -462,6 +725,11 @@ const SocialMediaButtonGroup = () => {
             <WhatsappDialog 
                 open={openWhatsapp} 
                 handleClose={handleCloseWhatsapp}
+            />
+
+            <FacebookDialog 
+                open={openFacebook} 
+                handleClose={handleCloseFacebook}
             />
         </Fragment>
     ); 

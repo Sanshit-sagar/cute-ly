@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from 'react';
 
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper'; 
 import Container from '@material-ui/core/Container'; 
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
@@ -12,6 +14,7 @@ import {
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
+import SharedSnackbar from './Snackbar'; 
 
 import Header from './Header';
 
@@ -19,13 +22,16 @@ const useStyles = makeStyles((theme) => ({
     root: {
         transform: 'translateZ(0px)',
         flexGrow: 1,
+        height: '100%',
+        width: '100%',
+        padding: theme.spacing(1),
     },
-    pageContainer: {
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'space-between',
-        paddingTop: '10px',
-        paddingBottom: '10px',
+    mainContainerPaper: {
+        backgroundColor: theme.palette.primary.light,
+        paddingTop: theme.spacing(2),
+        margin: '0.50%',
+        height: '80vh',
+        width: '99%',
     },
     header: {
         display: 'flex', 
@@ -98,28 +104,30 @@ const PageContainer = ({ children }) => {
 
     return (
         <div className={classes.root}> 
-            <Backdrop open={speedDialOpen} />
-            <Container 
-                maxWidth="xl"
-                maxheight="100%"
-                className={classes.pageContainer}
-            >
-                <div>
-                    <Header className={classes.header} />
-                    
-                    <div className={classes.children}>
-                        {children}
-                    </div>
-                </div>
-                <div>
-                    <SpeedDials 
-                        open={speedDialOpen}
-                        handleOpen={handleSpeedDialOpen}
-                        handleClose={handleSpeedDialClose}
-                        className={classes.speedDial}
-                    /> 
-                </div>
-            </Container> 
+            <Grid container direction="column" justify="center" alignItems='stretch'>
+                <Grid item>
+                    <Header className={classes.header} /> 
+                </Grid>
+        
+                <Paper className={classes.mainContainerPaper}>
+                    <Grid container direction="column" justify="center" alignItems="center">
+                        <Grid item>
+                            <Backdrop open={speedDialOpen} />
+                            
+                            { children }
+                            
+                            <SpeedDials 
+                                open={speedDialOpen}
+                                handleOpen={handleSpeedDialOpen}
+                                handleClose={handleSpeedDialClose}
+                                className={classes.speedDial}
+                            /> 
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Grid>
+
+            <SharedSnackbar /> 
         </div> 
     );
 };

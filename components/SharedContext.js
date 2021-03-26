@@ -11,6 +11,7 @@ const initialState =  {
     url: '',   
     nickname: '', 
     generatedUrls: [],
+    starred: false,
     counts: {
         utm: 0, 
         ios: 0,
@@ -59,7 +60,13 @@ const initialState =  {
         messageInfo: {}, 
         snackpack: [], 
     },
-    mostRecentResult: null
+    mostRecentResult: {
+        originalUrl: '',
+        updatedUrl: '',
+    },
+    messages: {
+        twitter: '',
+    },
 }; 
 
 const reducer = (state, action) => {
@@ -71,6 +78,7 @@ const reducer = (state, action) => {
                 url: '',   
                 nickname: '', 
                 generatedUrls: [],
+                starred: false,
                 counts: {
                     utm: 0, 
                     ios: 0,
@@ -115,11 +123,17 @@ const reducer = (state, action) => {
                     messageInfo: {}, 
                     snackpack: [], 
                 },
-                mostRecentResult: null,
+                mostRecentResult: {
+                    originalUrl: '',
+                    updatedUrl: '',
+                },
                 responseData: {
                     payload: '', 
                     timestamp: '',  
-                }
+                }, 
+                messages: {
+                    twitter: '',
+                },
             };
         case "UPDATE_URL":  
             return {
@@ -197,6 +211,11 @@ const reducer = (state, action) => {
                 ...state, 
                 showResults: action.payload.value
             };
+        case "UPDATE_PURL":
+            return {
+                ...state, 
+                mostRecentPurl: action.payload.value,
+            };
         case "UPDATE_RESULTS":
             return {
                 ...state, 
@@ -207,11 +226,11 @@ const reducer = (state, action) => {
                     snackpack: [
                         ...state.snackbar.snackpack, 
                         { 
-                            message: action.payload.message, 
-                            key: action.payload.key,  
+                            message: "New URL Generated: ", 
+                            key: new Date().getTime().toString()
                         },
-                    ]
-                }
+                    ],
+                },
             };
         case "COPY_TO_CLIPBOARD": 
             return {
@@ -280,13 +299,29 @@ const reducer = (state, action) => {
                 ...state, 
                 dark: !state.dark,
             };
+        case "TOGGLE_STAR": 
+            return {
+                ...state, 
+                starred: !state.starred,
+            };
         case "GENERATE":
             return {
                 ...state,
                 generatedUrls: [
                     ...state.generatedUrls,
-                    action.payload.newUrl
-                ]
+                    action.payload.value
+                ],
+                showResults: true,
+                snackbar: {
+                    ...state.snackbar,
+                    snackpack: [
+                        ...state.snackbar.snackpack, 
+                        { 
+                            message: 'Generated a new URL with destination: ' + action.payload.value, 
+                            key: new Date().getTime().toString()
+                        },
+                    ]
+                }
             };
         default: 
             return state; 

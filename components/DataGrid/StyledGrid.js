@@ -135,6 +135,7 @@ function StyledGrid(props) {
                 checkboxSelection
                 pageSize={5}
                 headerHeight={40}
+                rowHeight={75}
                 rowsPerPageOptions={[5,10,25]}
                 density="comfortable"
                 components={{

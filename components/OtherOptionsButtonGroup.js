@@ -1,10 +1,14 @@
 import React, { Fragment, useState } from 'react'; 
 
 import { 
-    Typography, Paper, FormLabel, Grid, TextField,  FormHelperText, Divider
+    Typography, Paper, FormLabel, 
+    Grid, TextField,  FormHelperText, 
+    Divider
 } from '@material-ui/core'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+
 import StarIcon from '@material-ui/icons/Star'; 
+import HomeIcon from '@material-ui/icons/Home'; 
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'; 
 
@@ -15,6 +19,7 @@ import NicknameButton from '../components/Buttons/NicknameButton';
 import StyledSharedDialog from '../components/Composites/StyledSharedDialog'; 
 import { useCount } from '../components/SharedContext'; 
 
+
 const useStyles = makeStyles((theme) => ({
     paper: {
         border: `1px solid ${theme.palette.divider}`,
@@ -23,8 +28,9 @@ const useStyles = makeStyles((theme) => ({
     },
     paperPurple: {
         border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(2),
+        padding: theme.spacing(1.5),
         backgroundColor: theme.palette.primary.dark,
+        width: '99%',
     },
     buttonGroup: {
         display: 'flex', 
@@ -143,7 +149,16 @@ export default function OtherOptionsButtonGroup() {
 
     const getContent = () => {
         if(openDialogName==='fav') {
-            return favContent; 
+            if(state.starred) {
+                return favContent; 
+            } else {
+                return { 
+                    title: 'Remove Star', 
+                    message: 'Are you sure you want to unmark as favorite?', 
+                    noSubmissionReq: false,
+                    component: <HomeIcon />
+                };
+            }
         } else if(openDialogName==='title') {
             return titleContent; 
         } else {
@@ -169,9 +184,7 @@ export default function OtherOptionsButtonGroup() {
     }
 
     const handleSubmit = () => {
-        // alert('Submitting...'); 
-        //todo: delete this altogether?
-        console.log('submitting name...')
+        console.log('handling submit...');
     }
 
     const StarIconsGraphic = () => {
@@ -185,7 +198,7 @@ export default function OtherOptionsButtonGroup() {
             </Grid>
         );
     }
-
+    
     const favContent = {
         title: 'Mark as favorite',
         message: 'Do you really love this one that much?',

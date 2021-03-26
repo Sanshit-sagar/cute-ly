@@ -18,20 +18,21 @@ export default function SharedSnackbar() {
   const [state, dispatch] = useCount();
   
   React.useEffect(() => {
-    if (state.snackbar?.snackpack.length && !state.snackbar?.messageInfo) {
+    // alert('here'); 
+    if (state.snackbar.snackpack.length && !state.snackbar.open) {
       dispatch({ 
         type: "SNACKBAR_IDLE", payload: { 
           messageInfo: {
-            ...state.snackbar?.snackpack[0] 
+            ...state.snackbar.snackpack[0] 
           }, 
-          snackpack: state.snackbar?.snackpack.slice(1),
+          snackpack: state.snackbar.snackpack.slice(1),
         } 
       });
-    } else if (state.snackbar?.length && state.snackbar?.messageInfo && state.snackbar?.open) {
+    } else if (state.snackbar.length && state.snackbar.messageInfo && state.snackbar.open) {
       
       dispatch({ type: "SNACKBAR_CLOSE" }); 
     }
-  }, [state.snackbar?.snackpack, state.snackbar?.messageInfo, state.snackbar?.open]);
+  }, [state.snackbar.snackpack, state.snackbar.messageInfo, state.snackbar.open]);
 
   const handleClick = (message) => () => {  
     dispatch({ 
@@ -62,18 +63,17 @@ export default function SharedSnackbar() {
     <div>
       <Snackbar
         key = {
-          state.snackbar?.messageInfo ? 
-          state.snackbar?.messageInfo.key : 
+          state.snackbar.messageInfo ? 
+          state.snackbar.messageInfo.key : 
           undefined
         }
         anchorOrigin = {{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         open = {
-          state.snackbar?.open
+          state.snackbar.open
         }
-
         autoHideDuration={2000}
         onClose={ 
           handleClose
@@ -82,19 +82,25 @@ export default function SharedSnackbar() {
           handleExited
         }
         message={
-            state.snackbar?.messageInfo 
-          ? state.snackbar?.messageInfo.message 
+            state.snackbar.messageInfo 
+          ? state.snackbar.messageInfo.message 
           : undefined
         }
         action={
           <React.Fragment>
-         
+            {/* <Button 
+              color="textSecondary" 
+              size="small" 
+              onClick={handleClose}
+            >
+              UNDO
+            </Button> */}
+            
             <IconButton
               aria-label="close"
               color="textSecondary"
               className={classes.close}
               onClick={handleClose}
-              color="secondary"
             >
               <CloseIcon />
             </IconButton>

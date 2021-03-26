@@ -6,27 +6,32 @@ import {
     FormControlLabel, 
     Typography 
 } from '@material-ui/core';
-import StarIcon from '@material-ui/icons/Star'; 
+import StarIcon from '@material-ui/icons/Star';
+
+import { useCount } from '../SharedContext'; 
 
 const MarkFavouriteButton = ({ handleClick }) => {
-    const [starred, setStarred] = useState(false); 
+    const [state, dispatch] = useCount(); 
+
+    const getIconColor = () => {
+        return state.starred ? 'yellow' : 'black'; 
+    };
 
     const handleStarred = () => {
-        setStarred(!starred); 
-        handleClick(); 
-    }
-    const getIconColor = () => {
-        return starred ? 'yellow' : 'black';
+        dispatch({
+            type: 'TOGGLE_STAR',
+        });
+        handleClick();
     }
 
     return (
-        <div style={{ marginTop: '17.5px',marginRight: '5px' }}> 
+        <div style={{ marginRight: '5px' }}> 
             <Tooltip title="Mark as favorite"> 
                 <Button 
                     size="large"
                     color="primary"
                     onClick={handleStarred}
-                    style={{ height: '100%'}}
+                    style={{ marginTop: '5px', height: '100%'}}
                 > 
                     <FormControlLabel 
                         value="meta" 

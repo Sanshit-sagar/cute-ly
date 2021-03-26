@@ -56,6 +56,7 @@ const IosAnalyticsButton = ({ executeOnOpen }) => {
                 size="large"
                 color="primary"
                 onClick={handleClick}
+                style={{ paddingTop: '7.5px' }}
             >
                 <FormControlLabel 
                     value="ios" 
@@ -90,6 +91,7 @@ const AndroidAnalyticsButton = ({ executeOnOpen }) => {
                 size="large"
                 color="primary"
                 onClick={handleClick}
+                style={{ paddingTop: '7.5px' }}
             >
                 <FormControlLabel 
                     value="android" 
@@ -123,6 +125,7 @@ const SocialMetaTagsButton = ({ executeOnOpen }) => {
                 size="large"
                 color="primary"
                 onClick={handleClick}
+                style={{ paddingTop: '7.5px', height: '100%'}}
             >
                 <FormControlLabel 
                     value="meta" 

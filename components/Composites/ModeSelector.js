@@ -88,7 +88,7 @@ const ModeSelector = () => {
         <StyledToggleButtonGroup>
           <Paper elevation={5} className={classes.buttonGroupPaper}>
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
-                    <FormLabel component="legend" style={{ marginLeft: '15px', marginTop: '6px'}}> 
+                    <FormLabel component="legend" style={{ marginTop: '3.5px', marginLeft: '15px'}}> 
                         <Typography variant="overline"> 
                             Options
                         </Typography> 
@@ -97,7 +97,7 @@ const ModeSelector = () => {
                     <Divider /> 
         
                     <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <div style={{ marginTop: '17.5px', marginRight: '5px' }}> 
+                        <div style={{ marginTop: '7.5px', marginRight: '5px' }}> 
                             <Tooltip title="Short format (4 chars)"> 
                                 <FormControlLabel
                                     value="SHORT"
@@ -115,7 +115,7 @@ const ModeSelector = () => {
                             </Tooltip> 
                         </div>
                             
-                        <div style={{ marginTop: '17.5px',marginRight: '5px' }}> 
+                        <div style={{ marginTop: '7.5px',marginRight: '5px', marginBottom: '5px' }}> 
                             <Tooltip title="Unguessable format (16 chars)">
                                 <FormControlLabel
                                     value="UNGUESSABLE"

@@ -157,7 +157,7 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
                                 onClick={handleCancel}
                             > 
                                 <Typography variant="button" onClick={handleCancel}>
-                                    Disagree
+                                    Dismiss
                                 </Typography>
                             </Button>
                         </Grid> 

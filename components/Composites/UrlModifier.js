@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import AddIcon from '@material-ui/icons/Add'; 
 import InfoIcon from '@material-ui/icons/Info';
-
+import SharedSnackbar from '../Snackbar'; 
 import { useCount } from '../SharedContext';
 import { createLink } from '../../lib/db'; 
 
@@ -32,15 +32,18 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(0.5),
         backgroundColor: theme.palette.primary.dark,
     },
+    paperHeader: {
+        
+    },
     buttonGroupPaper: {
         backgroundColor: '#fff',
-        padding: theme.spacing(0.3),
-        marginRight: theme.spacing(1),
-        marginTop: theme.spacing(1),
+        padding: theme.spacing(0.5),
     },
     paperContainer: {
         backgroundColor: theme.palette.background.paper,
         margin: theme.spacing(1),
+        width: '100%',
+        height: '100%',
     },
     tagsButton: {
         backgroundColor: theme.palette.secondary.dark,
@@ -48,61 +51,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-//  const NicknameDisplay = () => {
-//      const [state, dispatch] = useCount();
-
-//     const handleChange = (inputValue) => {
-//         const sanitizedValue = sanitizeInput(inputValue);
-
-//         dispatch({
-//             type: "UPDATE_NICKNAME",
-//             payload: {
-//                 value: sanitizedValue,
-//             },
-//         });
-//     }
-
-//     const handleInfoButtonClick = () => {
-//         alert('Info Button Clicked'); 
-//     }
-
-//     const sanitizeInput = (input) => {
-//         if(input.charAt(input.length-1) === ' ') {
-//             return input.substring(0, input.length-1);
-//         } else if(input.length > 20) {
-//             //dispatch snackbar here 
-//             return input.substring(0, 20);
-//         }
-//         return input; 
-//     }
-
-//     return (
-//         <Grid container direction="row" justify="space-between" spacing={1}>
-//             <Grid item>
-//                 <TextField
-//                     name="urlInput"
-//                     variant="outlined"
-//                     color="primary"
-//                     value={state.nickname}
-//                     placeholder="@NameMe"
-//                     onChange={(e) => handleChange(e.target.value)}
-//                     InputProps={{
-//                         endAdornment: 
-//                             <InputAdornment position="end">
-//                                 <IconButton 
-//                                     margin="dense" 
-//                                     onClick={() => handleInfoButtonClick()}
-//                                 >
-//                                     <InfoIcon />
-//                                 </IconButton>
-//                             </InputAdornment>,
-//                     }}
-//                     style={{ backgroundColor: '#fff', borderRadius: '5px' }}
-//                 />
-//             </Grid>
-//         </Grid>
-//     );
-//  }
 
  function SubmitButton() {
     const [state, dispatch] = useCount(); 
@@ -113,15 +61,12 @@ const useStyles = makeStyles((theme) => ({
         const result = await createLink(state); 
         const updatedResultUrl = result.updatedUrl;
 
-        console.log("About to dispatch: " + updatedResultUrl); 
         setResult(updatedResultUrl);
-
-        dispatch({ 
-            type: 'UPDATE_RESULTS', 
+    
+        dispatch({
+            type: "UPDATE_RESULTS",
             payload: {
-                value: updatedResultUrl,
-                message: "New URL: " + (updatedResultUrl),
-                key: new Date().getTime()
+                value: updatedResultUrl
             }
         });
     }
@@ -143,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
  }
 
  
-const UrlModifierBase = ({ open, handleOpenDialog, handleCloseDialog }) => {
+const UrlModifierBase = () => {
     const classes = useStyles(); 
 
     const [state, dispatch] = useCount(); 
@@ -157,7 +102,7 @@ const UrlModifierBase = ({ open, handleOpenDialog, handleCloseDialog }) => {
 
     return (
         <Paper elevation={5} className={classes.paperContainer}>
-            <Grid container spacing={1} style={{ padding: '15px' }}>
+            <Grid container spacing={1} style={{ padding: '12.5px' }}>
                 <Grid container direction="column" justify="flex-start" alignIitems="flex-end" wrap="no-wrap" spacing={1}>
 
                     <Grid item>
@@ -231,28 +176,39 @@ const UrlModifierBase = ({ open, handleOpenDialog, handleCloseDialog }) => {
 }  
 
 const UrlModifierHeader = () => {
+    const classes = useStyles(); 
+
     return (
-        <Grid container direction="row" justify="flex-end" alignItems="center" spacing={1}>
-            <Paper elevation={10} style={{ marginRight: '20px', padding: '5px', marginTop: '15px', backgroundColor: 'white' }}>
-                <Grid container  direction="row" justify="flex-end" alignItems="center" spacing={1}>
+        // <Paper elevation={10} className={classes.paperHeader}>
+            <Grid container direction="row" justify="space-between" alignItems="flex-start">
+                <div>
+                    <Paper elevation={5} style={{ opacity:0.5 }} >
+                        <Grid item> 
+                            <Button variant="contained" color="secondary" margin="normal" size="large">
+                                <Typography variant="button" color="textSecondary">
+                                    Recents
+                                </Typography>
+                            </Button>
+                        </Grid>
+                    </Paper> 
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
                     <Grid item>
-                        <Typography variant="h1" style={{ fontSize: '48px', color: 'black' }}> 
+                        <Typography variant="h2" style={{ color: 'white' }}> 
                             URL Cutifier
                         </Typography>
                     </Grid> 
+
                     <Grid item>
-                        <Paper elevation={5}>
-                            <SvgIcon fontSize="large">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                </svg>
-                            </SvgIcon>
-                        </Paper>
+                        <SvgIcon fontSize="large">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                        </SvgIcon>
                     </Grid> 
-                </Grid>
-            </Paper>
-        </Grid>
-        
+                </div>
+            </Grid>
+        // </Paper>
     ); 
 }
 
@@ -274,31 +230,14 @@ const UrlModifier = () => {
         setOpen(false); 
     }
 
-    // const googleContent = {
-    //     title: 'Google Play Analytics',
-    //     message: 'Google Play Analytics Tags',
-    //     component: <GoogleAnalyticsForm /> 
-    // }; 
-
     return (
         <Fragment>
-
             {/* <UrlModifierHeader /> */}
-            
             <UrlModifierBase 
                 open={open}
                 handleOpenDialog={handleOpenDialog}
                 handleCloseDialog={handleCloseDialog}
             />
-            
-            {/* <StyledSharedDialog
-                open={open}
-                handleClose={handleCloseDialog}
-                handleSubmit={handleSubmitDialog}
-                content={googleContent}
-                noSubmissionReq={false}
-            /> */}
-            {/* <SharedSnackbar />  */}
         </Fragment>
     );
 }
