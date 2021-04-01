@@ -2,7 +2,6 @@ import React, {
     useState, 
     useEffect, 
     useContext, 
-    useReducer,
     createContext 
 } from 'react';
 
@@ -48,15 +47,14 @@ function sanitizeData(key, data) {
 
 function useFirebaseRealtime() {
     const [user, setUser] = useState(null); 
-
-    const [links, setLinks] = useState(null); 
-    const [loading, setLoading] = useState(null); 
-
-    const [linksMap, setLinksMap] = useState({}); // {  [slug]: linkData }
+    const [links, setLinks] = useState([]); 
+    const [linksMap, setLinksMap] = useState({}); 
+    const [realtimeLoading, setRealtimeLoading] = useState(false); 
+    const [error, setError] = useState(null); 
 
     useEffect(() => {
         if(firebase.auth().currentUser) {
-            setLoading(true);
+            setRealtimeLoading(true);
 
             const currentUserId = firebase.auth().currentUser.uid; 
             
@@ -70,8 +68,6 @@ function useFirebaseRealtime() {
                     const data = childSnapshot.val();
 
                     if(data.uid === currentUserId) {
-                        //handle (!linksMap.hasOwnProperty(data.slug) || linksMap[data.slug].timestamp != data.timestamp)
-
                         linksMap[data.suffix] = sanitizeData(key, data); 
 
                         sanitizedLinks.push({
@@ -85,15 +81,16 @@ function useFirebaseRealtime() {
                 setLinksMap(linksMap); 
             });
             
-            setLoading(false); 
+            setRealtimeLoading(false); 
             return () => ref.off('value', listener); 
         }
     }, [firebase.database()]); 
     
     return { 
         user,
-        links, 
-        loading,
-        linkMappingsBySlug,
+        links,
+        linksMap,
+        realtimeLoading,
+        error
     }; 
 }

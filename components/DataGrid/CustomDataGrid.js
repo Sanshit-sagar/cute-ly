@@ -165,11 +165,11 @@ const DestinationUrlFavicons = ({ url }) => {
     if(url && url.length > 0) {
         return (
             <div>
-                { url.includes('facebook')  && <FacebookIcon style={{ marginLeft: '5px', marginRight: '10px'}} /> }
-                { url.includes('linkedin')  && <LinkedInIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
-                { url.includes('twitter')   && <TwitterIcon style={{ marginLeft: '5px',marginRight: '10px' }} /> }
-                { url.includes('whatsapp')  && <WhatsAppIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
-                { !url.includes('whatsapp') && !url.includes('facebook') && !url.includes('twitter') && !url.includes('linkedin') && <HttpIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
+                { url && url.includes('facebook')  && <FacebookIcon style={{ marginLeft: '5px', marginRight: '10px'}} /> }
+                { url && url.includes('linkedin')  && <LinkedInIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
+                { url && url.includes('twitter')   && <TwitterIcon style={{ marginLeft: '5px',marginRight: '10px' }} /> }
+                { url && url.includes('whatsapp')  && <WhatsAppIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
+                { url && !url.includes('whatsapp') && !url.includes('facebook') && !url.includes('twitter') && !url.includes('linkedin') && <HttpIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
             </div>
         ); 
     } else {

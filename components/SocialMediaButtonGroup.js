@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'; 
+import React, { Fragment, useState, useEffect } from 'react'; 
 
 import Dialog from '@material-ui/core/Dialog'; 
 import DialogTitle from '@material-ui/core/DialogTitle'; 
@@ -6,12 +6,11 @@ import DialogContent from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Divider from '@material-ui/core/Divider'; 
 
-import TextField from '@material-ui/core/TextField'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { 
     FormControl, FormControlLabel, FormHelperText, FormLabel, InputLabel,
     Typography, Tooltip, Link, FilledInput,
-    Button, Paper, Grid
+    Button, Paper, Grid, TextField
 } from '@material-ui/core';
 
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -26,24 +25,32 @@ import { createLink } from '../lib/db';
 import { useCount } from './SharedContext';
 
 const useStyles = makeStyles((theme) => ({
-    cardRoot: {
-
-    },
-    cardTitle: {
-        fontSize: 14,
-    },
     paper: {
         border: `1px solid`,
         padding: theme.spacing(1),
         borderColor: theme.palette.primary.dark,
     },
-    paperPurple: {
-        border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(2),
-        backgroundColor: theme.palette.primary.dark,
-    },
     button: {
         height: '100%',
+    },
+    dialogTitle: {
+        display: 'flex', 
+        flexDirection: 'row',
+        justifyContent: 'flex-start', 
+        alignItems: 'stretch',
+    },
+    linkContainer: {
+        display: 'flex', 
+        flexDirection: 'row', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+    },
+    socialMediaDetailsItem: {
+        marginTop: '7.5px', 
+        marginRight: '5px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center',
     },
 })); 
 
@@ -203,23 +210,9 @@ const WhatsappDialog = ({ open, handleClose }) => {
             onClose={handleClose}
         > 
              <DialogTitle>
-                <div style = {{ 
-                        display: 'flex', 
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start', 
-                        alignItems: 'stretch' 
-                    }}
-                >
-                    <WhatsAppIcon 
-                        style={{ 
-                            margin: '10px', 
-                            color: '#00d85a' 
-                        }}
-                    /> 
-                    <Typography 
-                        variant="h4"
-                        style={{ color: '#1eb980' }}
-                    >
+                <div className={classes.dialogTitle}>
+                    <WhatsAppIcon style={{ margin: '10px', color: '#00d85a' }} />
+                    <Typography variant="h4" style={{ color: '#1eb980' }}>
                         Share on WhatsApp
                     </Typography>
                 </div>
@@ -373,6 +366,53 @@ const WhatsappDialog = ({ open, handleClose }) => {
     );
  }
 
+ const StyledProspectiveLink = ({ url }) => {
+    const classes = useStyles(); 
+
+    return (
+        <Grid item>
+            <Paper elevation={0}>
+                <div className={classes.linkContainer}>
+                    <Link href={url}> 
+                        <Typography variant="caption" style={{ fontSize: '16px', color: '#1eb980' }}> 
+                            { url.substring(0, 55) + "..."} 
+                        </Typography>
+                    </Link>
+                    <OpenInNewIcon style={{ color: '#1eb980' }} /> 
+                </div>
+            </Paper>
+        </Grid> 
+    );
+ }
+
+ const StyledDialogActionsGroup = ({ type, message, handleClose }) => {
+    
+    return (
+        <Grid 
+            container 
+            direction="row" 
+            justify="flex-end" 
+            alignItems="center" 
+            spacing={2}
+        >
+            <Grid item>
+                <Button 
+                    variant="outlined"
+                    color="primary"
+                    size="large"
+                    margin="normal"
+                    onClick={handleClose}
+                > 
+                    <Typography variant="button" color="textSecondary"> Cancel </Typography>
+                </Button>
+            </Grid>
+            <Grid item>
+               { type==="twitter" && <SubmitButtonTwitter message={message} handleClose={handleClose} /> }
+            </Grid>
+        </Grid>
+    )
+ }
+
  const LinkedinDialog = ({ open, handleClose }) => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
@@ -384,23 +424,9 @@ const WhatsappDialog = ({ open, handleClose }) => {
            onClose={handleClose}
        > 
             <DialogTitle>
-                <div style = {{ 
-                        display: 'flex', 
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start', 
-                        alignItems: 'stretch' 
-                    }}
-                >
-                    <LinkedInIcon 
-                        style={{ 
-                            margin: '10px', 
-                            color: '#005cc5' 
-                        }}
-                    /> 
-                    <Typography 
-                        variant="h4"
-                        style={{ color: '#1eb980' }}
-                    >
+                <div className={classes.dialogTitle}>
+                    <LinkedInIcon style={{ margin: '10px', color: '#005cc5' }} />
+                    <Typography variant="h4" style={{ color: '#1eb980' }}>
                         Share on LinkedIn
                     </Typography>
                 </div>
@@ -417,18 +443,7 @@ const WhatsappDialog = ({ open, handleClose }) => {
                         justify="space-around"
                         wrap='wrap'
                     >
-                        <Grid item>
-                            <Paper elevation={0}>
-                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                    <Link href={currUrl}> 
-                                        <Typography variant="caption" style={{ fontSize: '16px', color: '#1eb980' }}> 
-                                            { currUrl.substring(0, 55) + "..."} 
-                                        </Typography>
-                                    </Link>
-                                    <OpenInNewIcon style={{ color: '#1eb980' }} /> 
-                                </div>
-                            </Paper>
-                        </Grid> 
+                       <StyledProspectiveLink url={currUrl} /> 
                     </Grid>
                 </Paper>
            </DialogContent>
@@ -494,8 +509,6 @@ const WhatsappDialog = ({ open, handleClose }) => {
                 value: updatedResultUrl
             }
         });
-
-        props.handleClose(); 
     }
 
     return (
@@ -524,23 +537,9 @@ const WhatsappDialog = ({ open, handleClose }) => {
             onClose={handleClose}
         > 
              <DialogTitle>
-                <div style = {{ 
-                        display: 'flex', 
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start', 
-                        alignItems: 'stretch' 
-                    }}
-                >
-                    <FacebookIcon 
-                        style={{ 
-                            margin: '10px', 
-                            color: '#4861ac' 
-                        }}
-                    /> 
-                    <Typography 
-                        variant="h4"
-                        style={{ color: '#1eb980' }}
-                    >
+                <div className={classes.dialogTitle}>
+                    <FacebookIcon style={{ margin: '10px', color: '#4861ac' }} />
+                    <Typography variant="h4" style={{ color: '#1eb980' }}>
                         Share on Facebook
                     </Typography>
                 </div>
@@ -557,18 +556,7 @@ const WhatsappDialog = ({ open, handleClose }) => {
                         justify="space-around"
                         wrap='wrap'
                     >
-                        <Grid item>
-                            <Paper elevation={0}>
-                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                    <Link href={currUrl}> 
-                                        <Typography variant="caption" style={{ fontSize: '16px', color: '#1eb980' }}> 
-                                            { currUrl.substring(0, 55) + "..."} 
-                                        </Typography>
-                                    </Link>
-                                    <OpenInNewIcon style={{ color: '#1eb980' }} /> 
-                                </div>
-                            </Paper>
-                        </Grid> 
+                        <StyledProspectiveLink url={currUrl} /> 
                     </Grid>
                 </Paper>
             </DialogContent>
@@ -593,13 +581,9 @@ const WhatsappDialog = ({ open, handleClose }) => {
                         </Button>
                     </Grid>
                     <Grid item>
-
                         <FacebookSubmitButton 
-                            data={data}
-                            setData={data}
                             handleClose={handleClose}
                         />
-
                     </Grid>
                 </Grid>
             </DialogActions>
@@ -614,12 +598,12 @@ function fixedEncodeURIComponent(str) {
     });
 }
 
-function SubmitButtonTwitter(props) {
+const SubmitButtonTwitter = ({ message, handleClose }) => {
     const [state, dispatch] = useCount(); 
     const [result, setResult] = useState(''); 
     
     const handleSubmit = async () => {
-        const postfix = fixedEncodeURIComponent(props.message); 
+        const postfix = fixedEncodeURIComponent(message); 
         const encodedMessageUrl = 'https://twitter.com/intent/tweet?text=' + postfix; 
 
         dispatch({
@@ -641,8 +625,6 @@ function SubmitButtonTwitter(props) {
                 value: updatedResultUrl
             }
         });
-
-        props.handleClose(); 
     }
 
     return (
@@ -674,18 +656,9 @@ const TwitterDialog = ({ open, handleClose }) => {
     }
 
     return (
-        <Dialog 
-            open={open} 
-            onClose={handleClose}
-        > 
+        <Dialog open={open} onClose={handleClose}>
             <DialogTitle>
-                <div style = {{ 
-                        display: 'flex', 
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start', 
-                        alignItems: 'stretch' 
-                    }}
-                >
+                <div className={classes.dialogTitle}>
                     <TwitterIcon 
                         style={{ 
                             margin: '7.5px', 
@@ -770,31 +743,7 @@ const TwitterDialog = ({ open, handleClose }) => {
             </DialogContent>
 
             <DialogActions> 
-                <Grid 
-                    container 
-                    direction="row" 
-                    justify="flex-end" 
-                    alignItems="center" 
-                    spacing={2}
-                >
-                    <Grid item>
-                        <Button 
-                            variant="outlined"
-                            color="primary"
-                            size="large"
-                            margin="normal"
-                            onClick={handleClose}
-                        > 
-                            <Typography variant="button" color="textSecondary"> Cancel </Typography>
-                        </Button>
-                    </Grid>
-                    <Grid item>
-                        <SubmitButtonTwitter 
-                            message={message}
-                            handleClose={handleClose}
-                        />
-                    </Grid>
-                </Grid>
+                <StyledDialogActionsGroup type="twitter" message={message} handleclose={handleClose} /> 
             </DialogActions>
         </Dialog>
     );
@@ -804,93 +753,25 @@ const SocialMediaButtonGroup = () => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
 
-    const [openTwitter,  setOpenTwitter] = useState(false); 
-    const [openWhatsapp, setOpenWhatsapp] = useState(false); 
-    const [openFacebook, setOpenFacebook] = useState(false); 
-    const [openLinkedin, setOpenLinkedin] = useState(false); 
+    const [open, setOpen] = useState(false);
+    const [medium, setMedium] = useState(''); 
 
-
-    const handleCloseTwitter = () => {
-        setOpenTwitter(false); 
+    const handleOpen = (currentMedium) => {
+        setMedium(currentMedium);
+        setOpen(true);
     }
-    const handleCloseWhatsapp = () => {
-        setOpenWhatsapp(false); 
-    }
-    const handleCloseFacebook = () => {
-        setOpenFacebook(false); 
+    const handleClose = () => {
+        setMedium('');
+        setOpen(false); 
     }
 
-    const handleCloseLinkedin = () => {
-        setOpenLinkedin(false);
-    }
-
-    const clearTwitterData = () => {
-        dispatch({ 
-            type: 'UPDATE_SOCIAL',
-            payload: {
-                name: 'twitter',
-                value: false,
-                prefix: ''
-        }});
-        dispatch({
-            type: 'SNACKBAR_TRIGGER', 
-            payload: {
-                message: 'Clearing Twitter Data',
-                key: new Date().getTime().toString()
-            }
-        });
-    }
-
-    const clearWhatsappData = () => {
-        dispatch({
-            type: 'UPDATE_SOCIAL',
-            payload: {
-                name: 'whatsapp',
-                value: false,
-                prefix: '',
-            }});
-        dispatch({
-            type: 'SNACKBAR_TRIGGER', 
-            payload: {
-                message: 'Clearing WhatsApp Data',
-                key: new Date().getTime().toString()
-            }
-        });
-    }
-
-    const clearFacebookData = () => {
-        dispatch({
-            type: 'UPDATE_SOCIAL',
-            payload: {
-                name: 'facebook',
-                value: false,
-                prefix: '',
-            }});
-        dispatch({
-            type: 'SNACKBAR_TRIGGER',
-            payload: {
-                message: 'Clearing Facebook Data',
-                key: new Date().getTime().toString()
-            },
-        });
-    }
-
-    const clearLinkedinData = () => {
-        dispatch({
-            type: 'UPDATE_SOCIAL',
-            payload: {
-                name: 'linkedin',
-                value: false,
-                prefix: '',
-            }});
-        dispatch({
-            type: 'SNACKBAR_TRIGGER',
-            payload: {
-                message: 'Clearing LinkedIn Data',
-                key: new Date().getTime().toString()
-            },
-        });
-    }
+    useEffect(() => {
+        if(state.showResults) {
+            setMedium('');
+            setOpen(false);
+        };
+        return open;
+    }, [open, medium, state.showResults]); 
 
     const dispatchAlreadyGenerated = (medium) => {
         dispatch({
@@ -901,122 +782,94 @@ const SocialMediaButtonGroup = () => {
             },
         });
     }
-
-    const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
-
-    const getBodyColor = () => {
-        const [state, dispatch] = useCount(); 
-
-        return !validUrlPattern.test(state.url) ? 'gray' : '#1eb980';
-    }
    
     return (
-        <Fragment>
-            <StyledToggleButtonGroup>
-                <Paper elevation={0} className={classes.paper}>
+    <Fragment>
+        <StyledToggleButtonGroup>
+            <Paper elevation={0} className={classes.paper}>
+                
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
                     <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
-                        <Typography variant="overline" style={{ color: getBodyColor() }}> 
+                        <Typography 
+                            variant="overline" 
+                            style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980' }}
+                        > 
                             Share
                         </Typography> 
                     </FormLabel>
 
-                    <Divider style={{ backgroundColor: getBodyColor() }} /> 
+                    <Divider style={{ backgroundColor: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980' }} /> 
             
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                         {socialMediaDetails.map((item) => (
-                        <div style={{ marginTop: '7.5px', marginRight: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}> 
-                            <Tooltip 
-                                arrow
-                                enterDelay={500} 
-                                title={
-                                    <Fragment>
-                                        <Typography 
-                                            variant="caption"
-                                            color="primary"
-                                        >
-                                            {item.title}
-                                        </Typography>
-                                    </Fragment>
-                                }
-                            > 
-                                <Button 
-                                    name={item.name}
-                                    color="primary"
-                                    size="small"
-                                    margin="dense"
-                                    variant="outlined"
-                                    disabled={!validUrlPattern.test(state.url)}
-                                    onClick={(e) => { 
-                                        if(item.name==='twitter') {
-                                            if(!state.socials.twitter) {
-                                                setOpenTwitter(true); 
-                                            } else {
-                                                dispatchAlreadyGenerated('Twitter');
-                                            }
-                                        } else if(item.name==='whatsapp') {
-                                            if(!state.socials.whatsapp) {
-                                                setOpenWhatsapp(true); 
-                                            } else {
-                                                dispatchAlreadyGenerated('Whatsapp');
-                                            }
-                                        } else if(item.name==='facebook') {
-                                            if(!state.socials.facebook) {
-                                                setOpenFacebook(true);
-                                            } else {
-                                                dispatchAlreadyGenerated('Facebook');
-                                            }
-                                        } else if(item.name==='linkedin') {
-                                            if(!state.socials.linkedin) {
-                                                setOpenLinkedin(true);
-                                            } else {
-                                                dispatchAlreadyGenerated('LinkedIn');
-                                            }
-                                        }
-                                    }}
-                                    style={{ paddingTop: '7.5px'}}
-                                >
-                                    <FormControlLabel 
-                                        control={item.component}
-                                        label={
+                            <div className={classes.socialMediaDetailsItem}> 
+                                <Tooltip 
+                                    arrow
+                                    enterDelay={500} 
+                                    title={
+                                        <Fragment>
                                             <Typography 
-                                                variant="overline"
-                                                style={{ fontSize: '8px' }}
-                                            > 
-                                                {item.name}
+                                                variant="caption"
+                                                color="primary"
+                                            >
+                                                {item.title}
                                             </Typography>
-                                        }
-                                        labelPlacement="bottom"
-                                    />
-                                </Button>
-                            </Tooltip>
-                        </div>
+                                        </Fragment>
+                                    }
+                                > 
+                                    <Button 
+                                        name={item.name}
+                                        color="primary"
+                                        size="small"
+                                        margin="dense"
+                                        variant="outlined"
+                                        disabled={!validUrlPattern.test(state.url)}
+                                        onClick={(e) => { 
+                                            if(!state.socials[item.name]) {
+                                                handleOpen(item.name);
+                                            } else {
+                                                dispatchAlreadyGenerated(item.name);
+                                            }
+                                        }}
+                                        style ={{ paddingTop: '7.5px'}}
+                                    >
+                                        <FormControlLabel 
+                                            control={item.component}
+                                            label={
+                                                <Typography 
+                                                    variant="overline"
+                                                    style={{ fontSize: '8px' }}
+                                                > 
+                                                    {item.name}
+                                                </Typography>
+                                            }
+                                            labelPlacement="bottom"
+                                        />
+                                    </Button>
+                                </Tooltip>
+                            </div>
                         ))} 
                     </div> 
                 </div> 
-                </Paper>
-            </StyledToggleButtonGroup>
+            </Paper>
+        </StyledToggleButtonGroup>
 
-            <TwitterDialog 
-                open={openTwitter}
-                handleClose={handleCloseTwitter}
-            />
+                <TwitterDialog open={open && medium==="twitter"} handleClose={handleClose} />
+                <WhatsappDialog 
+                    open={open && medium==="whatsapp"}
+                    handleClose={handleClose}
+                />
 
-            <WhatsappDialog 
-                open={openWhatsapp} 
-                handleClose={handleCloseWhatsapp}
-            />
+                <FacebookDialog 
+                    open={open && medium==="facebook"}
+                    handleClose={handleClose}
+                />
 
-            <FacebookDialog 
-                open={openFacebook} 
-                handleClose={handleCloseFacebook}
-            />
-
-            <LinkedinDialog 
-                open={openLinkedin}
-                handleClose={handleCloseLinkedin}
-            />
-        </Fragment>
+                <LinkedinDialog 
+                    open={open && medium==="linkedin"}
+                    handleClose={handleClose}
+                />
+    </Fragment>
     ); 
 }
 
