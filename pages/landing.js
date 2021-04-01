@@ -1,5 +1,5 @@
 import 'tailwindcss/tailwind.css'
-import Link from '../components/Link'; 
+import Link from 'next/link'; 
 
 export default function Landing() {
   return (

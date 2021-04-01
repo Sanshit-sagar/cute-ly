@@ -2,21 +2,22 @@ import React, { Fragment } from 'react';
 
 import { 
     Grid, 
-    Paper, 
     Button, 
     Dialog,
     DialogActions, 
     DialogContent, 
     DialogTitle,
-    CardContent,
-    IconButton,
+    Paper,
     Typography, 
-    Tooltip
+    Tooltip,
+    DialogContentText
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
 
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+
+import { useCount } from '../SharedContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,16 +25,25 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         backgroundColor: theme.palette.primary.main,
-        margin: theme.spacing(2),
     },
     helpTooltip__title: {
         marginRight: '2.25px', 
-        paddingTop: '5px',
+        paddingTop: '10px',
+        color: 'red',
+    },
+    captionPaper: {
+        width: '400px', 
+        display: 'flex', 
+        flexDirection: 'row', 
+        justifyContent: 'flex-start', 
+        alignItems: 'flex-start', 
+        flexWrap: 'wrap',
     },
 }));
 
 const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
     const classes = useStyles(); 
+    const [state, dispatch] = useCount();
 
     const handleCancel = () => {
         handleClose();
@@ -44,65 +54,48 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
         handleClose(); 
     }
 
-    const handleConfirmDialog = () => {
-        handleClose(); 
+    const getHeaderFontColor = () => {
+        return '#1eb980';  
+    }
+
+    const getSubtitleFontColor = () => {
+        return state.dark ? '#fff' : '#000'; 
     }
 
     return (
-        <Dialog open={open} onClose={handleClose}>
-            { content &&
-                <DialogTitle>
-                    {content?.title && 
-                        <div>
-                            <Grid 
-                                container 
-                                direction="row" 
-                                justify="flex-start"
-                                spacing={2}
-                            >
-                                <Grid item>
-                                    <Typography 
-                                        variant="h4"
-                                        color="textPrimary"
-                                    > 
-                                        {content.title} 
-                                    </Typography>
-                                </Grid> 
-                                
-                                <Grid item>
-                                    <Tooltip title = {"Whats " + content.title + "?"}>
-                                        <IconButton 
-                                            size="small"
-                                            color="primary"
-                                            className="helpTooltip__title"
-                                        >
-                                            <HelpOutlineOutlinedIcon /> 
-                                        </IconButton>
-                                    </Tooltip>
-                                </Grid>
-                            </Grid>
-                    
-                            <Typography 
-                                variant="subtitle1"
-                                color="textSecondary"
-                            > 
-                                {content.message}
-                            </Typography>
-                        </div>
+    <Fragment> 
+        {
+            content && 
+            <Dialog 
+                open={open} 
+                onClose={handleClose}
+            >
+                <Fragment>
+                    {
+                        content?.component &&
+                        <DialogContent>
+                            <Paper elevation={0} className={classes.captionPaper}>
+                                <Typography 
+                                    variant="h4"
+                                    style={{ color: getHeaderFontColor() }}
+                                > 
+                                    {content.title} 
+                                </Typography>
+
+                                <Typography 
+                                    variant="caption"
+                                    style={{ color: getSubtitleFontColor() }}
+                                >
+                                    {content.message} 
+                                </Typography>
+                            </Paper>
+                        
+                            {content?.component}
+                        
+                        </DialogContent>
                     }
-                </DialogTitle>
-            }
-
-            { content && content?.component && 
-                <DialogContent style={{ padding: '10px' }}> 
-                    <CardContent> 
-                        {content.component}
-                    </CardContent>
-                </DialogContent>
-            }
-
-            { content && !content?.noSubmissionReq ?
-            
+                </Fragment>
+                
                 <DialogActions> 
                     <Grid 
                         container 
@@ -122,79 +115,35 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
                                 Cancel 
                             </Button> 
                         </Grid>
-                        <Grid item>
-                            <Paper elevation={15} className={classes.paper}>
-                                <Button 
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    margin="normal"
-                                    onClick={handleSubmitContent}
-                                >
-                                    Confirm
-                                </Button> 
-                            </Paper>
-                        </Grid>
-                    </Grid> 
-                </DialogActions>
 
-                :
-
-                <DialogActions> 
-                    <Grid 
-                        container 
-                        direction="row" 
-                        justify="flex-end" 
-                        alignItems="center" 
-                        spacing={2}
-                    >
                         <Grid item>
                             <Button 
-                                variant="outlined"
+                                variant="contained"
                                 color="primary"
                                 size="large"
                                 margin="normal"
-                                onClick={handleCancel}
-                            > 
-                                <Typography variant="button" onClick={handleCancel}>
-                                    Dismiss
-                                </Typography>
-                            </Button>
-                        </Grid> 
-
-                        <Grid> 
-                            <Paper elevation={15} className={classes.paper}>
-                                <Button 
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    onClick={handleConfirmDialog}
-                                > 
-                                    <Typography variant="button">
-                                        Agree
-                                    </Typography>
-                                </Button> 
-                            </Paper>
+                                onClick={handleSubmitContent}
+                            >
+                                Confirm
+                            </Button> 
                         </Grid>
-                    </Grid>
+                    </Grid> 
                 </DialogActions>
-            }
-           
-        </Dialog>
+            </Dialog>
+        }
+    </Fragment>
     );
 }
 
 const CustomSharedDialog = ({ open, handleClose, handleSubmit, content }) => {
 
     return (
-        <Fragment> 
-            <DialogBase 
-                open={open}
-                handleClose={handleClose}
-                handleSubmit={handleSubmit}
-                content={content}
-            /> 
-        </Fragment>
+        <DialogBase 
+            open={open}
+            handleClose={handleClose}
+            handleSubmit={handleSubmit}
+            content={content}
+        /> 
     )
 }
 

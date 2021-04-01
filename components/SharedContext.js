@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 
 const initialState =  {
+    linksMap: {},
     dark: false, 
     showResults: false, 
     copyToClipboard: false,
@@ -12,6 +13,13 @@ const initialState =  {
     nickname: '', 
     generatedUrls: [],
     starred: false,
+    tags: [],
+    generatedSocialUrls: {
+        facebook: '',
+        linkedin: '',
+        whatsapp: '',
+        twitter: '',
+    },
     counts: {
         utm: 0, 
         ios: 0,
@@ -60,10 +68,7 @@ const initialState =  {
         messageInfo: {}, 
         snackpack: [], 
     },
-    mostRecentResult: {
-        originalUrl: '',
-        updatedUrl: '',
-    },
+    mostRecentResult: '',
     messages: {
         twitter: '',
     },
@@ -73,12 +78,20 @@ const reducer = (state, action) => {
     switch(action.type) {
         case "CLEAR": 
             return {
+                ...state,
                 copyToClipboard: false,
                 showResults: false, 
                 url: '',   
                 nickname: '', 
                 generatedUrls: [],
                 starred: false,
+                tags: [],
+                generatedSocialUrls: {
+                    facebook: '',
+                    linkedin: '',
+                    whatsapp: '',
+                    twitter: '',
+                },
                 counts: {
                     utm: 0, 
                     ios: 0,
@@ -117,20 +130,7 @@ const reducer = (state, action) => {
                     linkedin: false, 
                     email: false, 
                     google: false, 
-                }, 
-                snackbar: {
-                    open: false, 
-                    messageInfo: {}, 
-                    snackpack: [], 
-                },
-                mostRecentResult: {
-                    originalUrl: '',
-                    updatedUrl: '',
-                },
-                responseData: {
-                    payload: '', 
-                    timestamp: '',  
-                }, 
+                },  
                 messages: {
                     twitter: '',
                 },
@@ -235,7 +235,17 @@ const reducer = (state, action) => {
         case "COPY_TO_CLIPBOARD": 
             return {
                 ...state, 
-                copyToClipboard: action.payload.value
+                copyToClipboard: !state.copyToClipboard,
+                snackbar: {
+                    ...state.snackbar,
+                    snackpack: [
+                        ...state.snackbar.snackpack, 
+                        { 
+                            message: state.copyToClipboard ? 'UnCopying from Clipboard' : 'Copying to Clipboard', 
+                            key: new Date().getTime().toString(),
+                        },
+                    ]
+                },
             };
         case "UPDATE_SOCIAL": 
             return {
@@ -303,6 +313,16 @@ const reducer = (state, action) => {
             return {
                 ...state, 
                 starred: !state.starred,
+                snackbar: {
+                    ...state.snackbar,
+                    snackpack: [
+                        ...state.snackbar.snackpack, 
+                        { 
+                            message: !state.starred ? 'Marked this link as one of your favorites' : 'Removed this link from your favourites',
+                            key: new Date().getTime().toString()
+                        },
+                    ]
+                }
             };
         case "GENERATE":
             return {
@@ -323,6 +343,32 @@ const reducer = (state, action) => {
                     ]
                 }
             };
+        case "GENERATE_SOCIAL_URL":
+            return {
+                ...state,
+                generatedSocialUrls: {
+                    ...state.generatedSocialUrls,
+                    [action.payload.name]: action.payload.value,
+                },
+                socials: {
+                    ...state.socials,
+                    [action.payload.name]: true,
+                },
+                url: action.payload.value,
+            };
+        case "ADD_TAGS": 
+            return {
+                ...state,
+                tags: [
+                    ...state.tags,
+                    action.payload.value
+                ]
+            }; 
+        case "UPDATE_USER_LINKS_MAP":
+            return {
+                ...state,
+                linksMap: action.payload.value,
+            }; 
         default: 
             return state; 
     }

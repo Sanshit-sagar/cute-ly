@@ -7,46 +7,34 @@ import React, {
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-import { 
-    Grid, 
-    Paper, 
-    Button, 
-    FormLabel, 
-    FormControlLabel,
-    Typography, 
-    Divider,
-    Tooltip,
-    Badge
-} from '@material-ui/core';
+import Button from '@material-ui/core/Button'; 
+import Paper from '@material-ui/core/Paper';
+import FormLabel from '@material-ui/core/FormLabel';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
+import Badge from '@material-ui/core/Badge';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel'; 
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'; 
 import AppleIcon from '@material-ui/icons/Apple'; 
 import AndroidIcon from '@material-ui/icons/Android';
-import InstagramIcon from '@material-ui/icons/Instagram';
-
-import { useCount } from './SharedContext'; 
-import StyledSharedDialog from './Composites/StyledSharedDialog';
+import LabelImportantIcon from '@material-ui/icons/LabelImportant';
 
 import UtmForm from './Forms/UtmForm';
 import AppleForm from './Forms/AppleForm';
 import AndroidForm from './Forms/AndroidForm'; 
 import MetaForm from './Forms/MetaForm'; 
+import { useCount } from './SharedContext'; 
+import StyledSharedDialog from './Composites/StyledSharedDialog';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
         border: `1px solid ${theme.palette.divider}`,
         padding: theme.spacing(1),
-        backgroundColor: '#fff',
         minHeight: '90%',
         maxHeight: '90%',
-    },
-    paperPurple: {
-        border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(2),
-        backgroundColor: theme.palette.primary.dark,
-        minHeight: '100%',
-        maxHeight: '100%',
     },
 }));
 
@@ -119,7 +107,8 @@ const testReducer = (state, action) => {
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
       margin: theme.spacing(0.5),
-      border: 'none',
+      border: 'thin solid',
+      borderColor: theme.palette.primary.main,
       '&:not(:first-child)': {
         borderRadius: theme.shape.borderRadius,
       },
@@ -129,6 +118,8 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
     },
 }))(ToggleButtonGroup);
 
+
+
 const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid, handleMeta }) => {
     const classes = useStyles(); 
 
@@ -136,6 +127,10 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const [open, setOpen] = useState(false); 
     const [name, setName] = useState(''); 
+
+    const [gState, gDispatch] = useCount(); 
+
+    const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
     const handleOpen = (name) => {
         setName(name);
@@ -146,15 +141,29 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
         setOpen(false); 
     }
 
+    const getIconColor = () => {
+        return !validUrlPattern.test(gState.url) ? 'gray' : '#1eb980'; 
+    }
+
     const GooglePlayAnalyticsButton = () => {
         return (
-        <div style={{ marginRight: '5px' }}>
-            <Tooltip title="Google Analytics Info"> 
+        <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
+            <Tooltip 
+                arrow
+                enterDelay={500} 
+                title={
+                    <Typography variant="caption" color="primary">
+                        UTM Analytics
+                    </Typography>
+                }
+            >
                 <Button 
-                    size="large"
+                    size="small"
                     color="primary"
+                    variant="outlined"
+                    disabled={!validUrlPattern.test(gState.url)}
                     onClick={() => handleOpen("google")}
-                    style={{ paddingTop: '7.5px', height: '100%' }}
+                    style={{ paddingTop: '7.5px' }}
                 >
                     <FormControlLabel 
                         value="utm" 
@@ -168,7 +177,9 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                                             </Badge>
                                         )
                                     : 
-                                        <PlayArrowIcon style={{ color: 'black' }} />
+                                    <Badge badgeContent={0}>
+                                        <PlayArrowIcon style={{ color: getIconColor() }} />
+                                    </Badge>
                                 }
                             </div>
                         }
@@ -177,7 +188,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                                 variant="overline"
                                 style={{ fontSize: '8px' }}
                             > 
-                                Google 
+                                UTM 
                             </Typography>
                         }
                         labelPlacement="bottom"
@@ -190,13 +201,24 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const AppleAnalyticsButton = () => {
         return (
-        <div style={{ marginRight: '5px' }}>
-            <Tooltip title="iOS Info"> 
+        <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
+            <Tooltip 
+                arrow
+                enterDelay={500} 
+                title={
+                    <Typography variant="caption" color="primary">
+                        iOS Parameters
+                    </Typography>
+                }
+            >
                 <Button 
-                    size="large"
+                    size="small"
                     color="primary"
+                    disabled={!validUrlPattern.test(gState.url)}
+                    variant="outlined"
+                    margin="dense"
                     onClick={() => handleOpen("apple")}
-                    style={{ paddingTop: '7.5px', height: '100%' }}
+                    style={{ paddingTop: '7.5px' }}
                 >
                     <FormControlLabel 
                         value="ios" 
@@ -206,11 +228,13 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                                     globalState.counts.ios >= 1 ?
                                         (
                                             <Badge badgeContent={globalState.counts.ios} color="secondary">
-                                                <AppleIcon style={{ color: 'silver' }} />
+                                                <AppleIcon style={{ color: 'silver', fontSize: '24px' }} />
                                             </Badge>
                                         )
                                     : 
-                                    <AppleIcon style={{ color: 'black' }} />
+                                    <Badge badgeContent={0}>
+                                        <AppleIcon style={{ color: getIconColor() }}/>
+                                    </Badge>
                                 }
                             </div>
                         }
@@ -232,13 +256,23 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const AndroidAnalyticsButton = () => {
         return (
-        <div style={{ marginRight: '5px' }}>
-            <Tooltip title="Android Info"> 
+        <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
+           <Tooltip 
+                arrow
+                enterDelay={500} 
+                title={
+                    <Typography variant="caption" color="primary">
+                        Android Parameters
+                    </Typography>
+                }
+            > 
                 <Button 
-                    size="large"
+                    size="small"
                     color="primary"
+                    disabled={!validUrlPattern.test(gState.url)}
+                    variant="outlined"
                     onClick={() => handleOpen('android')}
-                    style={{ paddingTop: '7.5px', height: '100%' }}
+                    style={{ paddingTop: '7.5px' }}
                 >
                     <FormControlLabel 
                         value="android" 
@@ -252,7 +286,9 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                                             </Badge>
                                         )
                                     : 
-                                    <AndroidIcon style={{ color: 'black' }} />
+                                    <Badge badgeContent={0}>
+                                        <AndroidIcon style={{ color: getIconColor() }}/>
+                                    </Badge>
                                 }
                             </div>
                         }
@@ -274,13 +310,23 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const SocialMetaTagsButton = () => {
         return (
-        <div style={{ marginRight: '5px' }}>
-            <Tooltip title="Social Meta Info"> 
+        <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
+            <Tooltip 
+                arrow
+                enterDelay={500} 
+                title={
+                    <Typography variant="caption" color="primary">
+                        Social Meta Tags
+                    </Typography>
+                }
+            >  
                 <Button 
-                    size="large"
+                    size="small"
                     color="primary"
+                    variant="outlined"
+                    disabled={!validUrlPattern.test(gState.url)}
                     onClick={() => handleOpen('meta')}
-                    style={{ paddingTop: '7.5px', height: '100%' }}
+                    style={{ paddingTop: '7.5px' }}
                 >
                     <FormControlLabel 
                         value="meta" 
@@ -290,11 +336,13 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                                     globalState.counts.meta >= 1 ?
                                         (
                                             <Badge badgeContent={globalState.counts.meta} color="secondary">
-                                                <InstagramIcon style={{ color: 'pink' }} />
+                                                <LabelImportantIcon style={{ color: 'aqua' }} />
                                             </Badge>
                                         )
                                     : 
-                                    <InstagramIcon style={{ color: 'black' }} />
+                                    <Badge badgeContent={0} color="secondary">
+                                        <LabelImportantIcon style={{ color: getIconColor() }} />
+                                    </Badge>
                                 }
                             </div>
                         }
@@ -316,29 +364,29 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const googleFormFields = {
         name:'google',
-        title: 'google form',
-        message: 'google analytics parameters below - description here', 
+        title: 'UTM Analytics',
+        message: 'Google Play Analytics Parameters', 
         component: <UtmForm state={state} dispatch={dispatch} /> 
     }
 
     const appleFormFields = {
         name: 'ios',
-        title: 'ios form',
-        message: 'ios analytics parameters below - description here', 
+        title: 'iOS Parameters',
+        message: 'ios Parameters', 
         component: <AppleForm state={state} dispatch={dispatch} />
     }
 
     const androidFormFields = {
         name: 'android',
-        title: 'android form',
-        message: 'android analytics parameters below - description here', 
+        title: 'Android Parameters',
+        message: 'Android Parameters', 
         component: <AndroidForm state={state} dispatch={dispatch} />
     }
 
     const metaFormFields = {
         name: 'meta',
-        title: 'meta form',
-        message: 'social meta tag parameters below - description here', 
+        title: 'Social Meta Tag Parameters',
+        message: 'Social Meta Tags', 
         component: <MetaForm state={state} dispatch={dispatch} />
     }
 
@@ -355,24 +403,30 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
         meta: metaFormFields
     };
 
+    const getBodyColor = () => {
+        const [state, dispatch] = useCount(); 
+
+        return !validUrlPattern.test(state.url) ? 'gray' : '#1eb980';
+    }
+
    return (
         <Fragment>
             <StyledToggleButtonGroup>
-                <Paper elevation={3} className={classes.paper}>
+                <Paper elevation={0} className={classes.paper}>
                     <div style = {{ display: 'flex', flexDirection: 'column' }}>
-                        <FormLabel component="legend" style={{ marginLeft: '15px' }}> 
-                            <Typography variant="overline"> 
+                        <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
+                            <Typography variant="overline" style={{ color: getBodyColor() }}> 
                                 Analytics
                             </Typography> 
                         </FormLabel>
 
-                        <Divider /> 
+                        <Divider style={{ backgroundColor: getBodyColor() }}/> 
                 
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', minHeight: '100%', maxHeight: '100%'}}>
-                           <GooglePlayAnalyticsButton /> 
-                           <AppleAnalyticsButton /> 
-                           <AndroidAnalyticsButton />
-                           <SocialMetaTagsButton />
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <GooglePlayAnalyticsButton /> 
+                            <AppleAnalyticsButton /> 
+                            <AndroidAnalyticsButton />
+                            <SocialMetaTagsButton />
                         </div> 
                     </div> 
                 </Paper> 

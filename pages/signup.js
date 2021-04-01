@@ -1,20 +1,15 @@
 import 'tailwindcss/tailwind.css'; 
 import React, { useEffect } from 'react'; 
-// import Image from 'next/image'; 
 
 import { makeStyles } from '@material-ui/core/styles'; 
 
 import TextField from '@material-ui/core/TextField'; 
 import Button from '@material-ui/core/Button'; 
-
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton'; 
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Typography from '@material-ui/core/Typography';
-
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent'; 
 
@@ -70,9 +65,7 @@ const SignUpForm = () => {
           return; 
         }
 
-        alert('Success!'); 
-        //TODO: initiate authentication here
-        //auth.signupWithEmail(email, password, '/dashboard'); 
+        auth.signupWithEmailAndPassword(values.email, values.password, '/dashboard'); 
     }
 
     return (
@@ -136,20 +129,19 @@ const SignUpForm = () => {
                 Sign Up
             </Button>
         </FormControl>
-        
     );
 }
 
 const SignUpFormHeader = () => {
     return (
-        <div>
+        <Fragment>
             <Typography variant="h2" style={{ fontSize: '30px' }}>
                 Sign in to your account
             </Typography>
             <Typography variant="overline" color="textSecondary" style={{ fontSize: '16px' }}> 
-                more text here, and here 
+                enter your details to continue
             </Typography>
-        </div>
+        </Fragment>
     );
 }
 
@@ -160,7 +152,6 @@ export default function SignUp() {
             <div class="flex-1 flex flex-col justify-space-between py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
                 <div class="mx-auto w-full max-w-sm lg:w-96">     
                     <Card>
-                        
                         <CardContent>
                             <SignUpFormHeader /> 
                             <SignUpForm />

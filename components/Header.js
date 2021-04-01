@@ -35,8 +35,8 @@ const Header = ({ props }) => {
   const auth = useAuth(); 
 
   const [state, dispatch] = useCount(); 
-  const [on, setOn] = useState(false); 
 
+  const [on, setOn] = useState(false); 
 
   const handleSignOut = () => {
     auth.signout().then(() => {
@@ -110,19 +110,23 @@ const Header = ({ props }) => {
             > 
               { 
               on  
-              ? <DarkMode  style={{ color: getIconColor() }} /> 
-              : <LightMode  style={{ color: getIconColor() }} /> 
+              ? 
+                <DarkMode  style={{ color: getIconColor() }} /> 
+              : 
+                <LightMode  style={{ color: getIconColor() }} /> 
               }
             </Button>
 
+          
+          
             <Button
               variant="outlined"
               color="primary"
-              onClick={handleNavToGithub}
               style={{ margin: '5px', borderRadius: '5px' }}
             > 
               <AccountCircle  style={{ color: getIconColor() }} />
             </Button>
+        
 
             <Button 
               variant="outlined"

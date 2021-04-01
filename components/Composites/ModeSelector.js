@@ -17,17 +17,19 @@ import { useCount } from '../SharedContext';
 
 const useStyles = makeStyles((theme) => ({
     buttonGroupPaper: {
-        backgroundColor: '#fff',
         padding: theme.spacing(0.3),
-        marginRight: theme.spacing(1),
-        marginTop: theme.spacing(1),
+        marginRight: theme.spacing(0.25),
+        marginTop: theme.spacing(0.25),
     },
 }));
+
+const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
       margin: theme.spacing(0.5),
-      border: 'none',
+      border: 'thin solid',
+      borderColor: theme.palette.primary.main,
       '&:not(:first-child)': {
         borderRadius: theme.shape.borderRadius,
       },
@@ -45,6 +47,7 @@ const RadioA = () => {
         <Radio 
             color="primary"
             value="SHORT"
+            disabled={!validUrlPattern.test(state.url)}
             name="radio-short"
             checked = {
                 state.mode === 'SHORT'
@@ -62,10 +65,11 @@ const RadioA = () => {
 
 const RadioB = () => {
     const [state, dispatch] = useCount();
-  
+    
     return (
         <Radio 
             color="primary"
+            disabled={!validUrlPattern.test(state.url)}
             value="UNGUESSABLE"
             name="radio-unguessable"
             checked = {
@@ -81,31 +85,48 @@ const RadioB = () => {
     );
 }
 
+const getBodyColor = () => {
+    const [state, dispatch] = useCount(); 
+
+    return !validUrlPattern.test(state.url) ? 'gray' : '#1eb980';
+}
+
 const ModeSelector = () => {
     const classes = useStyles(); 
+    const [state, dispatch] = useCount(); 
 
     return (
-        <StyledToggleButtonGroup>
-          <Paper elevation={5} className={classes.buttonGroupPaper}>
-                <div style = {{ display: 'flex', flexDirection: 'column' }}>
-                    <FormLabel component="legend" style={{ marginTop: '3.5px', marginLeft: '15px'}}> 
-                        <Typography variant="overline"> 
+        <StyledToggleButtonGroup url={state.url}>
+          <Paper elevation={0} className={classes.buttonGroupPaper}>
+                <div style = {{ display: 'flex', flexDirection: 'column', marginBottom: '1.25px' }}>
+                    <FormLabel component="legend" style={{ marginTop: '3.5px', marginBottom: '1px', marginLeft: '5px'}}> 
+                        <Typography variant="overline" style={{ color: getBodyColor() }}> 
                             Options
                         </Typography> 
                     </FormLabel>
 
-                    <Divider /> 
+                    <Divider style={{ backgroundColor: getBodyColor() }} /> 
         
-                    <div style={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                         <div style={{ marginTop: '7.5px', marginRight: '5px' }}> 
-                            <Tooltip title="Short format (4 chars)"> 
+                            <Tooltip 
+                                arrow
+                                enterDelay={500} 
+                                title={
+                                    <Typography variant="caption" color="primary">
+                                        Shorten URL (4 Characters)
+                                    </Typography>
+                                }
+                            >  
                                 <FormControlLabel
                                     value="SHORT"
-                                    control={<RadioA color="primary" />}
+                                    control={
+                                        <RadioA />
+                                    }
                                     label={
                                         <Typography 
                                         variant="overline" 
-                                        style={{ fontSize: '10px' }}
+                                        style={{ fontSize: '8px' }}
                                         > 
                                             SHORT 
                                         </Typography>
@@ -115,17 +136,25 @@ const ModeSelector = () => {
                             </Tooltip> 
                         </div>
                             
-                        <div style={{ marginTop: '7.5px',marginRight: '5px', marginBottom: '5px' }}> 
-                            <Tooltip title="Unguessable format (16 chars)">
+                        <div style={{ marginTop: '7.5px', marginRight: '5px' }}> 
+                            <Tooltip 
+                                arrow
+                                enterDelay={500} 
+                                title={
+                                    <Typography variant="caption" color="primary">
+                                        Generate an Unguessable URL (16 Characters)
+                                    </Typography>
+                                }
+                            >  
                                 <FormControlLabel
                                     value="UNGUESSABLE"
                                     control={
-                                        <RadioB color="primary" />
+                                        <RadioB />
                                     }
                                     label={
                                         <Typography 
                                             variant="overline" 
-                                            style={{ fontSize: '10px' }}
+                                            style={{ fontSize: '8px' }}
                                         > 
                                             CRYPTIC 
                                         </Typography>

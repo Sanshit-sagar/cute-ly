@@ -1,8 +1,7 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper'; 
-import Container from '@material-ui/core/Container'; 
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
@@ -14,6 +13,7 @@ import {
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
+import { useCount } from './SharedContext'; 
 import SharedSnackbar from './Snackbar'; 
 
 import Header from './Header';
@@ -27,11 +27,11 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1),
     },
     mainContainerPaper: {
-        backgroundColor: theme.palette.primary.light,
-        paddingTop: theme.spacing(2),
+        paddingTop: theme.spacing(1),
         margin: '0.50%',
-        height: '80vh',
         width: '99%',
+        border: 'thin solid',
+        borderColor: '#1eb980',
     },
     header: {
         display: 'flex', 
@@ -80,9 +80,8 @@ const SpeedDials = ({ open, handleOpen, handleClose }) => {
                             key={action.name}
                             icon={action.icon}
                             tooltipTitle={action.name}
-                            tooltipPlacement="right"
+                            tooltipPlacement="bottom"
                             onClick={(e) => router.push(action.route)} 
-                            style={{ color: 'white'}}
                         />
                     ))
                 }
@@ -109,7 +108,7 @@ const PageContainer = ({ children }) => {
                     <Header className={classes.header} /> 
                 </Grid>
         
-                <Paper className={classes.mainContainerPaper}>
+                <Paper elevation={0} className={classes.mainContainerPaper}>
                     <Grid container direction="column" justify="center" alignItems="center">
                         <Grid item>
                             <Backdrop open={speedDialOpen} />

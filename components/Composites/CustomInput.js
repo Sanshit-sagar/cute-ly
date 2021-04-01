@@ -1,66 +1,92 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { 
     Grid, 
-    TextField, 
-    FormHelperText, 
+    FilledInput, 
     Tooltip, 
-    IconButton 
+    FormControl,
+    InputLabel,
+    Typography,
+    InputAdornment,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import Zoom from '@material-ui/core/Zoom';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 
-import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+import InfoIcon from '@material-ui/icons/Info'; 
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        marginTop: '5px',
-        marginLeft: '5px',
-        marginRight: '5px',
+        borderRadius: '5px', 
+        color: theme.palette.primary.main,
+        height: '45px',
     },
 }));
 
-const CustomInput = ({ name, label, value, handleChange }) => {
+
+const CustomTooltip = withStyles((theme) => ({
+    tooltip: {
+      backgroundColor: theme.palette.background.tooltip,
+      color: theme.palette.primary.main,
+      maxWidth: 220,
+      fontSize: theme.typography.pxToRem(12),
+      border: '1px solid #dadde9',
+      marginTop: '10px',
+    },
+  }))(Tooltip);
+
+const CustomInput = ({ name, label, value, description, handleChange }) => {
     const classes = useStyles(); 
+
+    const getInputHeaderColor = () => {
+        return !value.length ? '#1eb980' : '#fff'; 
+    }
     
     return (
-        <div style={{ marginTop: '10px' }}>
-            <Grid container direction="column">
-                <Grid item>
-                    <TextField 
+        <Grid container direction="column">
+            <Grid item>
+                <FormControl variant="outlined">
+                    <InputLabel 
+                        style={{ color: getInputHeaderColor() }}
+                    >
+                        {label} 
+                    </InputLabel>
+                    <FilledInput 
                         className={classes.root}
-                        variant="outlined"
                         color="primary"
-                        label={label} 
+                        margin="dense"
                         value={value}
-                        size="medium"
-                        margin="normal"
                         onChange={(e) => handleChange(e.target.value, name)}
-                    />
-                </Grid>
-                <Grid 
-                    container
-                    direction="row"
-                    justify="space-between"
-                >
-                    <Grid item>
-                        <FormHelperText style={{ marginLeft: '6.5px' }}> 
-                            Helper for {label}
-                        </FormHelperText>
-                    </Grid>
-                    <Grid item> 
-                        <Tooltip title="What's this?">
-                            <IconButton 
-                                size="small"
-                                color="default"
-                                style={{ marginRight: '2.25px' }}
+                        endAdornment = {
+                            <InputAdornment 
+                                position="end"
                             >
-                                <HelpOutlineOutlinedIcon /> 
-                            </IconButton> 
-                        </Tooltip>
-                    </Grid> 
-                </Grid>
+                                <CustomTooltip 
+                                    TransitionComponent={Zoom}
+                                    arrow
+                                    title={
+                                        <Fragment>
+                                            <Typography 
+                                                color="inherit"
+                                            >
+                                                {label}
+                                            </Typography>
+                                            <Typography 
+                                                variant="caption"
+                                                color="textPrimary"
+                                            >
+                                                {description} 
+                                            </Typography>
+                                        </Fragment>
+                                    }
+                                >
+                                    <InfoIcon />
+                                </CustomTooltip>
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
             </Grid>
-        </div>
+        </Grid>
     );
 }
 

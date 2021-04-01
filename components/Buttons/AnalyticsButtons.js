@@ -20,6 +20,7 @@ const UtmAnalyticsButton = ({ executeOnOpen }) => {
         <Tooltip title="Google Analytics Info"> 
             <Button 
                 size="large"
+                variant="outlined"
                 color="primary"
                 onClick={handleClick}
             >

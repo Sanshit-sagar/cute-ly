@@ -7,14 +7,9 @@ import CustomInput from '../Composites/CustomInput';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(1),
-        backgroundColor: '#fff',
-    },
-    paperPurple: {
-        border: `1px solid ${theme.palette.divider}`,
+        border: '1px solid',
+        borderColor: '#1eb980',
         padding: theme.spacing(2),
-        backgroundColor: theme.palette.primary.dark,
     },
 }));
 
@@ -32,47 +27,47 @@ const AndroidForm = ({ state, dispatch }) => {
     }
 
     return (
-        <Paper elevation={5} className={classes.paperPurple}>
-            <Grid container spacing={1}>
-                <Paper elevation={5} className={classes.paper}>
-                    <Grid 
-                        container
-                        direction="row"
-                        justify="space-around"
-                        wrap='wrap'
-                    >
-                        <Grid item>
-                            <CustomInput
-                                name="fallbackLink"
-                                label="Fallback Link"
-                                value={state.android.fallbackLink}
-                                handleChange={handleInputChange}
-                            /> 
-                        </Grid> 
-                    
+        <Grid container spacing={1}>
+            <Paper elevation={5} className={classes.paper}>
+                <Grid 
+                    container
+                    direction="row"
+                    justify="space-around"
+                    wrap='wrap'
+                    spacing={3}
+                >
+                    <Grid item>
+                        <CustomInput
+                            name="fallbackLink"
+                            label="Fallback Link"
+                            description="The link to open when the app isn't installed. Specify this to do something other than install your app from the Play Store when the app isn't installed, such as open the mobile web version of the content, or display a promotional page for your app."
+                            value={state.android.fallbackLink}
+                            handleChange={handleInputChange}
+                        /> 
+                    </Grid> 
 
-                        <Grid item> 
-                            <CustomInput
-                                name="packageName"
-                                label="Package Name"
-                                value={state.android.packageName}
-                                handleChange={handleInputChange}
-                            /> 
-                        </Grid>
-
-                        <Grid item>
-                            <CustomInput
-                                name="minPackageVersionCode"
-                                label="Min Package Version Code"
-                                value={state.android.minPackageVersionCode}
-                                handleChange={handleInputChange}
-                            /> 
-                        </Grid>
-
+                    <Grid item> 
+                        <CustomInput
+                            name="packageName"
+                            label="Package Name"
+                            description="The package name of the Android app to use to open the link. The app must be connected to your project from the Overview page of the Firebase console. Required for the Dynamic Link to open an Android app."
+                            value={state.android.packageName}
+                            handleChange={handleInputChange}
+                        /> 
                     </Grid>
-                </Paper>
-            </Grid>
-        </Paper>
+
+                    <Grid item>
+                        <CustomInput
+                            name="minPackageVersionCode"
+                            label="Version Code"
+                            description="The versionCode of the minimum version of your app that can open the link. If the installed app is an older version, the user is taken to the Play Store to upgrade the app."
+                            value={state.android.minPackageVersionCode}
+                            handleChange={handleInputChange}
+                        /> 
+                    </Grid>
+                </Grid>
+            </Paper>
+        </Grid>
     );
 }
 

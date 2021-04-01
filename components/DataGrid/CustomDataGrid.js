@@ -1,20 +1,31 @@
-import React from 'react';
-import Router from 'next/router';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper'; 
 import Button from '@material-ui/core/Button'; 
-import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Chip from '@material-ui/core/Chip';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Avatar from '@material-ui/core/Avatar'; 
+import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import LaunchIcon from '@material-ui/icons/Launch'; 
 import CustomNoRowsOverlay from './CustomOverlays'; 
 import StarIcon from '@material-ui/icons/Star';
 import SearchIcon from '@material-ui/icons/Search'; 
+
+import FacebookIcon from '@material-ui/icons/Facebook'; 
+import LinkedInIcon from '@material-ui/icons/LinkedIn'; 
+import TwitterIcon from '@material-ui/icons/Twitter';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp'; 
+import HttpIcon from '@material-ui/icons/Http'; 
+
+import LinkDetailsDialog from './LinkDetailsDialog'; 
+
+import { blue } from '@material-ui/core/colors'
+import { useCount } from '../SharedContext'; 
 
 import {  
     GridOverlay,
@@ -33,23 +44,16 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     paperDataGrid: {
-        height: '57.5vh', 
-        width: '1330px',
-        margin: theme.spacing(0.75),
-        backgroundColor: '#fff',
+        height: '65vh', 
+        width: '1342.5px',
     },
-    paperHeader: {
-        height: '45px',
-        width: '1330px', 
-        margin: theme.spacing(0.5),
-        backgroundColor: theme.palette.background.paper,
+    iosAvatar: {
+        color: theme.palette.getContrastText(blue[900]),
+        backgroundColor: blue[900],
     },
-    headerButton: {
-        height: '40px',
-        margin: '2.25px',
-    },
-    destinationLink: {
-        color: theme.palette.secondary.dark,
+    androidAvatar: {
+        color: theme.palette.getContrastText(theme.palette.secondary.light),
+        backgroundColor: theme.palette.secondary.light,
     }
 }));
 
@@ -67,7 +71,6 @@ function CustomPagination(props) {
       />
     );
   }
-
 
 CustomPagination.propTypes = {
     api: PropTypes.shape({
@@ -96,232 +99,83 @@ function CustomToolbar() {
     );
 }
 
-const StarredItemsButton = () => {
-    const classes = useStyles();
-
-    return (
-        <Button 
-            variant="outlined" 
-            color="primary" 
-            className={classes.headerButton}
-        > 
-            <StarIcon /> 
-        </Button>
-    )
-}
-
-
-const LibrarySizeButton = ({ length }) => {
-    const classes = useStyles(); 
-
-    return (
-        <Button 
-            variant="contained"
-            color="primary"
-            className={classes.headerButton}
-        > 
-            {length} Links
-        </Button>
-    );
-}
-
-const SearchLinksButton = () => {
-    const classes = useStyles(); 
-
-    return (
-        <Button
-            variant="outlined"
-            color="primary"
-            className={classes.headerButton}
-        >
-            <SearchIcon /> 
-        </Button> 
-    ); 
-}
-
-const handleNavigatetToModifiedUrl = () => {
-    alert('Hello');
-}
-
-const getChipColor = (item) => {
-    if(item && item.group) {
-        if(item.group === 'utm') {
-            return "#363537";
-        } else if(item.group ==='ios') {
-            return "blue";
-        } else if(item.group === 'android') {
-            return "green"; 
-        }
-    } else {
-        return "yellow";
-    }
-}
-
-const CustomAdditionalParametersChip = ({ data }) => {
-    if(!data || !data?.length || data?.length <= 0) {
-        return null; 
-    } 
-
-    return (
-        <Chip
-            avatar={
-                <Avatar>
-                    {data.length}
-                </Avatar>
-            }
-            variant="filled"
-            label={data.length - 3}
-            size="small"
-            color="secondary"
-            style={{ margin: '2.5px' }}
-        /> 
-    )
-}
-
 const CustomParameterChip = ({ item }) => {
+    const classes = useStyles(); 
+    const [state, dispatch] = useCount(); 
+
     return (
-        <Chip 
-            avatar={
-                <Avatar>
-                    {item.key.charAt(0).toUpperCase()}
-                </Avatar>
-            } 
-            variant="outlined"
-            label={ 
-                item.value.length >= 8 ? (item.value.substring(0,8) + "...") : item.value
-            } 
-            size="small" 
-            color="secondary"
-            style={{
-                margin:'2.5px'
-            }}
-        />
+        <Tooltip title={item.group + "-" + item.key + ":" + item.value}>
+            <Chip 
+                avatar={
+                    <Avatar 
+                        variant="rounded" 
+                        className={item.group==="ios" ? classes.iosAvatar : classes.androidAvatar}
+                    >
+                        { item.key.charAt(0).toUpperCase() }
+                    </Avatar> 
+                } 
+                variant="outlined"
+                label={ 
+                    item.value.length >= 8 ? (item.value.substring(0,8) + "...") : item.value
+                } 
+                size="small" 
+                color="default"
+                style={{
+                    margin:'2.5px',
+                    borderRadius: '5px', 
+                    backgroundColor: state.dark ? ( item.group==="ios" ? 'silver' : (item.group==='android' ? 'green' : 'black') ) : ( item.group==="ios" ? 'black' : (item.group==='android' ? 'pink' : 'white') ),
+                    color: state.dark ? ( item.group==="ios" ? 'black' : (item.group==='android' ? 'pink' : 'white') ) : ( item.group==="ios" ? 'silver' : (item.group==='android' ? 'green' : 'black') ),
+                }}
+            />
+        </Tooltip>
     );
 }
 
-const RenderUtmParameters = ({ data }) => {
+const RenderParameters = ({ data }) => {
     
     return (
         <div style={{ display: 'flex', maxWidth: '250px', flexDirection: 'row', flexWrap: 'wrap' }}>
-            {   data.length >= 0 && data[0] && data[0].value && data[0].value?.length &&  <CustomParameterChip item={data[0]} index={0} /> }
-            {   data.length >= 1 && data[1] && data[1].value && data[1].value?.length &&  <CustomParameterChip item={data[1]} index={1} /> }
-            {   data.length >= 2 && data[2] && data[2].value && data[2].value?.length &&  <CustomParameterChip item={data[2]} index={2} /> }
-            {   data.length > 3 && <Chip label={"+" + (data.length-3)} size="small" variant="outlined" style={{ margin: '2.5px' }} /> }
+            {   
+                data.length >= 0 && data[0] && data[0].value && data[0].value?.length &&  
+                <CustomParameterChip 
+                    item={data[0]} 
+                    index={0}  
+                    style={{ borderRadius: '5px' }} 
+                /> 
+            }
+
+            {   
+                data.length >= 1 && data[1] && data[1].value && data[1].value?.length &&  
+                <CustomParameterChip item={data[1]} index={1}  style={{ borderRadius: '5px' }} /> 
+            }
+            {   
+                data.length >= 2 && data[2] && data[2].value && data[2].value?.length &&  
+                <CustomParameterChip item={data[2]} index={2}  /> 
+            }
+            {   
+                data.length > 3 && 
+                <Chip label={"+" + (data.length-3)} size="small" variant="outlined" style={{ margin: '2.5px' }} /> 
+            }
         </div>
     );
 }  
 
-const columns = [
-    { 
-        field: 'nickname', 
-        headerName: 'Nickname', 
-        width: 125,
-        renderCell: (params) => (
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                <p> {params.value} </p> 
-            </div>
-        )
-    }, {
-        field: 'modifiedUrl', 
-        headerName: 'Slug', 
-        width: 225,
-        renderCell: (params) => (
-            <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                margin="dense"
-                style={{ width: '225px' }}
-                onClick={() => handleNavigatetToModifiedUrl()}
-            >
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                    <div style={{ float: 'left'}}>
-                        {params.value.substring(31)}
-                    </div>
-                    <div>
-                        <LaunchIcon style={{ marginLeft: '10px' }} />
-                    </div>
-                </div>
-            </Button>
-        ),
-    }, { 
-        field: 'utmNN', 
-        headerName: 'UTM Parameters', 
-        width: 225,
-        renderCell: (params) => (
+const DestinationUrlFavicons = ({ url }) => {
+
+    if(url && url.length > 0) {
+        return (
             <div>
-            {
-                params.value  && params.value ?
-                <div>
-                    <RenderUtmParameters data={params.value} /> 
-                </div>
-                :
-                <div>
-                    <Button> X </Button>
-                </div>
-            }
+                { url.includes('facebook')  && <FacebookIcon style={{ marginLeft: '5px', marginRight: '10px'}} /> }
+                { url.includes('linkedin')  && <LinkedInIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
+                { url.includes('twitter')   && <TwitterIcon style={{ marginLeft: '5px',marginRight: '10px' }} /> }
+                { url.includes('whatsapp')  && <WhatsAppIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
+                { !url.includes('whatsapp') && !url.includes('facebook') && !url.includes('twitter') && !url.includes('linkedin') && <HttpIcon style={{ marginLeft: '5px', marginRight: '10px' }} /> }
             </div>
-        ),
-    }, { 
-        field: 'iosNN', 
-        headerName: 'iOS Parameters', 
-        width: 225,
-        renderCell: (params) => (
-            <div>
-            {
-                params.value  && params.value ?
-                <div>
-                    <RenderUtmParameters data={params.value} /> 
-                </div>
-                :
-                <div>
-                    <Button> X </Button>
-                </div>
-            }
-            </div>
-        ),
-    }, { 
-        field: 'androidNN', 
-        headerName: 'Android Parameters', 
-        width: 225,
-        renderCell: (params) => (
-            <div>
-            {
-                params.value  && params.value ?
-                <div>
-                    <RenderUtmParameters data={params.value} /> 
-                </div>
-                :
-                <div>
-                    <Button> X </Button>
-                </div>
-            }
-            </div>
-        ),
-    },  { 
-        field: 'originalUrl', 
-        headerName: 'Destination URL', 
-        width: 200,
-        renderCell: (params) => (
-            <Link href={params.value} style={{ color: '#1eb980' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                        {params.value.substring(0,20)}...
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
-                        <LaunchIcon 
-                            style={{ marginLeft: '10px' }} 
-                        />
-                    </div>
-                </div>
-            </Link>
-        ),
-    }, { 
-        field: 'newDate', 
-        headerName: 'Timestamp', 
-        width: 200,
-    },
-];
+        ); 
+    } else {
+        return <p style={{ marginLeft: '10px' }}> ... </p>;  
+    }
+}
 
 function getRows(allLinks) {
     const rows = []; 
@@ -364,40 +218,179 @@ function getRows(allLinks) {
 
 const CustomDataGrid = ({ loading, userDetails, allLinks, linksMap }) => {
     const classes = useStyles();
-    
+
+    const [open, setOpen] = useState(false); 
+    const [displayDetails, setDisplayDetails] = useState(null); 
+
+    const handleCloseDetails = () => {
+        setOpen(false); 
+    }
+
+    const OpenLinkDetailsButton = ({ slug }) => {
+        const handleNavigatetToModifiedUrl = () => {
+            const displayDetailsObj = linksMap[slug]; 
+
+            setDisplayDetails(displayDetailsObj); 
+            setOpen(true); 
+        }
+
+        return (
+            <Button
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                size="small"
+                margin="dense"
+                onClick={handleNavigatetToModifiedUrl}
+            >
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <div style={{ float: 'left'}}>
+                    <Typography variant="button">
+                        { slug.substring(0, 4) } 
+                    </Typography>
+                    <Typography variant="button">
+                        { slug.length > 4 && "..." } 
+                    </Typography>
+                    </div>
+                    <div>
+                        <LaunchIcon style={{ marginLeft: '10px' }} />
+                    </div>
+                </div>
+            </Button>
+        );
+    }
+
+    const columns = [
+       { 
+            field: 'nickname', 
+            headerName: 'Nickname', 
+            width: 130,
+            renderCell: (params) => (
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <Typography variant="caption"> 
+                        { params.value }
+                    </Typography>
+                </div>
+            )
+        }, { 
+            field: 'originalUrl', 
+            headerName: ' ', 
+            width: 60,
+            renderCell: (params) => (
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <Link href={params.value} style={{ color: '#1eb980', marginTop: '10px' }}>
+                        <DestinationUrlFavicons url={params.value} />
+                    </Link>
+                </div>
+            ),
+        },  { 
+            field: 'starred', 
+            headerName: ' ', 
+            width: 60,
+            renderCell: (params) => (
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    {params.value ? <StarIcon style={{ color: 'yellow' }} /> : <StarIcon /> }
+                </div>   
+            )
+        }, { 
+            field: 'utmNN', 
+            headerName: 'UTM Parameters', 
+            width: 200,
+            renderCell: (params) => (
+                <div>
+                {
+                    params.value  && params.value ?
+                    <div>
+                        <RenderParameters data={params.value} /> 
+                    </div>
+                    :
+                    <div>
+                        <Button> X </Button>
+                    </div>
+                }
+                </div>
+            ),
+        }, { 
+            field: 'iosNN', 
+            headerName: 'iOS Parameters', 
+            width: 200,
+            renderCell: (params) => (
+                <div>
+                {
+                    params.value  && params.value ?
+                    <div>
+                        <RenderParameters data={params.value} /> 
+                    </div>
+                    :
+                    <div>
+                        <Button> X </Button>
+                    </div>
+                }
+                </div>
+            ),
+        }, { 
+            field: 'androidNN', 
+            headerName: 'Android Parameters', 
+            width: 200,
+            renderCell: (params) => (
+                <div>
+                {
+                    params.value  && params.value ?
+                    <div>
+                        <RenderParameters data={params.value} /> 
+                    </div>
+                    :
+                    <div>
+                        <Button> X </Button>
+                    </div>
+                }
+                </div>
+            ),
+        }, { 
+            field: 'newDate', 
+            headerName: 'Timestamp', 
+            width: 175,
+            renderCell: (params) => (
+                <div>
+                    <Typography variant="caption">
+                        { params.value }
+                    </Typography>
+                </div>
+            ),
+        }, {
+            field: 'modifiedUrl', 
+            headerName: 'Slug', 
+            width: 150,
+            renderCell: (params) => (
+            <div>
+                <OpenLinkDetailsButton 
+                    slug={params.value.substring(31)} 
+                /> 
+            </div>
+            ),
+        }
+    ];
+
     return (
-        <Grid container direction="column" justify="center" alignItems="center">
-           
-            <Paper elevation={10} className={classes.paperHeader}>
-                <Grid container direction="row" justify="space-between" alignItems="flex-start">
-                    <Grid item>
-                        <LibrarySizeButton length={allLinks.length} />
-                    </Grid>
-                    
-                    <Grid item>
-                        <SearchLinksButton />
-                        <StarredItemsButton email={userDetails.email} /> 
-                    </Grid>
-                </Grid>
-            </Paper>
-            
-           
+        <Grid container direction="column" justify="center" alignItems="stretch"> 
             <Grid item>
-                <Paper elevation={5} className={classes.paperDataGrid}>
-                  { (!loading && allLinks) 
-                  ? (
-                        <StyledGrid 
-                            Rows={getRows(allLinks)} 
-                            Columns={columns} 
-                            Loading={loading}
-                            CustomToolbar={CustomToolbar}
-                            LoadingOverlay={CustomLoadingOverlay}
-                            NoRowsOverlay={CustomNoRowsOverlay}
-                        /> 
-                    ) 
-                    : null }
+                <Paper elevation={0} className={classes.paperDataGrid}>
+                    <StyledGrid 
+                        Rows={getRows(allLinks)} 
+                        Columns={columns}
+                        Loading={loading || allLinks.length == 0}
+                        CustomToolbar={CustomToolbar}
+                        LoadingOverlay={CustomLoadingOverlay}
+                        NoRowsOverlay={CustomNoRowsOverlay}
+                    /> 
                 </Paper>      
             </Grid>
+
+           <LinkDetailsDialog 
+                open={open} 
+                handleClose={handleCloseDetails} 
+                data={displayDetails}
+            /> 
         </Grid>
     );
 }

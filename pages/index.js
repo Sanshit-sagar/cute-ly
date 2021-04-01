@@ -1,5 +1,5 @@
 import React from 'react';; 
-import { Box, Container, Typography } from '@material-ui/core'; 
+import { Container } from '@material-ui/core'; 
 import Landing from './landing'; 
 
 export default function Index() {
@@ -10,5 +10,5 @@ export default function Index() {
           <Landing /> 
         </Container>
       </React.StrictMode>
-    );
+  );
 }

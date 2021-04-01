@@ -1,30 +1,55 @@
-import React, { Fragment, useEffect }  from 'react';
-import { useCopyToClipboard } from 'react-use'; 
-import { useCount } from './SharedContext'; 
+import React, { useState, useCallback } from 'react';
 
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia'; 
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
-
-import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography'; 
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
 
-import IconButton from '@material-ui/core/IconButton'; 
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import StarIcon from '@material-ui/icons/Star';
-import { CardActions, CardHeader, Card, CardActionArea, CardContent, CardC } from '@material-ui/core';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
+import Tooltip from '@material-ui/core/Tooltip'; 
+
+import { makeStyles } from '@material-ui/core/styles';
+
+import { useCount } from './SharedContext'; 
+import { useClipboard } from 'use-clipboard-copy';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-
+        display: 'flex',
+    },
+    details: {
+        width: 450,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between', 
+        alignItems: 'stretch',
+    },
+    content: {
+        flex: '1 0 auto',
+        width: '600px',
+    },
+    cover: {
+        width: 150,
+        height: 150,
+        borderRadius: 5,
+    },
+    buttonGroup: {
+        display: 'flex',
+        direction: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        margin: '5px',
+    },
+    dialogPaper: {
+        color: theme.palette.primary.dark,
     },
     paper: {
         border: `1px solid ${theme.palette.divider}`,
@@ -32,41 +57,139 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#fff',
         minWidth: '475px',
     },
-    paperPurple: {
-        border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(1),
-        backgroundColor: theme.palette.primary.dark,
-        minWidth: '500px',
-        maxWidth: '550px',
+    cardHeaderPaper: {
+        padding: '10px', 
+        margin: '5px', 
+        border: 'thin solid', 
+        borderColor: '#1eb980',
     },
-    paperIcon: {
-        border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(0.5),
-        backgroundColor: theme.palette.secondary.dark,
-        display: 'flex', flexDirection: 'row', justifyContent: 'flex-start',
-    },
-    paperAction: {
-        border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(0.5),
-        backgroundColor: theme.palette.secondary.dark,
-        display: 'flex', flexDirection: 'row', justifyContent: 'flex-start',
+    iconButton: {
+        margin: '5px',
     },
 }));
 
-const ResultsDialog = () => {
-    const classes = useStyles();
-    const [state, dispatch] = useCount(); 
+const getMedium = (url) => {
+    if(url.includes('facebook')) {
+        return 'facebook';
+    }
+    if(url.includes('linkedin')) {
+        return 'linkedin';
+    }
+    if(url.includes('twitter')) {
+        return 'twitter';
+    }
+    if(url.includes('whatsapp')) {
+        return 'whatsapp';
+    }
+    return 'http'; 
+}
 
-    const [copyState, copyToClipboard] = useCopyToClipboard();
+const getStarIconColor = (starred) => {
+    return starred ? 'gold' : '#1eb980';
+}
+
+const getCopyIconColor = (copyToClipboard) => {
+    return copyToClipboard ? 'gold' : '#1eb980';
+}
+
+const LinkFaviconComp = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();
+    
+    const medium = getMedium(state.url); 
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'stretch' }} >
+            <div  style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                <Paper elevation={5}>
+                    { 
+                        medium === "linkedin" && 
+                        <CardMedia
+                            className={classes.cover}
+                            image = "/linkedin.png"
+                            title="Shareable on LinkedIn"
+                            style={{ backgroundColor: '#005cc5' }}
+                        />
+                    }
+                    { 
+                        medium==="whatsapp" && 
+                        <CardMedia
+                            className={classes.cover}
+                            image = "/whatsapp.png"
+                            title="Shareable on LinkedIn"
+                            style={{ backgroundColor: '#00d85a' }}
+                        />
+                    }
+                    { 
+                        medium==="twitter" && 
+                        <CardMedia
+                            className={classes.cover}
+                            image = "/twitter.png"
+                            title="Shareable on LinkedIn"
+                            style={{ backgroundColor: '#009dff' }}
+                        />
+                    }
+                    { 
+                        medium ==="facebook" && 
+                        <CardMedia
+                            className={classes.cover}
+                            image = "/facebook.png"
+                            title="Shareable on LinkedIn"
+                            style={{ backgroundColor: '#4861ac' }}
+                        />
+                    }
+                </Paper>
+            </div>
+        </div>
+    );
+}
+
+const ActionButtonGroup = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();
+
+    const [prev, setPrev] = useState(''); //holds prev copied URL
+    const [copyError, setCopyError] = useState(false);
+
+    const clipboard = useClipboard({
+        onSuccess() {
+            setCopyError(false);
+        },
+        onError() {
+            setCopyError(true);
+        }
+    });
+
+    const handleClick = useCallback(
+        () => {
+            const url = state.mostRecentResult;
+            setPrev(url);
+            clipboard.copy(url);
+        }, [clipboard.copy, state.mostRecentResult]
+    ); 
 
     const handleCopy = () => {
-        copyToClipboard(state.mostRecentResult);
-
-        if(copyState.error) {
-            console.log('Unable to copy value:' + copyState.error.message);
-        } else if(copyState.value) {
-            console.log('Copied... ' + copyState.value.substring(copyState.value.length - 7));
+        if(!state.copyToClipboard) {
+            handleClick();
+        } else {
+            dispatch({
+                type: 'SNACKBAR_TRIGGER',
+                payload: {
+                    message: 'Clipboard already contains this URL',
+                    key: new Date().getTime().toString(),
+                }
+            });
+            return; 
         }
+
+        if(copyError) {
+            alert('Error in copying to clipboard...'); 
+            setCopyError(false); 
+        } else {
+            dispatch({
+                type: 'COPY_TO_CLIPBOARD',
+            }); 
+        } 
     }
 
     const handleStar = () => {
@@ -75,43 +198,118 @@ const ResultsDialog = () => {
         }); 
     }
 
-    const getFileCopyIconColor = () => {
-        if(!copyState.error && copyState.value) {
-            return 'purple';
-        } else {
-            return 'gray'; 
-        }
-    }
-
-    const getStarIconColor = () => {
-        return state.starred ? 'yellow' : 'gray';  
-    }
-
-    const DetailsCard = () => {
-        const classes = useStyles(); 
-
-        return (
-           <Fragment>
-                { state.mostRecentResult  ?
-                    <Paper elevation={5} className={classes.paper}>
-                        <Typography variant="h5" component="h2" color="textPrimary">
-                            <Link href={state.mostRecentResult}>
-                                /{ state.mostRecentResult.substring(31) }
-                            </Link>
+    return (
+        <div className={classes.buttonGroup}>
+            <Button 
+                variant="outlined" 
+                color="primary" 
+                size="large"
+                margin="normal"
+                onClick={handleStar} 
+                className={classes.iconButton}
+            >
+                 <Tooltip 
+                    arrow
+                    enterDelay={500} 
+                    title={
+                        <Typography variant="caption" color="primary">
+                            { state.starred ? 'Marked as Favorite!' : 'Mark as Favorite?' }
                         </Typography>
+                    }
+                >  
+                    <StarIcon 
+                        style={{ color: getStarIconColor(state.starred) }} 
+                    />
+                </Tooltip>
+            </Button>
 
-                        <Link href={state.mostRecentPurl}>
-                            <Typography variant="caption" color="textSecondary">
-                                { state.url.substring(0, 70) + "..."}
+            <Button 
+                variant="outlined" 
+                color="primary" 
+                size="large"
+                margin="normal"
+                className={classes.iconButton}
+                onClick={handleCopy}
+            >
+                { ( !state.copyToClipboard || !prev.length || prev!=state.mostRecentResult ) ? 
+                    <Tooltip 
+                        arrow
+                        enterDelay={500} 
+                        title={
+                            <Typography variant="caption" color="primary">
+                                Copy to clipboard?
                             </Typography>
-                        </Link>                
-                    </Paper>
+                        }
+                    >  
+                        <FileCopyIcon  
+                            style={{ color: '#1eb980' }} 
+                        /> 
+                    </Tooltip>
                 :
-                    <h1> Loading... </h1> 
+                    <Tooltip 
+                        arrow
+                        enterDelay={500} 
+                        title={
+                            <Typography variant="caption" color="primary">
+                                Copied to clipboard!
+                            </Typography>
+                        }
+                    >  
+                        <DoneOutlineIcon 
+                            style={{ color: '#1eb980' }} 
+                        />
+                    </Tooltip>
                 }
-            </Fragment> 
-        );
-    }
+            </Button>
+        </div>
+    );
+}
+
+const LinkDataCard = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();
+
+    return (
+        <Card className={classes.root}>
+            <CardContent className={classes.content}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                    <div style={{ 
+                        display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', margin: '5px' 
+                    }}>
+                        <LinkFaviconComp /> 
+                    </div>
+
+                    <div className={classes.details}>
+                        <Paper elevation={10} className={classes.cardHeaderPaper}>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
+                                <Link href={state.mostRecentResult}>
+                                    <Typography component="h4" variant="h4">
+                                        /{state.mostRecentResult.substring(31)} 
+                                    </Typography>
+                                </Link>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                <Link href={state.url}>
+                                    <Typography component="overline">
+                                        {"..." + state.url.substring(state.url.length - 35)}
+                                    </Typography>
+                                </Link>
+                                <OpenInNewIcon style={{ color: '#1eb980' }} /> 
+                            </div>
+                        </Paper>
+
+                        <Paper elevation={0}>
+                            <ActionButtonGroup /> 
+                        </Paper>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>  
+    );
+}
+
+const ResultsDialog = () => {
+    const [state, dispatch] = useCount(); 
 
     const handleClose = (e) => {
         dispatch({
@@ -121,85 +319,18 @@ const ResultsDialog = () => {
             }
         });
     }
-    
-    
+
     return (
-        <React.Fragment> 
-            <Dialog 
-                open={state.showResults}
-                onClose={(e) => handleClose(e)}
-            > 
-                { 
-                    state.mostRecentResult && state.mostRecentResult.length &&
-                
-                    <DialogContent> 
-                        <Paper elevation={3} className={classes.paperPurple}>
-                            <Grid container>
-                                <Grid item>
-                                    <Paper elevation={5} style={{ height: '100%', width: '100%', backgroundColor: '#fff' }}>
-                                        <DetailsCard /> 
-                                    </Paper>
-                                </Grid> 
-                            </Grid>
-                        </Paper>
-                    </DialogContent>
-                }
-
-                <DialogActions> 
-                    <Grid container direction="row" justify="space-between" alignItems="center">
-                        <Grid item>
-                            { state.mostRecentResult && 
-                                <Paper elevation={5} className={classes.paperIcon}>
-                                    <div style={{ marginRight: '50px' }}> 
-                                        <Button 
-                                            size="small" 
-                                            margin="dense"
-                                            onClick={handleCopy} 
-                                            style={{ backgroundColor: 'white' }}
-                                        > 
-                                            <FileCopyIcon style={{ color: getFileCopyIconColor() }} /> 
-                                        </Button> 
-                                    </div>
-
-                                    <div> 
-                                        <Button 
-                                            size="small" 
-                                            margin="dense"
-                                            onClick={handleStar} 
-                                            style={{ backgroundColor: 'white' }}
-                                        >
-                                            <StarIcon style={{ color: getStarIconColor() }}/>
-                                        </Button>
-                                    </div>
-                                </Paper>
-                            }
-                        </Grid>
-                        <Grid>
-                            <Button 
-                                size="large"
-                                margin="normal"
-                                variant="contained" 
-                                color="primary" 
-                                onClick={(e) => dispatch({
-                                        type: "SHOW_RESULTS",
-                                        payload: {
-                                            value: false
-                                        }
-                                    })
-                                }
-                            >
-                                <Typography
-                                    variant="button" 
-                                    color="textSecondary"
-                                > 
-                                    Dismiss
-                                </Typography>
-                            </Button>  
-                        </Grid>
-                    </Grid>
-                </DialogActions> 
-            </Dialog>
-        </React.Fragment>
+        <Dialog 
+            open={state.showResults} 
+            onClose={handleClose}
+        >
+            <DialogContent style={{ padding: '2.5px', border: 'thin solid', borderColor: '#1eb980'}}>
+                <LinkDataCard
+                    handleClose={handleClose}
+                /> 
+            </DialogContent>
+        </Dialog>
     );
 }
 

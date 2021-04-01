@@ -1,19 +1,28 @@
 import React from 'react';
 
 import { 
-    Grid, Paper, TextField, Button, IconButton, 
-    Typography, SvgIcon, InputAdornment
+    Grid, 
+    Paper, 
+    IconButton, 
+    FilledInput, 
+    InputAdornment, 
+    FormControl, 
+    InputLabel
 } from '@material-ui/core'; 
-import { makeStyles } from '@material-ui/core/styles'; 
 
-import AddIcon from '@material-ui/icons/Add'; 
+import { makeStyles } from '@material-ui/core/styles'; 
 import InfoIcon from '@material-ui/icons/Info';
 
 import { useCount } from '../SharedContext';
-import { createLink } from '../../lib/db'; 
 
+const useStyles = makeStyles((theme) => ({
+    nameInput: {
+        borderRadius: '5px',
+    },
+})); 
 
 const NicknameDisplay = () => {
+    const classes = useStyles(); 
     const [state, dispatch] = useCount();
 
    const handleChange = (inputValue) => {
@@ -35,35 +44,52 @@ const NicknameDisplay = () => {
        if(input.charAt(input.length-1) === ' ') {
            return input.substring(0, input.length-1);
        } else if(input.length > 20) {
-           //dispatch snackbar here 
            return input.substring(0, 20);
        }
        return input; 
    }
 
+    const getInputColor = () => {
+        const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
+        return (!validUrlPattern.test(state.url) ? 'black' :  '#1eb980'); 
+    }
+
+    const getInputHeaderColor = () => {
+        return !state.nickname.length ? '#1eb980' : (state.dark ? '#fff' : '#000'); 
+    }
+
    return (
        <Grid container direction="row" justify="space-between" spacing={1}>
            <Grid item>
-               <TextField
-                   name="urlInput"
-                   variant="outlined"
-                   color="primary"
-                   value={state.nickname}
-                   placeholder="@NameMe"
-                   onChange={(e) => handleChange(e.target.value)}
-                   InputProps={{
-                       endAdornment: 
-                           <InputAdornment position="end">
-                               <IconButton 
-                                   margin="dense" 
-                                   onClick={() => handleInfoButtonClick()}
-                               >
-                                   <InfoIcon />
-                               </IconButton>
-                           </InputAdornment>,
-                   }}
-                   style={{ backgroundColor: '#fff', borderRadius: '5px' }}
-               />
+                <FormControl fullWidth variant="filled">
+                    <Paper elevation={0} style={{ border: 'thin solid', borderColor: '#1eb890' }}>
+                        <InputLabel style={{ color: getInputHeaderColor() }}>
+                            Nickname
+                        </InputLabel>
+
+                        <FilledInput
+                            name="urlInput"
+                            variant="outlined"
+                            value={state.nickname}
+                            size="small"
+                            margin="dense"
+                            onChange={(e) => handleChange(e.target.value)}
+                            InputProps={{
+                                endAdornment: 
+                                    <InputAdornment position="end">
+                                        <IconButton 
+                                            margin="dense" 
+                                            onClick={() => handleInfoButtonClick()}
+                                        >
+                                            <InfoIcon />
+                                        </IconButton>
+                                    </InputAdornment>,
+                            }}
+                            className={classes.nameInput}
+                            style={{ color: getInputColor() }}
+                        />
+                    </Paper> 
+                </FormControl>
            </Grid>
        </Grid>
    );

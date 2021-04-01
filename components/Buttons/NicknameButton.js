@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { Fragment, useState } from 'react'; 
 import { 
     Tooltip, 
     Button, 
@@ -17,34 +17,52 @@ const NicknameButton = ({ handleClick }) => {
         handleClick(); 
     }
     const getIconColor = () => {
-        return state.nickname.length ? 'green' : 'black';
+        return !validUrlPattern.test(state.url) ? 'gray' : (state.nickname.length ? '#f9aaaa' : '#1eb980');
     }
 
+    const getIconTextColor = () => {
+        return !validUrlPattern.test(state.url) ? 'gray' : (state.dark ? '#fff' : '#000' ); 
+    }
+
+    const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
+
     return (
-        <div style={{  marginRight: '5px' }}> 
-            <Tooltip title="Name me"> 
-                <Button 
-                    size="large"
-                    color="primary"
-                    onClick={handleStarred}
-                    style={{ marginTop: '5px', height: '100%'}}
-                > 
-                    <FormControlLabel 
-                        value="meta" 
-                        control = { 
-                            <FingerprintIcon style={{ color: getIconColor(), fontSize: '24px' }} /> 
-                        }
-                        label={
-                            <Typography 
-                                variant="overline"
-                                style={{ fontSize: '8px', color: 'black' }}
-                            > 
-                                Nickname 
-                            </Typography>
-                        }
-                        labelPlacement="bottom"
-                    />
-                </Button>
+        <div style={{  marginRight: '5px',marginTop: '7.5px' }}> 
+           <Tooltip 
+                arrow
+                enterDelay={500} 
+                title={
+                    <Typography variant="caption" color="primary">
+                        {state.nickname.length ? ('Current Nickname: ' + state.nickname) : 'Assign Nickname?'}
+                    </Typography>
+                }
+            >  
+                <span>
+                    <Button 
+                        size="small"
+                        color="primary"
+                        disabled={!validUrlPattern.test(state.url)}
+                        variant="outlined"
+                        onClick={handleStarred}
+                        style={{ paddingTop: '7.5px' }}
+                    > 
+                        <FormControlLabel 
+                            value="meta" 
+                            control = { 
+                                <FingerprintIcon style={{ color: getIconColor(), fontSize: '24px' }} /> 
+                            }
+                            label={
+                                <Typography 
+                                    variant="overline"
+                                    style={{ fontSize: '8px', color: getIconTextColor() }}
+                                > 
+                                    Nickname 
+                                </Typography>
+                            }
+                            labelPlacement="bottom"
+                        />
+                    </Button>
+                </span>
             </Tooltip>
         </div>
     );   

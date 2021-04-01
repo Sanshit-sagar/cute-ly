@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react';
 
 import { 
     Typography, Paper, FormLabel, 
-    Grid, TextField,  FormHelperText, 
-    Divider
+    Grid, TextField,  FormHelperText, FormControl, InputLabel, FilledInput,
+    Divider, Tooltip
 } from '@material-ui/core'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
@@ -22,15 +22,10 @@ import { useCount } from '../components/SharedContext';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        border: `1px solid ${theme.palette.divider}`,
+        border: '1px solid',
+        borderColor: '#1eb980',
         padding: theme.spacing(1),
-        backgroundColor: '#fff', 
-    },
-    paperPurple: {
-        border: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(1.5),
-        backgroundColor: theme.palette.primary.dark,
-        width: '99%',
+        margin: theme.spacing(3),
     },
     buttonGroup: {
         display: 'flex', 
@@ -41,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
 const StyledToggleButtonGroup = withStyles((theme) => ({
     grouped: {
       margin: theme.spacing(0.5),
-      border: 'none',
+      border: 'thin solid',
+      borderColor: theme.palette.primary.main,
       '&:not(:first-child)': {
         borderRadius: theme.shape.borderRadius,
       },
@@ -54,8 +50,6 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
 const TitleInput = () => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount();
-
-    // const [name, setName] = useState(state.name); 
     const [rem, setRem] = useState(0); 
 
     const handleNicknameChange = (name) => {
@@ -69,12 +63,6 @@ const TitleInput = () => {
         handleRemUpdate();
     }
 
-    const handleSubmit = () => {
-        //todo dispatch a name update here
-        // alert('Updating Name'); 
-        console.log('Done updating name');
-    }
-
     const enforceLimit = (name) => {
         //handle spacing here as well 
         return (name.length > 20) ? name.substring(0, 20) : name; 
@@ -85,49 +73,60 @@ const TitleInput = () => {
     }
 
     return (
-        
         <Grid 
             container
             direction="column"
-            justify="space-evenly"
-            alignItems="center"
-
+            justify="center"
+            alignItems="stretch"
+            spacing={2}
         > 
-            <Paper elevation={5} className={classes.paperPurple}>
-                <Grid container direction="column" alignItems="flex-start" spacing={1}>
-                    <Paper elevation={5} className={classes.paper}>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                color="primary"
-                                name="nickname"
-                                label="Nickname"
-                                value={state.nickname}
-                                style={{ width: '300px', margin: '10px' }}
-                                onChange={(e) => handleNicknameChange(e.target.value)}
-                            /> 
-                            <FormHelperText> Meaningful names make links easy to find </FormHelperText>
-                        </Grid>
-                  
-                        <Grid container direction="row" justify="flex-end"> 
-                            <Grid item>
-                                <TextField 
+            <Paper elevation={0} className={classes.paper}>
+                <Grid item>
+                    <FormControl fullWidth style={{ marginTop: '7.5px', marginBottom: '15px' }}>
+                        <InputLabel 
+                            style={{ 
+                                    color: state.nickname.length 
+                                ? (state.dark ? '#fff' : '#000' ) 
+                                : '#1eb980' 
+                            }}
+                        > 
+                            Nickname 
+                        </InputLabel>
+                        <FilledInput
+                            fullWidth
+                            variant="outlined"
+                            color="primary"
+                            name="nickname"
+                            label="Nickname"
+                            value={state.nickname}
+                            onChange={(e) => handleNicknameChange(e.target.value)}
+                            style={{ color: '#1eb980'}}
+                        /> 
+                    </FormControl>
+                </Grid>
+            
+                <Grid item>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+                        <FormControl>
+                            <div style={{ display: 'flex', flexDirection:'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                                <FilledInput
                                     disabled
-                                    variant="outlined"
                                     color="primary"
-                                    label="remaining" 
                                     value={rem}
                                     size="small"
                                     margin="dense"
-                                    style={{maxWidth: '100px', margin: '10px' }}
+                                    style={{ width: '75px' }}
                                 />
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                                <FormHelperText> 
+                                    Characters Left 
+                                </FormHelperText>
+                            </div>
+                        </FormControl>
+                    </div>
                 </Grid>
+
             </Paper>
-        </Grid> 
+        </Grid>            
     );
 }
 
@@ -166,23 +165,6 @@ export default function OtherOptionsButtonGroup() {
         }
     }
 
-
-    const handleCopyToClipboard = () => {
-        dispatch({
-            type: 'COPY_TO_CLIPBOARD',
-            payload: {
-                value: true
-            }
-        });
-        dispatch({
-            type: 'SNACKBAR_TRIGGER',
-            payload: {
-                message: 'Copied to clipboard.',
-                key: new Date().getTime().toString()
-            }
-        });
-    }
-
     const handleSubmit = () => {
         console.log('handling submit...');
     }
@@ -213,18 +195,25 @@ export default function OtherOptionsButtonGroup() {
         noSubmissionReq: false
     };
 
+    const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
+
+    const getBodyColor = () => {
+        const [state, dispatch] = useCount(); 
+        return !validUrlPattern.test(state.url) ? 'gray' : '#1eb980';
+    }
+
     return (
         <Fragment>
             <StyledToggleButtonGroup>
-                <Paper elevation={3} className={classes.paper}>
+                <Paper elevation={0} className={classes.paper}>
                     <div className={classes.buttonGroup}>
-                        <FormLabel component="legend" style={{ marginLeft: '15px' }}>
-                            <Typography variant="overline" color="textSecondary"> 
+                        <FormLabel component="legend" style={{ marginLeft: '5px' }}>
+                            <Typography variant="overline" style={{ color: getBodyColor() }}> 
                                 Additional Options
                             </Typography> 
                         </FormLabel>
                         
-                        <Divider /> 
+                        <Divider style={{ backgroundColor: getBodyColor() }} /> 
 
                         <div style={{ 
                                 height: '100%', 
@@ -233,12 +222,14 @@ export default function OtherOptionsButtonGroup() {
                                 justifyContent: 'space-between'
                             }}
                         >
+                           
                             <MarkFavouriteButton
                                 handleClick={(e) => handleDialogOpen(e, "fav")}
                             /> 
-                            <CopyToClipboardButton 
-                                handleClick={handleCopyToClipboard}
-                            />
+                        
+
+                            <CopyToClipboardButton />
+
                             <NicknameButton 
                                 handleClick={(e) => handleDialogOpen(e, "title")} 
                             /> 

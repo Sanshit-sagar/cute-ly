@@ -1,7 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { DataGrid } from '@material-ui/data-grid';
-import { useDemoData } from '@material-ui/x-grid-data-generator';
 import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
@@ -52,9 +51,8 @@ function customCheckbox(theme) {
   
   const useStyles = makeStyles((theme) => ({
     root: {
-      border: 0,
-      color:
-        theme.palette.type === 'light' ? 'rgba(0,0,0,.85)' : 'rgba(255,255,255,0.85)',
+      border: 'thin solid',
+      color: theme.palette.primary.main,
       fontFamily: [
         '-apple-system',
         'BlinkMacSystemFont',
@@ -70,29 +68,24 @@ function customCheckbox(theme) {
       WebkitFontSmoothing: 'auto',
       letterSpacing: 'normal',
       '& .MuiDataGrid-columnsContainer': {
-        backgroundColor: theme.palette.type ===  'light' ? '#f0f0f0' : '#303030'
+        color: theme.palette.primary.dark,
+        backgroundColor: theme.palette.background.paper,
       },
       '& .MuiDataGrid-iconSeparator': {
         display: 'none',
       },
       '& .MuiDataGrid-colCell, .MuiDataGrid-cell': {
-        borderRight: `1px solid ${
-          theme.palette.type === 'light' ? '#f0f0f0' : '#303030'
-        }`,
+        borderRight: `1px solid ${theme.palette.primary.dark}`,
       },
       '& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell': {
-        borderBottom: `1px solid ${
-          theme.palette.type === 'light' ? '#f0f0f0' : '#303030'
-        }`,
+        borderBottom: `1px solid ${theme.palette.primary.dark}`,
       },
       '& .MuiDataGrid-cell': {
-        color:
-          theme.palette.type === 'light'
-            ? 'rgba(0,0,0,.85)'
-            : 'rgba(255,255,255,0.65)',
+        color: theme.palette.primary.dark,
       },
       '& .MuiPaginationItem-root': {
-        borderRadius: 0,
+        borderRadius: 5,
+        backgroundColor: theme.palette.primary.main,
       },
       ...customCheckbox(theme),
     },
@@ -103,7 +96,7 @@ function customCheckbox(theme) {
   
     return (
       <Pagination
-        color="primary"
+        color="secondary"
         variant="outlined"
         shape="rounded"
         page={state.pagination.page}
@@ -131,19 +124,19 @@ function StyledGrid(props) {
                 className={classes.root}
                 rows={props.Rows}
                 columns={props.Columns}
-                loading={props.Loading}
                 checkboxSelection
-                pageSize={5}
+                components={{
+                  Toolbar: props.CustomToolbar,
+                  LoadingOverlay: props.CustomLoadingOverlay,
+                  NoRowsOverlay: props.CustomNoRowsOverlay,
+                  Pagination: CustomPagination,
+                }}
+                pageSize={10}
                 headerHeight={40}
                 rowHeight={75}
                 rowsPerPageOptions={[5,10,25]}
                 density="comfortable"
-                components={{
-                    Toolbar: props.CustomToolbar,
-                    LoadingOverlay: props.CustomLoadingOverlay,
-                    NoRowsOverlay: props.CustomNoRowsOverlay,
-                    Pagination: CustomPagination,
-                }}
+                loading={props.Loading}
             />
         </div>
     );

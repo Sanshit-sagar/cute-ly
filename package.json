@@ -12,13 +12,10 @@
     "@material-ui/data-grid": "^4.0.0-alpha.22",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.3",
-    "@material-ui/x-grid-data-generator": "^4.0.0-alpha.23",
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindui/react": "^0.1.1",
     "axios": "^0.21.1",
-    "clsx": "^1.1.1",
     "firebase": "^8.2.10",
     "firebase-admin": "^9.5.0",
     "next": "^10.0.8",
@@ -26,8 +23,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-use": "^17.2.1",
-    "styled-components": "^5.2.1",
-    "swr": "^0.5.3"
+    "use-clipboard-copy": "^0.1.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.5",

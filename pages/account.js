@@ -1,90 +1,138 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Router from 'next/router'; 
-import useSWR from 'swr';
 
-import PageContainer from '../components/PageContainer';
+import { Grid, Paper, Typography, Link, Box } from '@material-ui/core'; 
+import { makeStyles } from '@material-ui/core/styles';
 
 import { useAuth } from '../lib/auth';
-// import { getAllSites } from '../lib/db'; 
+import { RealtimeProvider, useRealtime } from '../utils/useFirebaseRealtime';
+import PageContainer from '../components/PageContainer';
 
-const fetcher = async (url, token) => {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`, 
-        token,
-      }),
-      credentials: 'same-origin',
-    });
-  
-    if (!res.ok) {
-      const error = new Error('An error occurred while fetching the data.');
-      error.info = await res.json();
-      error.status = res.status;
-      throw error;
+const useStyles = makeStyles((theme) => ({
+    linksList: {
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'space-around', 
+        alignItems: 'stretch',
+    },
+    dataField: {
+        margin: '5px',
+    },
+}));
+
+const truncateDataField = (dataField) => {
+    if(dataField.length) {
+        if(dataField.length > 40) {
+            return dataField.substring(0, 20) + "..." + dataField.substring(dataField.length - 10);
+        } else {
+            return dataField; 
+        }
     }
-  
-    return res.json();
-};
+    return "N/A";
+}
 
-function Profile() {
+const StyledLink = ({ href }) => {
+    const classes = useStyles(); 
+
+    return (
+        <Link href={href}>
+            <Typography 
+                variant="body1"
+                className={classes.dataField}
+            > 
+                { truncateDataField(href) }  
+            </Typography>
+        </Link>
+    )
+}
+
+const LinksListRow = ({ rowData }) => {
+    const classes = useStyles(); 
+
+    return (
+        <Paper elevation={5} style={{ backgroundColor: 'white', margin: '10px', padding: '10px', width: '400px', height: '250px' }}>
+            <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
+                <Grid item>
+                    <Typography variant="h6" className={classes.dataField}> 
+                        { rowData.slug }  
+                    </Typography>
+                </Grid>
+
+                <Grid item>
+                    <Typography variant="body1"className={classes.dataField}>
+                        { rowData.id }  
+                    </Typography>
+                </Grid>   
+            </Grid>
+       
+            <Grid container direction="column" justify="flex-end" alignItems="flex-end" spacing={2}>
+                <Grid item>
+                    <StyledLink href={".../" + rowData.modifiedUrl.substring(31)} />
+                </Grid>
+                <Grid item>
+                    <StyledLink href={rowData.originalUrl} />
+                </Grid>
+            </Grid>
+       </Paper>
+    );
+}
+
+const LinksList = ({ links, linksMap }) => {
+    const classes = useStyles(); 
+
+    return (
+        <Box height="500px" width="1000px" bgcolor="#efefef" style={{ overflowY: 'scroll', padding: '50px' }}>
+            { links.map((item) => {
+                return (
+                    <div key={item.id} className={classes.linksList}>
+                        <LinksListRow rowData={item} />
+                    </div> 
+                );
+            })}
+        </Box>
+    );
+}
+
+function AccountBase({ userData }) {
+    const { user, links, loading, linkMappingsBySlug } = useRealtime(); 
+
+    return (
+        <PageContainer>  
+            <Fragment>
+                <h1> Hi, { userData.email } </h1> 
+                { 
+                    !loading ?
+                    <div> 
+                    { 
+                        links 
+                        ?  <LinksList links={links} linksMap={linkMappingsBySlug} /> 
+                        :  <p> No links to display </p> 
+                    }
+                    </div>
+                : <p>  Loading... </p>
+                }
+            </Fragment>
+        </PageContainer>
+    ); 
+}
+
+export default function Account() {
     const { user, loading } = useAuth(); 
 
     if(!user && !loading) {
         Router.push('/'); 
     }
-
-    const { data, error, isValidating } = useSWR(
-        user ? ['/api/auth/sites', user.token] : null,
-        fetcher
-    );
-
-    // const [data, setData] = useState(null); 
-    // useEffect(() => {
-    //     console.log('Calling getAllSites from useEffect'); 
-
-    //     user && 
-    //         getAllSites().then((data) => {
-    //             setData(data);
-    //         });
-
-    //     console.log('Updated data'); 
-    //     console.log('User Token: ' + user?.token); 
-    // }, [user]); 
-
-    return (
-        <>
-            {user ? (
-                <PageContainer>  
-                    <h1> Sites Data </h1> 
-
-                    { data && data?.sites.length ? (
-                        <> 
-                            <DetailsList rawData={data?.sites} /> 
-                        </>
-                    ) : <p> Validating... </p> }
-
-                </PageContainer>
-            ) : <h1> Loading... </h1> }
-        </>
-    ); 
-}
-
-const DetailsList = ({ rawData }) => {
     
     return (
-        <>
-            <p> Length is: {rawData.length} </p> 
-        </>
-    );
-}
-
-export default function Account() {
-    
-    return (
-        <>
-            <Profile /> 
-        </> 
+        <Fragment>
+            {
+                user ?
+                    <RealtimeProvider>
+                        <AccountBase userData={user} /> 
+                    </RealtimeProvider>
+                :
+                    <h1> Loading... </h1> 
+            }
+        </Fragment> 
     );
 }
