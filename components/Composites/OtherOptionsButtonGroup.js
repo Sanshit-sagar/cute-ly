@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react';
 
 import { 
     Typography, Paper, FormLabel, 
-    Grid, TextField,  FormHelperText, FormControl, InputLabel, FilledInput,
-    Divider, Tooltip
+    Grid, FormHelperText, FormControl, InputLabel, FilledInput,
+    Divider
 } from '@material-ui/core'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
@@ -12,13 +12,12 @@ import HomeIcon from '@material-ui/icons/Home';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'; 
 
-import CopyToClipboardButton from '../components/Buttons/CopyToClipboardButton';
-import MarkFavouriteButton from '../components/Buttons/MarkFavouriteButton'; 
-import NicknameButton from '../components/Buttons/NicknameButton'; 
+import CopyToClipboardButton from '../Buttons/CopyToClipboardButton';
+import MarkFavouriteButton from '../Buttons/MarkFavouriteButton'; 
+import NicknameButton from '../Buttons/NicknameButton'; 
 
-import StyledSharedDialog from '../components/Composites/StyledSharedDialog'; 
-import { useCount } from '../components/SharedContext'; 
-
+import StyledSharedDialog from './StyledSharedDialog'; 
+import { useCount } from '../SharedContext'; 
 
 const useStyles = makeStyles((theme) => ({
     paper: {

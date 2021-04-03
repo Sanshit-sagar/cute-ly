@@ -12,7 +12,8 @@ export const lightTheme = createMuiTheme({
     background: {
       paper: '#fff',
       default: '#fff',
-      tooltip: '#363537',
+      tooltip: '#000',
+      header: '#f9aaaa',
     },
     contrastThreshold: 3,
     tonalOffset: 0.2,
@@ -41,9 +42,10 @@ export const darkTheme = createMuiTheme({
       main: '#f9aaaa',
     },
     background: {
-      paper: '#363537',
-      default: '#363537',
+      paper: '#000',
+      default: '#000',
       tooltip: '#fff',
+      header: '#000',
     },
     contrastThreshold: 3,
     tonalOffset: 0.2,

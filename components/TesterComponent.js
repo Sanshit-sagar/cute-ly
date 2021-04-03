@@ -26,8 +26,9 @@ import UtmForm from './Forms/UtmForm';
 import AppleForm from './Forms/AppleForm';
 import AndroidForm from './Forms/AndroidForm'; 
 import MetaForm from './Forms/MetaForm'; 
-import { useCount } from './SharedContext'; 
 import StyledSharedDialog from './Composites/StyledSharedDialog';
+
+import { useCount } from './SharedContext'; 
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -422,7 +423,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
                         <Divider style={{ backgroundColor: getBodyColor() }}/> 
                 
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch' }}>
                             <GooglePlayAnalyticsButton /> 
                             <AppleAnalyticsButton /> 
                             <AndroidAnalyticsButton />

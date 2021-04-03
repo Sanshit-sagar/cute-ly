@@ -1,7 +1,9 @@
-import * as React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { DataGrid } from '@material-ui/data-grid';
 import { makeStyles } from '@material-ui/core/styles';
+
+import Paper from '@material-ui/core/Paper';
 import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
 
@@ -49,9 +51,10 @@ function customCheckbox(theme) {
     };
   }
   
-  const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
     root: {
       border: 'thin solid',
+      borderColor: theme.palette.primary.main,
       color: theme.palette.primary.main,
       fontFamily: [
         '-apple-system',
@@ -91,54 +94,49 @@ function customCheckbox(theme) {
     },
   }));
   
-  function CustomPagination(props) {
-    const { state, api } = props;
+function CustomPagination(props) {
+  const { state, api } = props;
   
-    return (
-      <Pagination
-        color="secondary"
-        variant="outlined"
-        shape="rounded"
-        page={state.pagination.page}
-        count={state.pagination.pageCount}
-        renderItem={(props2) => <PaginationItem {...props2} />}
-        onChange={(event, value) => api.current.setPage(value)}
-        style={{ marginRight: '15px' }}
-      />
-    );
-  }
+  return (
+    <Pagination
+      color="secondary"
+      variant="outlined"
+      shape="rounded"
+      page={state.pagination.page}
+      count={state.pagination.pageCount}
+      renderItem={(props2) => <PaginationItem {...props2} />}
+      onChange={(event, value) => api.current.setPage(value)}
+      style={{ marginRight: '15px' }}
+    />
+  );
+}
   
-  CustomPagination.propTypes = {
-    api: PropTypes.shape({
-      current: PropTypes.object.isRequired,
-    }).isRequired,
-    state: PropTypes.object.isRequired,
-  };
+CustomPagination.propTypes = {
+  api: PropTypes.shape({
+    current: PropTypes.object.isRequired,
+  }).isRequired,
+  state: PropTypes.object.isRequired,
+};
 
-function StyledGrid(props) {
+const StyledGrid = ({ rows, columns, loading, toolbar }) => {
     const classes = useStyles();
-
+    
     return (
-        <div style={{ display: 'flex', height: '100%' }}>
+        <Paper elevation={0} style={{ display: 'flex', height: '65vh', width: '1325px' }}>
             <DataGrid
                 className={classes.root}
-                rows={props.Rows}
-                columns={props.Columns}
-                checkboxSelection
+                loading={loading}
+                rows={rows}
+                columns={columns} 
                 components={{
-                  Toolbar: props.CustomToolbar,
-                  LoadingOverlay: props.CustomLoadingOverlay,
-                  NoRowsOverlay: props.CustomNoRowsOverlay,
+                  Toolbar: toolbar,
                   Pagination: CustomPagination,
                 }}
                 pageSize={10}
                 headerHeight={40}
-                rowHeight={75}
-                rowsPerPageOptions={[5,10,25]}
                 density="comfortable"
-                loading={props.Loading}
             />
-        </div>
+        </Paper>
     );
 }
 

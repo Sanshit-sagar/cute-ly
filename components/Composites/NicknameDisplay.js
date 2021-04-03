@@ -48,14 +48,14 @@ const NicknameDisplay = () => {
        }
        return input; 
    }
+   const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
     const getInputColor = () => {
-        const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
         return (!validUrlPattern.test(state.url) ? 'black' :  '#1eb980'); 
     }
 
     const getInputHeaderColor = () => {
-        return !state.nickname.length ? '#1eb980' : (state.dark ? '#fff' : '#000'); 
+        return (!validUrlPattern.test(state.url) ? 'gray' : (!state.nickname.length ? '#1eb980' : (state.dark ? '#fff' : '#000')));  
     }
 
    return (
@@ -70,9 +70,11 @@ const NicknameDisplay = () => {
                         <FilledInput
                             name="urlInput"
                             variant="outlined"
+                            disabled={!validUrlPattern.test(state.url)}
                             value={state.nickname}
                             size="small"
                             margin="dense"
+                            autoComplete="off"
                             onChange={(e) => handleChange(e.target.value)}
                             InputProps={{
                                 endAdornment: 

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState } from 'react'; 
 
 import { Grid, Paper, Button, Typography } from '@material-ui/core'; 
 
-import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles'; 
+import { makeStyles } from '@material-ui/core/styles'; 
 
 import { useCount } from '../SharedContext';
 import { createLink } from '../../lib/db'; 
@@ -11,29 +11,27 @@ import UrlInput from './UrlInput';
 import ModeSelector from './ModeSelector'; 
 import NicknameDisplay from './NicknameDisplay'; 
 import TesterComponent from '../TesterComponent'; 
-import OtherOptionsButtonGroup from '../OtherOptionsButtonGroup';
-import SocialMediaButtonGroup from '../SocialMediaButtonGroup';
+import OtherOptionsButtonGroup from './OtherOptionsButtonGroup';
+import SocialMediaButtonGroup from './SocialMediaButtonGroup';
 import ProgressBar from './ProgressBar';
 
 const useStyles = makeStyles((theme) => ({
-    mainContainerPaper: {
-        height: '57.5vh', 
-        width: '1350px',
-        margin: theme.spacing(1),
-    },
-    paperDataGrid: {
-        margin: theme.spacing(1),
-        marginTop: theme.spacing(3),
-    },
     headerRow: {
         display: 'flex', 
         flexDirection: 'row', 
         justifyContent: 'space-between', 
         alignItems: 'flex-start',
     },
+    paperDataGrid: {
+        margin: theme.spacing(1),
+        flexDirection: 'row', 
+        justifyContent: 'center', 
+        alignItems: 'flex-end',
+    },
     urlInput: {
         border: 'thin solid', 
         borderColor: '#1eb890',
+        width: '100%',
     },
 }));
 
@@ -66,7 +64,6 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
             margin="normal"
             disabled={!validUrlPattern.test(state.url)}
             onClick={() => handleSubmit()}
-            style={{ marginLeft: '10px', marginTop: '5px' }}
         > 
             <Typography variant="button" color='textSecondary'> 
                 Generate 
@@ -92,7 +89,6 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
             margin="normal"
             disabled={!validUrlPattern.test(state.url)}
             onClick={() => handleClear()}
-            style={{ marginLeft: '10px', marginTop: '5px' }}
         > 
             <Typography variant="button"> 
                 Clear
@@ -103,13 +99,12 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
   
 const UrlModifierBase = () => {
-    const classes = useStyles(); 
-    const [state, dispatch] = useCount();
-   
-    return (
-        <Grid container direction="column">
-            <Grid container direction="column" justify="flex-start" alignIitems="center" wrap="nowrap" spacing={2}>
+   const classes = useStyles(); 
+   const [state, dispatch] = useCount(); 
 
+    return (
+        <Paper elevation={0} className={classes.paperDataGrid}>
+            <Grid container direction="column" justify="space-between" alignItems="stretch" spacing={2}>
                 <Grid item>
                     <div className={classes.headerRow}>
                         <div style={{ marginRight: '25px' }}>
@@ -117,23 +112,19 @@ const UrlModifierBase = () => {
                         </div>
 
                         <div style={{ flexGrow: 1, margin: '2.5px' }}>
-                           
                             <ProgressBar /> 
                         </div>
                     </div>
                 </Grid>
-
+        
                 <Grid item>
-                    <Paper 
-                        elevation={10} 
-                        className={classes.urlInput}
-                    >
+                    <Paper elevation={0} className={classes.urlInput}>
                         <UrlInput />
                     </Paper>
-                </Grid> 
-
-                <Grid item direction="row" wrap="no-wrap">
-                    <Grid container direction="row">
+                </Grid>
+            
+                <Grid item>
+                    <Grid container direction="row" justifyContent="flex-end" alignItems="center">
                         <Grid item> 
                             <ModeSelector />
                         </Grid>
@@ -142,7 +133,6 @@ const UrlModifierBase = () => {
                         </Grid>
 
                         <Grid item> 
-
                             <SocialMediaButtonGroup />
                         </Grid>  
 
@@ -151,36 +141,30 @@ const UrlModifierBase = () => {
                         </Grid>                      
                     </Grid>
                 </Grid>
-
-                
-                <Grid item> 
-                    <Grid container direction="row" justify="flex-end" alignitems="center">
-                        <Grid item> 
-                           <ClearButton /> 
-                        </Grid>
-                        <Grid item > 
+            
+                <Grid item>
+                    <Grid container direction="row" justify="flex-end" alignItems='center' spacing={2}>
+                        <Grid item>
+                            <ClearButton />
+                        </Grid> 
+                        <Grid item>
                             <SubmitButton /> 
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+        </Paper>
     );
 }  
 
 const UrlModifier = () => {
-    const classes= useStyles();
-
     return (
-        <Grid container direction="column" justify="center" alignItems="center">
+
+        <Grid container direction="column" justify="center" alignIitems="center">
             <Grid item>
-                <Paper elevation={0} className={classes.paperDataGrid}>
-                    <Grid item>
-                        <UrlModifierBase /> 
-                    </Grid>
-                </Paper>
+                <UrlModifierBase /> 
             </Grid>
-        </Grid> 
+        </Grid>    
     ); 
 }
 

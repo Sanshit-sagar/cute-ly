@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { AuthProvider } from '../lib/auth';
+import { RealtimeProvider } from '../utils/useFirebaseRealtime'; 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { CountProvider, useCount } from '../components/SharedContext';
 import { lightTheme, darkTheme } from '../components/Themes'; 
@@ -16,11 +17,9 @@ const AppBase = ({ AppComp, AppPageProps }) => {
     });
   } 
 
-  const currentTheme = state.dark ? 'Dark' : 'Normal'; 
-
   return (
       <React.Fragment>
-          <ThemeProvider theme={currentTheme === 'Dark' ? darkTheme : lightTheme}>
+          <ThemeProvider theme={state.dark ? darkTheme : lightTheme}>
             <CssBaseline /> 
             <AppComp 
               {...AppPageProps}
@@ -36,12 +35,14 @@ export default function App({ Component, pageProps }) {
     <React.Fragment> 
       <CountProvider>
         <AuthProvider> 
+          <RealtimeProvider>
 
             <AppBase 
               AppComp={Component} 
               AppPageProps={pageProps} 
             /> 
-            
+
+          </RealtimeProvider>
         </AuthProvider> 
       </CountProvider>
     </React.Fragment>

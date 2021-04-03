@@ -88,10 +88,6 @@ const getStarIconColor = (starred) => {
     return starred ? 'gold' : '#1eb980';
 }
 
-const getCopyIconColor = (copyToClipboard) => {
-    return copyToClipboard ? 'gold' : '#1eb980';
-}
-
 const LinkFaviconComp = () => {
     const classes = useStyles();
     const [state, dispatch] = useCount();
@@ -201,6 +197,7 @@ const ActionButtonGroup = () => {
     return (
         <div className={classes.buttonGroup}>
             <Button 
+                fullWidth
                 variant="outlined" 
                 color="primary" 
                 size="large"

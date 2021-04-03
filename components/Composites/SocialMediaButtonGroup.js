@@ -21,8 +21,8 @@ import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'; 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-import { createLink } from '../lib/db'; 
-import { useCount } from './SharedContext';
+import { createLink } from '../../lib/db'; 
+import { useCount } from '../SharedContext';
 
 const useStyles = makeStyles((theme) => ({
     paper: {

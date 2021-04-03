@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 
 import firebase from '../lib/firebase'; 
+import { useCount } from '../components/SharedContext';
 
 const realtimeContext = createContext();
 
@@ -27,13 +28,16 @@ function sanitizeData(key, data) {
     if(key && data) {
         var sanitizeData = {
             id: key,
+            nickname: data.title,
+            socials: data.socials,
+            starred: data.starred,
             slug: data.suffix,
             modifiedUrl: data.updatedUrl,
             originalUrl: data.url,
             analytics: {
                 ios: data.ios,
                 android: data.android,
-                social: data.meta,
+                meta: data.meta,
                 utm: data.utm,
                 tags: data.tags,
             },
@@ -42,13 +46,16 @@ function sanitizeData(key, data) {
 
         return sanitizeData; 
     }
-    return { key, ...data }; 
+    return data; 
 }
 
 function useFirebaseRealtime() {
+    const [state, dispatch] = useCount(); 
+
     const [user, setUser] = useState(null); 
     const [links, setLinks] = useState([]); 
     const [linksMap, setLinksMap] = useState({}); 
+
     const [realtimeLoading, setRealtimeLoading] = useState(false); 
     const [error, setError] = useState(null); 
 
@@ -80,7 +87,7 @@ function useFirebaseRealtime() {
                 setLinks(sortedLinks);
                 setLinksMap(linksMap); 
             });
-            
+
             setRealtimeLoading(false); 
             return () => ref.off('value', listener); 
         }

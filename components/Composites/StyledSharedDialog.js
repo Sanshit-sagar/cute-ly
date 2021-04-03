@@ -70,7 +70,7 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
                 open={open} 
                 onClose={handleClose}
             >
-                <Fragment>
+                <Paper elevation={0} margin='5px'>
                     {
                         content?.component &&
                         <DialogContent>
@@ -81,20 +81,11 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
                                 > 
                                     {content.title} 
                                 </Typography>
-
-                                <Typography 
-                                    variant="caption"
-                                    style={{ color: getSubtitleFontColor() }}
-                                >
-                                    {content.message} 
-                                </Typography>
                             </Paper>
-                        
                             {content?.component}
-                        
                         </DialogContent>
                     }
-                </Fragment>
+                </Paper>
                 
                 <DialogActions> 
                     <Grid 

@@ -72,6 +72,7 @@ const initialState =  {
     messages: {
         twitter: '',
     },
+    lastUpdate: ''
 }; 
 
 const reducer = (state, action) => {
@@ -221,6 +222,7 @@ const reducer = (state, action) => {
                 ...state, 
                 mostRecentResult: action.payload.value,
                 showResults: true,
+                copyToClipboard: false,
                 snackbar: {
                     ...state.snackbar, 
                     snackpack: [
@@ -231,6 +233,11 @@ const reducer = (state, action) => {
                         },
                     ],
                 },
+            };
+        case "PERSISTED":
+            return {
+                ...state, 
+                lastUpdate: action.payload.value
             };
         case "COPY_TO_CLIPBOARD": 
             return {

@@ -15,9 +15,7 @@ const useStyles = makeStyles((theme) => ({
     urlInput: {
         borderRadius: '5px',
         height: '62.5px',
-    },
-    paper: {
-        // padding: theme.spacing(1),
+        color: theme.palette.primary.main,
     },
 })); 
 
@@ -27,9 +25,6 @@ const UrlInput = () => {
 
     const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
-    const getInputColor = () => {
-        return '#1eb980'; 
-    }
     const getInputHeaderColor = () => {
         return state.dark ? '#fff' : '#000'; 
     }
@@ -40,16 +35,16 @@ const UrlInput = () => {
                 <InputLabel style={{ color: getInputHeaderColor() }}>
                     Destination URL 
                 </InputLabel>
-                <Paper elevation={0} className={classes.paper}>
+                <Paper elevation={0}>
                     <FilledInput
-                        fullWidth
                         id="filled-adornment-amount"
+                        fullWidth
                         value={state.url}
-                        onChange={(e) => dispatch({ type: 'UPDATE_URL', payload: (e)})}
                         color="primary"
                         variant="outlined"
                         placeholde="Enter or Type a Valid URL"
                         error={!validUrlPattern.test(state.url) && state.url.length > 0}
+                        onChange={(e) => dispatch({ type: 'UPDATE_URL', payload: (e)})}
                         autoComplete="off"
                         endAdornment = {
                             <InputAdornment 
@@ -59,7 +54,6 @@ const UrlInput = () => {
                             </InputAdornment>
                         }
                         className={classes.urlInput}
-                        style={{ color: getInputColor() }}
                     />
                 </Paper>
             </div>

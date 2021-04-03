@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -18,7 +18,6 @@ export default function SharedSnackbar() {
   const [state, dispatch] = useCount();
   
   React.useEffect(() => {
-    // alert('here'); 
     if (state.snackbar.snackpack.length && !state.snackbar.open) {
       dispatch({ 
         type: "SNACKBAR_IDLE", payload: { 
@@ -69,7 +68,7 @@ export default function SharedSnackbar() {
         }
         anchorOrigin = {{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'right',
         }}
         open = {
           state.snackbar.open
@@ -87,14 +86,7 @@ export default function SharedSnackbar() {
           : undefined
         }
         action={
-          <React.Fragment>
-            {/* <Button 
-              color="textSecondary" 
-              size="small" 
-              onClick={handleClose}
-            >
-              UNDO
-            </Button> */}
+          <Fragment>
             
             <IconButton
               aria-label="close"
@@ -104,7 +96,7 @@ export default function SharedSnackbar() {
             >
               <CloseIcon />
             </IconButton>
-          </React.Fragment>
+          </Fragment>
         }
       />
     </div>

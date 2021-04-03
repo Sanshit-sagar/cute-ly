@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import Router from 'next/router'; 
 
-import { Grid, Paper, Typography, Link, Box } from '@material-ui/core'; 
+import { Grid, Paper, Typography, Link } from '@material-ui/core'; 
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useAuth } from '../lib/auth';
 import { RealtimeProvider, useRealtime } from '../utils/useFirebaseRealtime';
+
 import PageContainer from '../components/PageContainer';
 
 const useStyles = makeStyles((theme) => ({
@@ -18,6 +19,13 @@ const useStyles = makeStyles((theme) => ({
     dataField: {
         margin: '5px',
     },
+    rowContainer: {
+        backgroundColor: 'white', 
+        margin: '10px', 
+        padding: '10px', 
+        width: '400px', 
+        height: '250px'
+    }
 }));
 
 const truncateDataField = (dataField) => {
@@ -50,7 +58,7 @@ const LinksListRow = ({ rowData }) => {
     const classes = useStyles(); 
 
     return (
-        <Paper elevation={5} style={{ backgroundColor: 'white', margin: '10px', padding: '10px', width: '400px', height: '250px' }}>
+        <Paper elevation={5}>
             <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
                 <Grid item>
                     <Typography variant="h6" className={classes.dataField}> 
@@ -81,7 +89,7 @@ const LinksList = ({ links, linksMap }) => {
     const classes = useStyles(); 
 
     return (
-        <Box height="500px" width="1000px" bgcolor="#efefef" style={{ overflowY: 'scroll', padding: '50px' }}>
+        <Paper height="500px" width="1000px" bgcolor="#efefef" style={{ overflowY: 'scroll', padding: '50px' }}>
             { links.map((item) => {
                 return (
                     <div key={item.id} className={classes.linksList}>
@@ -89,7 +97,7 @@ const LinksList = ({ links, linksMap }) => {
                     </div> 
                 );
             })}
-        </Box>
+        </Paper>
     );
 }
 
