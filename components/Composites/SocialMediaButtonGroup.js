@@ -23,6 +23,8 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { createLink } from '../../lib/db'; 
 import { useCount } from '../SharedContext';
+import { useRealtime } from '../../utils/useFirebaseRealtime'; 
+import sanitizeUrlModifierInput from '../../utils/helpers/sanitizers';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -142,7 +144,7 @@ const encodeForWhatsapp = (num, mssg) => {
 
 function SubmitButtonWhatsapp(props) {
     const [state, dispatch] = useCount(); 
-    const [result, setResult] = useState(''); 
+    const { createNewLink } = useRealtime();  
     const regex = /([+]?\d{1,2}[.-\s]?)?(\d{3}[.-]?){2}\d{4}/;
     
     const handleSubmit = async () => {
@@ -156,19 +158,9 @@ function SubmitButtonWhatsapp(props) {
             },
         }); 
 
-        const result = await createLink(state, encodedMessageUrl); 
-        const updatedResultUrl = result.updatedUrl;
-        
-        setResult(updatedResultUrl);
-    
-        dispatch({
-            type: "UPDATE_RESULTS",
-            payload: {
-                value: updatedResultUrl
-            }
-        });        
-
-        props.handleClose(); 
+        const response = await createLink(state, encodedMessageUrl); 
+        const linkData = sanitizeUrlModifierInput(response, state);
+        const resp = await createNewLink(linkData); 
     }
 
     return (
@@ -322,8 +314,8 @@ const WhatsappDialog = ({ open, handleClose }) => {
 
  function LinkedinSubmitButton(props) {
     const [state, dispatch] = useCount(); 
-    const [result, setResult] =  useState(''); 
-    
+    const { createNewLink } = useRealtime(); 
+
     const handleSubmit = async () => {
         const linkedinUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=' + state.url;  
 
@@ -335,19 +327,9 @@ const WhatsappDialog = ({ open, handleClose }) => {
             },
         }); 
 
-        const result = await createLink(state, linkedinUrl); 
-        const updatedResultUrl = result.updatedUrl;
-        
-        setResult(updatedResultUrl);
-    
-        dispatch({
-            type: "UPDATE_RESULTS",
-            payload: {
-                value: updatedResultUrl
-            }
-        });
-
-        props.handleClose(); 
+        const response = await createLink(state, linkedinUrl); 
+        const linkData = sanitizeUrlModifierInput(response, state);
+        const resp = await createNewLink(linkData); 
     }
 
     return (
@@ -485,11 +467,10 @@ const WhatsappDialog = ({ open, handleClose }) => {
  
  function FacebookSubmitButton(props) {
     const [state, dispatch] = useCount();
-    const [result, setResult] = useState('');  
+    const { createNewLink } = useRealtime();   
     
     const handleSubmit = async () => {
         const facebookUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + state.url;  
-
         dispatch({
             type: 'GENERATE_SOCIAL_URL',
             payload: {
@@ -497,18 +478,10 @@ const WhatsappDialog = ({ open, handleClose }) => {
                 value: facebookUrl,
             },
         }); 
-
-        const result = await createLink(state, facebookUrl); 
-        const updatedResultUrl = result.updatedUrl;
-
-        setResult(updatedResultUrl);
-    
-        dispatch({
-            type: "UPDATE_RESULTS",
-            payload: {
-                value: updatedResultUrl
-            }
-        });
+        const response = await createLink(state, facebookUrl); 
+        const linkData = sanitizeUrlModifierInput(response, state);
+        const resp = await createNewLink(linkData); 
+        props.handleClose(); 
     }
 
     return (
@@ -600,8 +573,8 @@ function fixedEncodeURIComponent(str) {
 
 const SubmitButtonTwitter = ({ message, handleClose }) => {
     const [state, dispatch] = useCount(); 
-    const [result, setResult] = useState(''); 
-    
+    const { createNewLink } = useRealtime();
+
     const handleSubmit = async () => {
         const postfix = fixedEncodeURIComponent(message); 
         const encodedMessageUrl = 'https://twitter.com/intent/tweet?text=' + postfix; 
@@ -614,17 +587,10 @@ const SubmitButtonTwitter = ({ message, handleClose }) => {
             },
         }); 
 
-        const result = await createLink(state, encodedMessageUrl); 
-        const updatedResultUrl = result.updatedUrl;
-
-        setResult(updatedResultUrl);
-    
-        dispatch({
-            type: "UPDATE_RESULTS",
-            payload: {
-                value: updatedResultUrl
-            }
-        });
+        const response = await createLink(state, encodedMessageUrl); 
+        const linkData = sanitizeUrlModifierInput(response, state);
+        const resp = await createNewLink(linkData); 
+        // props.handleClose(); 
     }
 
     return (

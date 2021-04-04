@@ -72,12 +72,13 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
             >
                 <Paper elevation={0} margin='5px'>
                     {
-                        content?.component &&
+                        content?.component 
+                    &&    
                         <DialogContent>
                             <Paper elevation={0} className={classes.captionPaper}>
                                 <Typography 
                                     variant="h4"
-                                    style={{ color: getHeaderFontColor() }}
+                                    style = {{ color: getHeaderFontColor() }}
                                 > 
                                     {content.title} 
                                 </Typography>

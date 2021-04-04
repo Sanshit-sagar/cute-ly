@@ -3,6 +3,7 @@ import firebase from '../lib/firebase';
 
 const initialState = {
     tags: [],
+    openDialog: false,
 };
 
 const reducer = (state, action) => {
@@ -14,6 +15,16 @@ const reducer = (state, action) => {
                     ...state.tags,
                     action.payload.value
                 ]
+            };
+        case "OPEN_DIALOG":
+            return {
+                ...state,
+                openDialog: open,
+            };
+        case "CLOSE_DIALOG":
+            return {
+                ...state,
+                openDialog: false,
             };
         default: 
             return state; 

@@ -7,6 +7,7 @@ import React, {
 
 import firebase from '../lib/firebase'; 
 import { useCount } from '../components/SharedContext';
+import { useAuth } from '../lib/auth';
 
 const realtimeContext = createContext();
 
@@ -28,22 +29,22 @@ function sanitizeData(key, data) {
     if(key && data) {
         var sanitizeData = {
             id: key,
-            nickname: data.title,
+            nickname: data.nickname,
             socials: data.socials,
             starred: data.starred,
-            slug: data.suffix,
-            modifiedUrl: data.updatedUrl,
-            originalUrl: data.url,
+            slug: data.slug,
+            modifiedUrl: data.modifiedUrl,
+            originalUrl: data.originalUrl,
+            previewLink: data.previewLink,
             analytics: {
-                ios: data.ios,
-                android: data.android,
-                meta: data.meta,
-                utm: data.utm,
-                tags: data.tags,
+                ios: data.analytics.ios,
+                android: data.analytics.android,
+                meta: data.analytics.meta,
+                utm: data.analytics.utm,
+                tags: data.analytics.tags,
             },
             timestamp: data.timestamp,
         };
-
         return sanitizeData; 
     }
     return data; 
@@ -51,53 +52,94 @@ function sanitizeData(key, data) {
 
 function useFirebaseRealtime() {
     const [state, dispatch] = useCount(); 
+    const { user, loading, error } = useAuth(); 
 
-    const [user, setUser] = useState(null); 
     const [links, setLinks] = useState([]); 
     const [linksMap, setLinksMap] = useState({}); 
+    const [linksLoading, setLinksLoading] = useState(false); 
+    const [linksError, setLinksError] = useState(null); 
 
-    const [realtimeLoading, setRealtimeLoading] = useState(false); 
-    const [error, setError] = useState(null); 
+    const [realtimeState, setRealtimeState] = useState('IDLE'); 
+    const [realtimeResponse, setRealtimeResponse] = useState();
 
     useEffect(() => {
-        if(firebase.auth().currentUser) {
-            setRealtimeLoading(true);
+        if(user) {
+            setLinksLoading(true);
+            setRealtimeState('FETCHING');
 
-            const currentUserId = firebase.auth().currentUser.uid; 
-            
-            const ref = firebase.database().ref('links'); 
+            const uid = firebase.auth().currentUser.uid; 
+            const ref = firebase.database().ref('/user-links/' + uid);
+
             const listener = ref.on('value', snapshot => {
-                const sanitizedLinks = []; 
-                const linksMap = {}; 
-            
+                var tempLinks = []; 
+
                 snapshot.forEach((childSnapshot) => {
                     const key = childSnapshot.key; 
                     const data = childSnapshot.val();
-
-                    if(data.uid === currentUserId) {
-                        linksMap[data.suffix] = sanitizeData(key, data); 
-
-                        sanitizedLinks.push({
-                            ...linksMap[data.suffix],
-                        });
-                    }
+                   
+                    const newEntry = { id: data.suffix, ...sanitizeData(key, data)};
+                    tempLinks.push(newEntry);
                 });
-                const sortedLinks = sanitizedLinks.reverse();
 
-                setLinks(sortedLinks);
-                setLinksMap(linksMap); 
-            });
-
-            setRealtimeLoading(false); 
+                setLinks(tempLinks.reverse());
+                
+                setRealtimeState('RETRIEVED');
+                setLinksLoading(false);
+            }); 
             return () => ref.off('value', listener); 
         }
     }, [firebase.database()]); 
-    
+
+    const createNewLink = (linkData) => {
+        const uid = firebase.auth().currentUser.uid; 
+        const updatedLinkData = {
+            uid,
+            ...linkData,
+        };
+
+        writeLinkData(uid, updatedLinkData); 
+    }
+
+    const writeLinkData = (uid, updatedLinkData) => {
+        setLinksLoading(true); 
+        setRealtimeState('WRITING');
+
+        var newLinkKey = firebase.database().ref().child('user-links/' + uid).push().key; 
+        
+        var updates = {};
+        updates['/links/' + newLinkKey] = updatedLinkData;
+        updates['/user-links/' + uid + '/' + newLinkKey] = updatedLinkData;
+        
+        var response = firebase.database().ref().update({
+            ...updates,
+        }, (error) => {
+            if(error) {
+                console.log(error.message); 
+                setRealtimeState("ERROR");
+                setLinksError(error);
+            } else {  
+                setRealtimeState('SUCCESS');
+               
+                dispatch({
+                    type: "UPDATE_RESULTS",
+                    payload: {
+                        value: updatedLinkData.modifiedUrl,
+                    }
+                });   
+            }
+        });
+
+        setLinksLoading(false);
+        setRealtimeResponse(response);
+    }
+
     return { 
-        user,
         links,
         linksMap,
-        realtimeLoading,
-        error
+        linksLoading,
+        linksError,
+        createNewLink,
+        realtimeState,
+        realtimeResponse,
     }; 
 }

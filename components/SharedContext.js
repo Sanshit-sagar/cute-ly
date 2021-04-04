@@ -20,6 +20,7 @@ const initialState =  {
         whatsapp: '',
         twitter: '',
     },
+    openGraphData: {},
     counts: {
         utm: 0, 
         ios: 0,
@@ -87,6 +88,7 @@ const reducer = (state, action) => {
                 generatedUrls: [],
                 starred: false,
                 tags: [],
+                openGraphData: {},
                 generatedSocialUrls: {
                     facebook: '',
                     linkedin: '',
@@ -375,6 +377,14 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 linksMap: action.payload.value,
+            }; 
+        case "OPEN_GRAPH_RESULTS":
+            return {
+                ...state, 
+                openGraphData: {
+                    ...action.payload.value
+                },
+                showResults: true,
             }; 
         default: 
             return state; 

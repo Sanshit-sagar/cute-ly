@@ -9,7 +9,8 @@ import Button from '@material-ui/core/Button';
 
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import MenuIcon from '@material-ui/icons/Menu';
-import GitHubIcon from '@material-ui/icons/GitHub'; 
+import GitHubIcon from '@material-ui/icons/GitHub';
+import SettingsPowerIcon from '@material-ui/icons/SettingsPower'; 
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   appBar: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.header,
     border: 'thin solid',
     borderRadius: '5px',
     borderColor: theme.palette.primary.main,
@@ -74,28 +75,19 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(0, 1),
       ...theme.mixins.toolbar,
     },
+    icon: {
+      color: theme.palette.background.header,
+    },
 }));
 
 const MenuAppBarBase = ({ drawerOpen, handleDrawer }) => {
   const classes = useStyles();
-  // const [auth, setAuth] = React.useState(true);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
   const [state, dispatch] = useCount(); 
   const { user, loading, signout } = useAuth(); 
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const toggleTheme = () => {
     dispatch({
@@ -105,6 +97,10 @@ const MenuAppBarBase = ({ drawerOpen, handleDrawer }) => {
 
   const handleNavToGithub = () => {
     Router.push("https://www.github.com/Sanshit-sagar/cute.ly-app");
+  }
+
+  const handleSignOut = () => {
+    signout(); 
   }
 
 
@@ -144,7 +140,7 @@ const MenuAppBarBase = ({ drawerOpen, handleDrawer }) => {
                           color="primary"
                           onClick={handleNavToGithub}
                         > 
-                          <GitHubIcon /> 
+                          <GitHubIcon className={classes.icon}/> 
                         </Button>
                       </Grid>
 
@@ -156,9 +152,21 @@ const MenuAppBarBase = ({ drawerOpen, handleDrawer }) => {
                           color="primary"
                           variant="contained"
                         >
-                          <AccountBoxIcon />
+                          <AccountBoxIcon className={classes.icon}/>
                         </Button>
                       </Grid>
+                    
+
+                      <Grid item>
+                        <Button 
+                          variant="contained"
+                          color="primary"
+                          onClick={(e) => handleSignOut(e)}
+                        > 
+                          <SettingsPowerIcon className={classes.icon}/> 
+                        </Button>
+                      </Grid>
+                      
                     </Fragment>
                   :
                     <p> Loading Profile </p>

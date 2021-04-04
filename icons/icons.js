@@ -7,6 +7,14 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import Brightness2Icon from '@material-ui/icons/Brightness2';
 
+import { makeStyles } from '@material-ui/styles';
+
+const useStyles = makeStyles((theme) => ({
+    darkMode: {
+        color: theme.palette.background.header,
+    },
+}));
+
 export const Home = () => {
     return ( <HomeIcon/> ); 
 }
@@ -24,11 +32,23 @@ export const Analytics = () => {
 }
 
 export const LightMode = () => {
-    return (<WbSunnyIcon />); 
+    const classes = useStyles();
+
+    return (
+        <WbSunnyIcon 
+            className={classes.darkMode} 
+        />
+    ); 
 }
 
 export const DarkMode = () => {
-    return (<Brightness2Icon /> );
+    const classes = useStyles();
+    
+    return (
+        <Brightness2Icon 
+            className={classes.darkMode}
+        />
+    );
 }
 
 export default Home;  

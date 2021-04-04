@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
@@ -10,6 +10,9 @@ import AppleIcon from '@material-ui/icons/Apple';
 import AndroidIcon from '@material-ui/icons/Android'; 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import CodeIcon from '@material-ui/icons/Code';
+
+import SharedInfoDialog from '../SharedInfoDialog';
+import { AnalyticsProvider, useAnalytics } from '../../utils/useAnalytics'; 
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,15 +28,26 @@ const useStyles = makeStyles((theme) => ({
         listStyle: 'none',
         padding: theme.spacing(0.5),
         margin: 0,
-        overflowX: 'hidden',
     },
     chip: {
       margin: theme.spacing(0.5),
-      borderRadius: '5px',
+      borderRadius: '3px',
     },
     chipArr: {
-        borderRadius: '5px',
+        borderRadius: '3px',
         paddingLeft: theme.spacing(1),
+    },
+    utmIcon: {
+        color: theme.palette.icons.utm,
+    },
+    appleIcon: {
+        color: theme.palette.icons.apple,
+    },
+    androidIcon: {
+        color: theme.palette.icons.android,
+    },
+    metaIcon: {
+        color: theme.palette.icons.meta,
     },
 }));
   
@@ -78,31 +92,33 @@ const TagsGroup = ({ values }) => {
 }
 
 const PreviewIcon = ({ group }) => {
+    const classes = useStyles(); 
+
     switch(group) {
         case "utm":
-            return <PlayArrowIcon fontSize="small" />; 
+            return <PlayArrowIcon fontSize="small" color="error" className={classes.utmIcon} />; 
         case "ios":
-            return <AppleIcon fontSize="small" />;
+            return <AppleIcon fontSize="small" color="disabled" className={classes.appleIcon}/>;
         case "android":
-            return <AndroidIcon fontSize="small" />;
+            return <AndroidIcon fontSize="small" className={classes.androidIcon} />;
         case "meta":
-            return <CodeIcon fontSize="small" /> 
+            return <CodeIcon fontSize="small" className={classes.metaIcon} /> 
         default:
-            <AppleIcon fontSize="small" />;
+            return null;
     } 
 }
 
 const TagsPreview = ({ values, group }) => {
-    const classes = useStyles(); 
-    
-    const nonEmptyKeys = Object.keys(values).filter((key) => values[key] && values[key]?.length);
+    const classes = useStyles();
 
-    const handleClick = () => {
-        alert('clicked!');
+    let nonEmptyKeys = [];
+
+    if(values) {
+        nonEmptyKeys = Object.keys(values).filter((key) => values[key] && values[key]?.length);
     }
 
-    const handleDelete = () => {
-        alert('deleting');
+    const handleClick = () => {
+        alert('clicked!'); 
     }
 
     return (
@@ -121,7 +137,6 @@ const TagsPreview = ({ values, group }) => {
                     size="small"
                     clickable
                     onClick={handleClick}
-                    onDelete={handleDelete}
                     className={classes.chipArr}
                 /> 
             </Paper>
@@ -133,12 +148,14 @@ const TagsPreview = ({ values, group }) => {
 }
 
 const TagsPreviewList = ({ parameters }) => {
+
+    const [state, dispatch] = useAnalytics(); 
+
     return (
         <Fragment>
-            <TagsPreview values={parameters['utm']} group="utm" /> 
-            <TagsPreview values={parameters['ios']} group="ios" /> 
-            <TagsPreview values={parameters['android']} group="android" /> 
-            <TagsPreview values={parameters['meta']} group="meta" /> 
+            <TagsPreview values={parameters.utm} group="utm" state={state} dispatch={dispatch} /> 
+            <TagsPreview values={parameters.ios} group="ios" state={state} dispatch={dispatch} /> 
+            <TagsPreview values={parameters.android} group="android" state={state} dispatch={dispatch} /> 
         </Fragment>
     )
 }
@@ -155,9 +172,12 @@ const AnalyticsCell = ({ params }) => {
 
     return (
         <Fragment>
-            <div className={classes.root}>
-                <TagsPreviewList parameters={parameters} /> 
-            </div>
+            <AnalyticsProvider>
+                <div className={classes.root}>
+                    <TagsPreviewList parameters={parameters} /> 
+                </div>
+                <SharedInfoDialog /> 
+            </AnalyticsProvider>
         </Fragment>
     );
 }
