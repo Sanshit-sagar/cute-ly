@@ -36,25 +36,25 @@ const AnalyticsBase = ({ user, loading }) => {
                 component="h1" 
                 className={classes.title}
             >
-                Analytics
+                analytics
             </Typography>
 
             <Fragment>
                 { 
-                        user && !loading 
-                    ?
-                        <Paper elevation={10} className={classes.container}>
-                            <RealtimeProvider>
-                                <CustomDataGrid user={user} />
-                            </RealtimeProvider>
-                        </Paper>
-                    : 
-                        <Skeleton 
-                            variant="rect" 
-                            width="1325px" 
-                            height="65vh" 
-                            className={classes.dataGridSkeleton}
-                        />  
+                    user && !loading 
+                ?
+                    <Paper elevation={10} className={classes.container}>
+                        <RealtimeProvider>
+                            <CustomDataGrid user={user} />
+                        </RealtimeProvider>
+                    </Paper>
+                : 
+                    <Skeleton 
+                        variant="rect" 
+                        width="1325px" 
+                        height="65vh" 
+                        className={classes.dataGridSkeleton}
+                    />  
                 }
             </Fragment>
 
@@ -72,7 +72,10 @@ function Analytics() {
 
     return (
         <PageContainer>
-            <AnalyticsBase user={user} loading={loading} />
+            <AnalyticsBase 
+                user={user} 
+                loading={loading} 
+            />
         </PageContainer>
     );
 }

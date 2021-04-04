@@ -15,7 +15,6 @@ import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
 import Badge from '@material-ui/core/Badge';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel'; 
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'; 
 import AppleIcon from '@material-ui/icons/Apple'; 
@@ -34,9 +33,17 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         border: `1px solid ${theme.palette.divider}`,
         padding: theme.spacing(1),
-        minHeight: '90%',
-        maxHeight: '90%',
     },
+    button: {
+        paddingTop: theme.spacing(1),
+    },
+    buttonContainer: {
+        marginTop: '7.5px',
+        marginRight: '5px',
+    },
+    buttonGroupContainer: {
+        display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center'
+    }
 }));
 
 const initialState = {
@@ -148,53 +155,38 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const GooglePlayAnalyticsButton = () => {
         return (
-        <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
-            <Tooltip 
-                arrow
-                enterDelay={500} 
-                title={
+        <div className={classes.buttonContainer}>
+            <Tooltip arrow enterDelay={500} title={
                     <Typography variant="caption" color="primary">
                         UTM Analytics
                     </Typography>
                 }
             >
-                <Button 
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    disabled={!validUrlPattern.test(gState.url)}
-                    onClick={() => handleOpen("google")}
-                    style={{ paddingTop: '7.5px' }}
-                >
-                    <FormControlLabel 
-                        value="utm" 
-                        control = {
-                            <div>
-                                { 
-                                    globalState.counts.utm >= 1 ?
-                                        (
-                                            <Badge badgeContent={globalState.counts.utm} color="secondary">
-                                                <PlayArrowIcon style={{ color: 'maroon' }} />
-                                            </Badge>
-                                        )
-                                    : 
+                <span>
+                    <Button 
+                        size="large"
+                        color="primary"
+                        variant="outlined"
+                        disabled={!validUrlPattern.test(gState.url)}
+                        onClick={() => handleOpen("google")}
+                        className={classes.button}
+                    >
+                        <Fragment>
+                            { 
+                                    globalState.counts.utm >= 1 
+                                ?
+                                    <Badge badgeContent={globalState.counts.utm} color="secondary">
+                                        <PlayArrowIcon style={{ color: 'maroon' }} />
+                                    </Badge>
+                                
+                                : 
                                     <Badge badgeContent={0}>
                                         <PlayArrowIcon style={{ color: getIconColor() }} />
                                     </Badge>
-                                }
-                            </div>
-                        }
-                        label={
-                            <Typography 
-                                variant="overline"
-                                style={{ fontSize: '8px' }}
-                            > 
-                                UTM 
-                            </Typography>
-                        }
-                        labelPlacement="bottom"
-                    />
-                </Button>
+                            }
+                        </Fragment>
+                    </Button>
+                </span>
             </Tooltip>     
         </div>
         );
@@ -202,7 +194,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const AppleAnalyticsButton = () => {
         return (
-        <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
+        <div className={classes.buttonContainer}>
             <Tooltip 
                 arrow
                 enterDelay={500} 
@@ -212,44 +204,32 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                     </Typography>
                 }
             >
-                <Button 
-                    size="small"
-                    color="primary"
-                    disabled={!validUrlPattern.test(gState.url)}
-                    variant="outlined"
-                    margin="dense"
-                    onClick={() => handleOpen("apple")}
-                    style={{ paddingTop: '7.5px' }}
-                >
-                    <FormControlLabel 
-                        value="ios" 
-                        control={
-                            <div>
-                                 { 
-                                    globalState.counts.ios >= 1 ?
-                                        (
-                                            <Badge badgeContent={globalState.counts.ios} color="secondary">
-                                                <AppleIcon style={{ color: 'silver', fontSize: '24px' }} />
-                                            </Badge>
-                                        )
-                                    : 
+                <span>
+                    <Button 
+                        size="large"
+                        color="primary"
+                        disabled={!validUrlPattern.test(gState.url)}
+                        variant="outlined"
+                        margin="dense"
+                        onClick={() => handleOpen("apple")}
+                        className={classes.button}
+                    >
+                        <Fragment>
+                            { 
+                                    globalState.counts.ios >= 1
+                                ?
+                                    <Badge badgeContent={globalState.counts.ios} color="secondary">
+                                        <AppleIcon style={{ color: 'silver', fontSize: '24px' }} />
+                                    </Badge>
+                                    
+                                : 
                                     <Badge badgeContent={0}>
                                         <AppleIcon style={{ color: getIconColor() }}/>
                                     </Badge>
-                                }
-                            </div>
-                        }
-                        label={
-                            <Typography 
-                                variant="overline"
-                                style={{ fontSize: '8px' }}
-                            > 
-                                iOS 
-                            </Typography>
-                        }
-                        labelPlacement="bottom"
-                    />
-                </Button>
+                            }  
+                        </Fragment>
+                    </Button>
+                </span>
             </Tooltip>  
         </div>   
         );
@@ -257,60 +237,44 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
     const AndroidAnalyticsButton = () => {
         return (
-        <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
-           <Tooltip 
-                arrow
-                enterDelay={500} 
-                title={
+        <div className={classes.buttonContainer}>
+           <Tooltip arrow enterDelay={500} title={
                     <Typography variant="caption" color="primary">
                         Android Parameters
                     </Typography>
                 }
             > 
-                <Button 
-                    size="small"
-                    color="primary"
-                    disabled={!validUrlPattern.test(gState.url)}
-                    variant="outlined"
-                    onClick={() => handleOpen('android')}
-                    style={{ paddingTop: '7.5px' }}
-                >
-                    <FormControlLabel 
-                        value="android" 
-                        control={
-                            <div>
-                                 { 
-                                    globalState.counts.android >= 1 ?
-                                        (
-                                            <Badge badgeContent={globalState.counts.android} color="secondary">
-                                                <AndroidIcon style={{ color: 'lime' }} />
-                                            </Badge>
-                                        )
-                                    : 
+                <span>
+                    <Button 
+                        size="large"
+                        color="primary"
+                        disabled={!validUrlPattern.test(gState.url)}
+                        variant="outlined"
+                        onClick={() => handleOpen('android')}
+                        className={classes.button}
+                    >
+                        <Fragment>
+                            { 
+                                    globalState.counts.android >= 1 
+                                ?
+                                    <Badge badgeContent={globalState.counts.android} color="secondary">
+                                        <AndroidIcon style={{ color: 'lime' }} />
+                                    </Badge>
+                                : 
                                     <Badge badgeContent={0}>
                                         <AndroidIcon style={{ color: getIconColor() }}/>
                                     </Badge>
-                                }
-                            </div>
-                        }
-                        label={
-                            <Typography 
-                                variant="overline"
-                                style={{ fontSize: '8px' }}
-                            > 
-                                Android
-                            </Typography>
-                        }
-                        labelPlacement="bottom"
-                    />
-                </Button>
+                            }
+                        </Fragment>
+                    </Button>
+                </span>
             </Tooltip>  
         </div>   
         );
     }
 
-    const SocialMetaTagsButton = () => {
-        return (
+const SocialMetaTagsButton = () => {
+    return (
         <div style={{ marginRight: '5px',marginTop: '7.5px' }}>
             <Tooltip 
                 arrow
@@ -322,46 +286,33 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
                 }
             >  
                 <Button 
-                    size="small"
+                    size="large"
                     color="primary"
                     variant="outlined"
                     disabled={!validUrlPattern.test(gState.url)}
                     onClick={() => handleOpen('meta')}
                     style={{ paddingTop: '7.5px' }}
                 >
-                    <FormControlLabel 
-                        value="meta" 
-                        control={
-                            <div>
-                                 { 
-                                    globalState.counts.meta >= 1 ?
-                                        (
-                                            <Badge badgeContent={globalState.counts.meta} color="secondary">
-                                                <LabelImportantIcon style={{ color: 'aqua' }} />
-                                            </Badge>
-                                        )
-                                    : 
-                                    <Badge badgeContent={0} color="secondary">
-                                        <LabelImportantIcon style={{ color: getIconColor() }} />
-                                    </Badge>
-                                }
-                            </div>
+                    <Fragment>
+                        { 
+                            globalState.counts.meta >= 1 
+                        ?
+                            <Badge badgeContent={globalState.counts.meta} color="secondary">
+                                <LabelImportantIcon style={{ color: 'aqua' }} />
+                            </Badge>
+                        : 
+                            <Badge badgeContent={0} color="secondary">
+                                <LabelImportantIcon style={{ color: getIconColor() }} />
+                            </Badge>
                         }
-                        label={
-                            <Typography 
-                                variant="overline"
-                                style={{ fontSize: '8px' }}
-                            > 
-                                Social
-                            </Typography>
-                        }
-                        labelPlacement="bottom"
-                    />
+                    </Fragment> 
+                      
                 </Button>
             </Tooltip>    
         </div> 
-        );
-    }
+    );
+}
+
 
     const googleFormFields = {
         name:'google',
@@ -423,7 +374,7 @@ const TesterBase = ({ state, dispatch, handleGoogle, handleApple, handleAndroid,
 
                         <Divider style={{ backgroundColor: getBodyColor() }}/> 
                 
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch' }}>
+                        <div className={classes.buttonGroupContainer}>
                             <GooglePlayAnalyticsButton /> 
                             <AppleAnalyticsButton /> 
                             <AndroidAnalyticsButton />

@@ -1,8 +1,9 @@
-import React, { Fragment } from 'react'; 
-import Router from 'next/router';
+import React, { Fragment, useEffect } from 'react'; 
+import { useRouter } from 'next/router';
 
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { makeStyles } from '@material-ui/core/styles'; 
 
 import PageContainer from '../components/PageContainer'; 
@@ -20,10 +21,15 @@ const useStyles = makeStyles((theme) => ({
        margin: theme.spacing(1),
        border: 'thin solid',
        borderColor: theme.palette.primary.main,
-   }
+   },
+   urlModifierSkeleton: {
+        marginTop: '10px', 
+        marginRight: '15px',
+    },
 }));
 
-const DashboardBase = () => {
+
+const DashboardBase = ({ user, loading }) => {
     const classes = useStyles();
 
     return (
@@ -34,33 +40,48 @@ const DashboardBase = () => {
                 component="h1" 
                 className={classes.title}
             >
-                URL Prettifier
+                url prettifier
             </Typography>
-            <Paper elevation={10} className={classes.container}>
-                <UrlModifier />
-            </Paper>
+
+            <Fragment>
+                {
+                    user && !loading  
+                ?
+                    <Paper 
+                        elevation={5} 
+                        className={classes.container}
+                    >
+                        <UrlModifier /> 
+                    </Paper>
+                :
+                    <Skeleton 
+                        variant="rect" 
+                        width="815px" 
+                        height="50vh" 
+                        className={classes.urlModifierSkeleton}
+                    />  
+                }
+            </Fragment>
         </Fragment>
     ); 
 }
 
 function Dashboard() {
-    const { user, loading } = useAuth(); 
+    const { user, loading, signout } = useAuth(); 
+    const router = useRouter(); 
 
-    if(!user && !loading) {
-        Router.push('/'); 
-    }
+    useEffect(() => {
+        if(!user && !loading) {
+            router.push('/'); 
+        }
+    }, [user, loading]);
 
     return (
         <PageContainer> 
-            <Fragment>
-                {
-                    user && !loading  
-                ?
-                    <DashboardBase /> 
-                :
-                    null
-                }
-            </Fragment>
+            <DashboardBase 
+                user={user} 
+                loading={loading} 
+            /> 
             <ResultsDialog />
         </PageContainer> 
     );

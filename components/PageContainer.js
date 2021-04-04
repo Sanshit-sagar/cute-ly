@@ -36,7 +36,7 @@ export default function PageContainer({ children }) {
         <div className={classes.root}>
             <CssBaseline />
 
-            <Grid container direction="column" justify="space-between" alignItems="stretch" spacing={2}>
+            <Grid container direction="column" justify="center" alignItems="stretch" spacing={2}>
                 <Grid item>
                     <MenuAppBar 
                         open={open} handleDrawer={handleDrawer}
@@ -44,7 +44,7 @@ export default function PageContainer({ children }) {
                 </Grid>
                 <Grid item>
                     <Paper elevation={0}>
-                        <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
+                        <Grid container direction="row" justify="flex-end" alignItems="center" spacing={2}>
                             <Grid item>
                                 <CustomMiniDrawer
                                     open={open}

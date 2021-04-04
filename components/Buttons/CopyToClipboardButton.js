@@ -92,44 +92,31 @@ const CopyToClipboardButton = () => {
             >  
                 <span>
                     <Button 
-                        size="small"
+                        size="large"
                         variant="outlined"
                         color="primary"
                         disabled={!validUrlPattern.test(state.url) || !state.mostRecentResult.length}
                         onClick={handleCopyToClipboard}
                         style={{ paddingTop: '7.5px'}}
                     > 
-                        <FormControlLabel 
-                            value="meta" 
-                            control = { 
-                                <Fragment>
-                                    { state.copyToClipboard ?
-                                        <DoneOutlineIcon 
-                                            style = {{  
-                                                color: getIconColor(),
-                                                fontSize: '24px' 
-                                            }} 
-                                        /> 
-                                    : 
-                                        <FileCopyOutlinedIcon 
-                                            style = {{  
-                                                color: getIconColor(),
-                                                fontSize: '24px' 
-                                            }} 
-                                        /> 
-                                    }
-                                </Fragment>
+                      
+                        <Fragment>
+                            { state.copyToClipboard ?
+                                <DoneOutlineIcon 
+                                    style = {{  
+                                        color: getIconColor(),
+                                        fontSize: '24px' 
+                                    }} 
+                                /> 
+                            : 
+                                <FileCopyOutlinedIcon 
+                                    style = {{  
+                                        color: getIconColor(),
+                                        fontSize: '24px' 
+                                    }} 
+                                /> 
                             }
-                            label={
-                                <Typography 
-                                    variant="overline"
-                                    style={{ fontSize: '8px', color: getIconTextColor() }}
-                                > 
-                                    Clipboard 
-                                </Typography>
-                            }
-                            labelPlacement="bottom"
-                        />
+                        </Fragment>
                     </Button>
                 </span>
             </Tooltip>

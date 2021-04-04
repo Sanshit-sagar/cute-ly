@@ -1,8 +1,7 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { DataGrid } from '@material-ui/data-grid';
+import React from 'react';
+// import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, useGridSlotComponentProps } from '@material-ui/data-grid';
 import { makeStyles } from '@material-ui/core/styles';
-
 import Paper from '@material-ui/core/Paper';
 import Pagination from '@material-ui/lab/Pagination';
 import PaginationItem from '@material-ui/lab/PaginationItem';
@@ -94,29 +93,22 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
   
-function CustomPagination(props) {
-  const { state, api } = props;
-  
+function CustomPagination() {
+  const { state, apiRef } = useGridSlotComponentProps();
+
   return (
-    <Pagination
-      color="secondary"
-      variant="outlined"
-      shape="rounded"
-      page={state.pagination.page}
-      count={state.pagination.pageCount}
-      renderItem={(props2) => <PaginationItem {...props2} />}
-      onChange={(event, value) => api.current.setPage(value)}
-      style={{ marginRight: '15px' }}
-    />
-  );
+      <Pagination
+        color="primary"
+        variant="outlined"
+        shape="rounded"
+        page={state.pagination.page}
+        count={state.pagination.pageCount}
+        // @ts-expect-error
+        renderItem={(props2) => <PaginationItem {...props2} disableRipple />}
+        onChange={(event, value) => apiRef.current.setPage(value)}
+      />
+    );
 }
-  
-CustomPagination.propTypes = {
-  api: PropTypes.shape({
-    current: PropTypes.object.isRequired,
-  }).isRequired,
-  state: PropTypes.object.isRequired,
-};
 
 const StyledGrid = ({ rows, columns, loading, toolbar }) => {
     const classes = useStyles();

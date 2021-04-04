@@ -62,8 +62,8 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
         <Button 
             variant="contained" 
             color="primary" 
-            size="large" 
-            margin="normal"
+            size="small" 
+            margin="dense"
             disabled={!validUrlPattern.test(state.url)}
             onClick={() => handleSubmit()}
         > 
@@ -87,8 +87,8 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
         <Button 
             variant="outlined"
             color="primary"
-            size="large"
-            margin="normal"
+            size="small"
+            margin="dense"
             disabled={!validUrlPattern.test(state.url)}
             onClick={() => handleClear()}
         > 
@@ -108,10 +108,6 @@ const UrlModifierBase = () => {
             <Grid container direction="column" justify="space-between" alignItems="stretch" spacing={2}>
                 <Grid item>
                     <div className={classes.headerRow}>
-                        <div style={{ marginRight: '25px' }}>
-                            <NicknameDisplay /> 
-                        </div>
-
                         <div style={{ flexGrow: 1, margin: '2.5px' }}>
                             <ProgressBar /> 
                         </div>
@@ -144,13 +140,13 @@ const UrlModifierBase = () => {
                 </Grid>
             
                 <Grid item>
-                    <Grid container direction="row" justify="space-between" alignItems='center' spacing={2}>
+                    <Grid container direction="row" justify="space-between" alignItems='center' spacing={1}>
                         <Grid item>
                             <RealtimeStatusBar /> 
                         </Grid>
 
                         <Grid item>
-                            <Grid container direction="row" justify="flex-end" alignItems="center" spacing={2}>
+                            <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
                                 <Grid item>
                                     <ClearButton />
                                 </Grid> 
@@ -169,7 +165,12 @@ const UrlModifierBase = () => {
 const UrlModifier = () => {
     return (
 
-        <Grid container direction="column" justify="center" alignIitems="center">
+        <Grid 
+            container 
+            direction="row" 
+            justify="flex-start" 
+            alignIitems="center"
+        >
             <Grid item>
                 <UrlModifierBase /> 
             </Grid>

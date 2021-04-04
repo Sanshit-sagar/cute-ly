@@ -1,27 +1,37 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 
-import { 
-    Grid, 
-    Paper, 
-    IconButton, 
-    FilledInput, 
-    InputAdornment, 
-    FormControl, 
-    InputLabel
-} from '@material-ui/core'; 
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
+
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
+import FilledInput from '@material-ui/core/FilledInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import { makeStyles } from '@material-ui/core/styles'; 
 import InfoIcon from '@material-ui/icons/Info';
 
 import { useCount } from '../SharedContext';
+import LabelImportantIcon from '@material-ui/icons/LabelImportant';
 
 const useStyles = makeStyles((theme) => ({
     nameInput: {
         borderRadius: '5px',
     },
+    nicknamePaper: {
+        border: 'thin solid', 
+        borderColor: '#1eb890' 
+    },
 })); 
 
-const NicknameDisplay = () => {
+const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
+
+const NicknameHeaderInput = () => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount();
 
@@ -48,7 +58,6 @@ const NicknameDisplay = () => {
        }
        return input; 
    }
-   const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
     const getInputColor = () => {
         return (!validUrlPattern.test(state.url) ? 'black' :  '#1eb980'); 
@@ -62,7 +71,7 @@ const NicknameDisplay = () => {
        <Grid container direction="row" justify="space-between" spacing={1}>
            <Grid item>
                 <FormControl fullWidth variant="filled">
-                    <Paper elevation={0} style={{ border: 'thin solid', borderColor: '#1eb890' }}>
+                    <Paper elevation={0} className={classes.nicknamePaper}>
                         <InputLabel style={{ color: getInputHeaderColor() }}>
                             Nickname
                         </InputLabel>
@@ -96,5 +105,75 @@ const NicknameDisplay = () => {
        </Grid>
    );
 }
+
+const SocialMetaTagsButton = () => {
+    const classes = useStyles();
+    const [globalState, globalDispatch] = useCount(); 
+
+    const [open, setOpen] = useState(false); 
+
+    const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
+
+    const handleOpen = (name) => {
+        setOpen(true); 
+    }
+
+    return (
+        <div className={classes.buttonContainer}>
+            <Tooltip arrow enterDelay={500} title={
+                    <Typography variant="caption" color="primary">
+                        Social Metadata
+                    </Typography>
+                }
+            >  
+                <span>
+                    <Button 
+                        size="large"
+                        color="primary"
+                        variant="outlined"
+                        disabled={!validUrlPattern.test(globalState.url)}
+                        onClick={() => handleOpen()}
+                        className={classes.button}
+                    >
+                        <Fragment>
+                            { 
+                                    globalState.counts.meta >= 1 
+                                ?
+                                    <Badge badgeContent={globalState.counts.meta} color="secondary">
+                                        <LabelImportantIcon style={{ color: 'aqua' }} />
+                                    </Badge>
+                                : 
+                                    <Badge badgeContent={0} color="secondary">
+                                        <LabelImportantIcon color="disabled" />
+                                    </Badge>
+                            }
+                        </Fragment>
+                    </Button>
+                </span>
+            </Tooltip>    
+        </div> 
+    );
+}
+
+const NicknameDisplay = () => {
+    return (
+        <Grid 
+            container 
+            direction="row" 
+            justify="flex-start" 
+            alignItems="center" 
+            spacing={2}
+        >
+            <Grid item>
+                <NicknameHeaderInput /> 
+            </Grid>
+            <Grid item>
+                <SocialMetaTagsButton /> 
+            </Grid>
+        </Grid>
+    )
+}
+
+
 
 export default NicknameDisplay; 

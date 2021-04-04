@@ -1,9 +1,8 @@
-import React, { Fragment, useState } from 'react'; 
+import React from 'react'; 
 
 import { 
     Tooltip, 
     Button, 
-    FormControlLabel, 
     Typography 
 } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
@@ -15,9 +14,6 @@ const MarkFavouriteButton = () => {
 
     const getIconColor = () => {
         return !validUrlPattern.test(state.url) ? 'gray' : (state.starred ? 'gold' : '#1eb980');
-    }
-    const getIconTextColor = () => {
-        return !validUrlPattern.test(state.url) ? 'gray' : (state.dark ? '#fff' : '#000' ); 
     }
 
     const handleStarred = () => {
@@ -41,28 +37,14 @@ const MarkFavouriteButton = () => {
             >  
                 <span>
                     <Button 
-                        size="small"
+                        size="large"
                         color="primary"
                         disabled={!validUrlPattern.test(state.url)}
                         variant="outlined"
                         onClick={handleStarred}
                         style={{ paddingTop: '7.5px'}}
                     > 
-                        <FormControlLabel 
-                            value="meta" 
-                            control={ 
-                                <StarIcon style={{ color: getIconColor(),  fontSize: '24px' }} />
-                            }
-                            label={
-                                <Typography 
-                                    variant="overline"
-                                    style={{ fontSize: '8px', color: getIconTextColor() }}
-                                > 
-                                    Favourite
-                                </Typography>
-                            }
-                            labelPlacement="bottom"
-                        />
+                        <StarIcon style={{ color: getIconColor(),  fontSize: '24px' }} />
                     </Button>
                 </span>
             </Tooltip>

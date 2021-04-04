@@ -783,35 +783,25 @@ const SocialMediaButtonGroup = () => {
                                         </Fragment>
                                     }
                                 > 
-                                    <Button 
-                                        name={item.name}
-                                        color="primary"
-                                        size="small"
-                                        margin="dense"
-                                        variant="outlined"
-                                        disabled={!validUrlPattern.test(state.url)}
-                                        onClick={(e) => { 
-                                            if(!state.socials[item.name]) {
-                                                handleOpen(item.name);
-                                            } else {
-                                                dispatchAlreadyGenerated(item.name);
-                                            }
-                                        }}
-                                        style ={{ paddingTop: '7.5px'}}
-                                    >
-                                        <FormControlLabel 
-                                            control={item.component}
-                                            label={
-                                                <Typography 
-                                                    variant="overline"
-                                                    style={{ fontSize: '8px' }}
-                                                > 
-                                                    {item.name}
-                                                </Typography>
-                                            }
-                                            labelPlacement="bottom"
-                                        />
-                                    </Button>
+                                    <span>
+                                        <Button 
+                                            name={item.name}
+                                            color="primary"
+                                            size="large"
+                                            variant="outlined"
+                                            disabled={!validUrlPattern.test(state.url)}
+                                            onClick={(e) => { 
+                                                if(!state.socials[item.name]) {
+                                                    handleOpen(item.name);
+                                                } else {
+                                                    dispatchAlreadyGenerated(item.name);
+                                                }
+                                            }}
+                                            style ={{ paddingTop: '7.5px'}}
+                                        >
+                                            { item.component }
+                                        </Button>
+                                    </span>
                                 </Tooltip>
                             </div>
                         ))} 

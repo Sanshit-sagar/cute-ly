@@ -39,14 +39,14 @@ const NicknameButton = ({ handleClick }) => {
             >  
                 <span>
                     <Button 
-                        size="small"
+                        size="large"
                         color="primary"
                         disabled={!validUrlPattern.test(state.url)}
                         variant="outlined"
                         onClick={handleStarred}
                         style={{ paddingTop: '7.5px' }}
                     > 
-                        <FormControlLabel 
+                        {/* <FormControlLabel 
                             value="meta" 
                             control = { 
                                 <FingerprintIcon style={{ color: getIconColor(), fontSize: '24px' }} /> 
@@ -60,7 +60,8 @@ const NicknameButton = ({ handleClick }) => {
                                 </Typography>
                             }
                             labelPlacement="bottom"
-                        />
+                        /> */}
+                        <FingerprintIcon style={{ color: getIconColor(), fontSize: '24px' }} />
                     </Button>
                 </span>
             </Tooltip>

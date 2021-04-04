@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 import { 
@@ -5,9 +6,7 @@ import {
     FormControlLabel, 
     Paper, 
     Typography, 
-    FormLabel, 
     Tooltip, 
-    Divider 
 } from '@material-ui/core';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'; 
 
@@ -20,6 +19,21 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(0.3),
         marginRight: theme.spacing(0.25),
         marginTop: theme.spacing(0.25),
+    },
+    radioGroupContainer: {
+        display: 'flex', 
+        flexDirection: 'column', 
+        marginBottom: '1.25px',
+    },
+    radioGroup: {
+        display: 'flex', 
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+    },
+    radioContainer: {
+        marginTop: '12px', 
+        marginBottom: '12px', 
+        marginRight: '5px',
     },
 }));
 
@@ -85,12 +99,6 @@ const RadioB = () => {
     );
 }
 
-const getBodyColor = () => {
-    const [state, dispatch] = useCount(); 
-
-    return !validUrlPattern.test(state.url) ? 'gray' : '#1eb980';
-}
-
 const ModeSelector = () => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
@@ -98,21 +106,11 @@ const ModeSelector = () => {
     return (
         <StyledToggleButtonGroup url={state.url}>
           <Paper elevation={0} className={classes.buttonGroupPaper}>
-                <div style = {{ display: 'flex', flexDirection: 'column', marginBottom: '1.25px' }}>
-                    <FormLabel component="legend" style={{ marginTop: '3.5px', marginBottom: '1px', marginLeft: '5px'}}> 
-                        <Typography variant="overline" style={{ color: getBodyColor() }}> 
-                            Options
-                        </Typography> 
-                    </FormLabel>
-
-                    <Divider style={{ backgroundColor: getBodyColor() }} /> 
-        
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <div style={{ marginTop: '7.5px', marginRight: '5px' }}> 
-                            <Tooltip 
-                                arrow
-                                enterDelay={500} 
-                                title={
+                <div className={classes.radioGroupContainer}>
+                  
+                    <div className={classes.radioGroup}>
+                        <div className={classes.radioContainer}> 
+                            <Tooltip arrow enterDelay={500} title={
                                     <Typography variant="caption" color="primary">
                                         Shorten URL (4 Characters)
                                     </Typography>
@@ -136,11 +134,8 @@ const ModeSelector = () => {
                             </Tooltip> 
                         </div>
                             
-                        <div style={{ marginTop: '7.5px', marginRight: '5px' }}> 
-                            <Tooltip 
-                                arrow
-                                enterDelay={500} 
-                                title={
+                        <div className={classes.radioContainer}> 
+                            <Tooltip arrow enterDelay={500} title={
                                     <Typography variant="caption" color="primary">
                                         Generate an Unguessable URL (16 Characters)
                                     </Typography>
@@ -152,10 +147,7 @@ const ModeSelector = () => {
                                         <RadioB />
                                     }
                                     label={
-                                        <Typography 
-                                            variant="overline" 
-                                            style={{ fontSize: '8px' }}
-                                        > 
+                                        <Typography variant="overline" style={{ fontSize: '8px' }}>
                                             CRYPTIC 
                                         </Typography>
                                     }

@@ -6,31 +6,13 @@ import {
     Dialog,
     DialogActions, 
     DialogContent, 
-    DialogTitle,
     Paper,
     Typography, 
-    Tooltip,
-    DialogContentText
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
-
-import { useCount } from '../SharedContext';
-
 const useStyles = makeStyles((theme) => ({
-    root: {
-
-    },
-    paper: {
-        backgroundColor: theme.palette.primary.main,
-    },
-    helpTooltip__title: {
-        marginRight: '2.25px', 
-        paddingTop: '10px',
-        color: 'red',
-    },
     captionPaper: {
         width: '400px', 
         display: 'flex', 
@@ -43,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 
 const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
     const classes = useStyles(); 
-    const [state, dispatch] = useCount();
 
     const handleCancel = () => {
         handleClose();
@@ -56,10 +37,6 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
 
     const getHeaderFontColor = () => {
         return '#1eb980';  
-    }
-
-    const getSubtitleFontColor = () => {
-        return state.dark ? '#fff' : '#000'; 
     }
 
     return (
@@ -78,7 +55,7 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
                             <Paper elevation={0} className={classes.captionPaper}>
                                 <Typography 
                                     variant="h4"
-                                    style = {{ color: getHeaderFontColor() }}
+                                    color="primary"
                                 > 
                                     {content.title} 
                                 </Typography>

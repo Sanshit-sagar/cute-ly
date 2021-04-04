@@ -4,7 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardActionArea from '@material-ui/core/CardActionArea';
-
+import { DialogTitle, FormControl, FormHelperText, OutlinedInput } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 
@@ -24,31 +24,33 @@ import { useCount } from './SharedContext';
 import OpenGraphDataDisplay from './Composites/OpenGraphDataDisplay'; 
 
 import { useClipboard } from 'use-clipboard-copy';
-import { DialogTitle, FormControl, FormHelperText, OutlinedInput } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-       
+
+    },
+    dialog: {
+       border: 'thin solid',
+       borderColor: theme.palette.primary.main,
+       borderRadius: '5px',
     },
     details: {
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between', 
         alignItems: 'stretch',
-        margin: theme.spacing(1),
     },
     cover: {
         width: 100,
         height: 100,
         borderRadius: 5,
-        margin: theme.spacing(1),
     },
     buttonGroup: {
         display: 'flex',
         direction: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        margin: '5px',
     },
     dialogPaper: {
         color: theme.palette.primary.dark,
@@ -133,65 +135,56 @@ const LinkFaviconComp = ({ imageLink }) => {
     const medium = getMedium(state.url); 
 
     return (
-        <CardMedia 
-            className={classes.favicon} 
-            image={imageLink} 
-            title="Shareable Image" 
-            style={{ backgroundColor: '#005cc5' }} 
-        /> 
-    ); 
-
-    // return (
-    //   <Fragment>
-    //     <Paper elevation={5}>
-    //         { 
-    //             medium === "linkedin" && 
-    //             <CardMedia
-    //                 className={classes.cover}
-    //                 image = "/linkedin.png"
-    //                 title="Shareable on LinkedIn"
-    //                 style={{ backgroundColor: '#005cc5' }}
-    //             />
-    //         }
-    //         { 
-    //             medium==="whatsapp" && 
-    //             <CardMedia
-    //                 className={classes.cover}
-    //                 image = "/whatsapp.png"
-    //                 title="Shareable on LinkedIn"
-    //                 style={{ backgroundColor: '#00d85a' }}
-    //             />
-    //         }
-    //         { 
-    //             medium==="twitter" && 
-    //             <CardMedia
-    //                 className={classes.cover}
-    //                 image = "/twitter.png"
-    //                 title="Shareable on LinkedIn"
-    //                 style={{ backgroundColor: '#009dff' }}
-    //             />
-    //         }
-    //         { 
-    //             medium ==="facebook" && 
-    //             <CardMedia
-    //                 className={classes.cover}
-    //                 image = "/facebook.png"
-    //                 title="Shareable on Facebook"
-    //                 style={{ backgroundColor: '#4861ac' }}
-    //             />
-    //         }
-    //         {
-    //             medium==='http' && 
-    //             <CardMedia
-    //                 className={classes.cover}
-    //                 image = "/external-link.png"
-    //                 title="Shareable external link"
-    //                 style={{ backgroundColor: '#fff' }}
-    //             />
-    //         }
-    //     </Paper>
-    // </Fragment>
-    // );
+        <Fragment>
+            <Paper elevation={5}>
+                { 
+                    medium === "linkedin" && 
+                    <CardMedia
+                        className={classes.cover}
+                        image = "/linkedin.png"
+                        title="Shareable on LinkedIn"
+                        style={{ backgroundColor: '#005cc5' }}
+                    />
+                }
+                { 
+                    medium==="whatsapp" && 
+                    <CardMedia
+                        className={classes.cover}
+                        image = "/whatsapp.png"
+                        title="Shareable on LinkedIn"
+                        style={{ backgroundColor: '#00d85a' }}
+                    />
+                }
+                { 
+                    medium==="twitter" && 
+                    <CardMedia
+                        className={classes.cover}
+                        image = "/twitter.png"
+                        title="Shareable on LinkedIn"
+                        style={{ backgroundColor: '#009dff' }}
+                    />
+                }
+                { 
+                    medium ==="facebook" && 
+                    <CardMedia
+                        className={classes.cover}
+                        image = "/facebook.png"
+                        title="Shareable on Facebook"
+                        style={{ backgroundColor: '#4861ac' }}
+                    />
+                }
+                {
+                    medium==='http' && 
+                    <CardMedia
+                        className={classes.cover}
+                        image = "/external-link.png"
+                        title="Shareable external link"
+                        style={{ backgroundColor: '#fff' }}
+                    />
+                }
+            </Paper>
+        </Fragment>
+    );
 }
 
 const ActionButtonGroup = () => {
@@ -281,7 +274,9 @@ const ActionButtonGroup = () => {
                     onClick={handleCopy}
                     className={classes.iconButton}
                 >
-                    { ( !state.copyToClipboard || !prev.length || prev!=state.mostRecentResult ) ? 
+                    { 
+                        ( !state.copyToClipboard || !prev.length || prev!=state.mostRecentResult ) 
+                    ?     
                         <Tooltip 
                             arrow
                             enterDelay={500} 
@@ -291,9 +286,7 @@ const ActionButtonGroup = () => {
                                 </Typography>
                             }
                         >  
-                            <FileCopyIcon  
-                                style={{ color: '#1eb980' }} 
-                            /> 
+                            <FileCopyIcon color="primary" />
                         </Tooltip>
                     :
                         <Tooltip 
@@ -305,9 +298,7 @@ const ActionButtonGroup = () => {
                                 </Typography>
                             }
                         >  
-                            <DoneOutlineIcon 
-                                style={{ color: '#1eb980' }} 
-                            />
+                            <DoneOutlineIcon color="primary" />
                         </Tooltip>
                     }
                 </Button>
@@ -315,32 +306,6 @@ const ActionButtonGroup = () => {
         </div>
     );
 }
-
-const AnalyticsSummary = () => {
-    const classes = useStyles(); 
-
-    return (
-        <React.Fragment>
-            <Paper elevation={5} className={classes.paperStatistics}>
-                <Typography variant="h3" color="secondary">
-                    56
-                </Typography>
-            </Paper>
-            <Paper elevation={5} className={classes.paperStatistics}>
-                <Typography variant="h3" color="secondary">
-                    12
-                </Typography>
-            </Paper>
-            <Paper elevation={5} className={classes.paperStatistics}>
-                <Typography variant="h3" color="secondary">
-                    12
-                </Typography>
-            </Paper>
-        </React.Fragment>
-    );
-}
-
-const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/; 
 
 const LinkDataCard = () => {
     const classes = useStyles();
@@ -379,20 +344,23 @@ const LinkDataCard = () => {
                             <div>
                                 <LinkFaviconComp imageLink={imageLink} /> 
                             </div>
-                            <div>
-                                <AnalyticsSummary /> 
-                            </div>
                         </Paper>
                     </div>
 
                     <div className={classes.details}>
-                        <Paper elevation={5} className={classes.cardHeaderPaper}>
+                        <Paper 
+                            elevation={5} 
+                            className={classes.cardHeaderPaper}
+                        >
                             <div className={classes.innerPaper}>
                                {
                                     state.mostRecentResult && state.mostRecentResult.length
                                 ?
                                     <Link href={state.mostRecentResult}>
-                                        <Typography component="h4" variant="h4">
+                                        <Typography 
+                                            component="h4" 
+                                            variant="h4"
+                                        >
                                             /{state.mostRecentResult.substring(31)} 
                                         </Typography>
                                     </Link>
@@ -431,21 +399,20 @@ const LinkDataCard = () => {
                             </div>
                         </Paper>
                         
-                        <CardActionArea>
-                            <Paper elevation={5} className={classes.cardHeaderPaper}>
-                                {
-                                        (state.openGraphData && Object.entries(state.openGraphData).length)
-                                    ?
-                                        <OpenGraphDataDisplay state={state} /> 
-                                    :
-                                        <Button variant="outlined" color="primary">
-                                            <Typography variant="button" color="secondary"> 
-                                                Generate Open Graph Data?
-                                            </Typography>
-                                        </Button>
-                                }
-                            </Paper>
-                        </CardActionArea>
+                        
+                        <Paper elevation={5} className={classes.cardHeaderPaper}>
+                            {
+                                state.openGraphData && Object.entries(state.openGraphData).length
+                            ?
+                                <OpenGraphDataDisplay state={state} /> 
+                            :
+                                <Button variant="outlined" color="primary">
+                                    <Typography variant="button" color="secondary"> 
+                                        Generate Open Graph Data?
+                                    </Typography>
+                                </Button>
+                            }
+                        </Paper>
 
                         <ActionButtonGroup /> 
                     </div>
@@ -459,7 +426,7 @@ const ResultsDialog = () => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
 
-    const handleClose = (e) => {
+    const handleClose = () => {
         dispatch({
             type: "SHOW_RESULTS", 
             payload: {
@@ -467,47 +434,46 @@ const ResultsDialog = () => {
             }
         });
     }
-
-    const getDialogBGColor = () => {
-        return getDialogBGColor
-    }
-
-    const handleSubmit = (e) => {
-        /*  TODO    */ 
-        handleClose(e); 
-    }
-
+    
     return (
         <Dialog 
             open={state.showResults} 
             onClose={handleClose}
         >
-            <div style={{ backgroundColor: getDialogBGColor() }}>
-                <DialogTitle style={{ backgroundColor: '#fff' }}>
-                    <Typography variant="h3" color="primary">
-                        the result so far
+            <DialogTitle>
+                <Typography 
+                    variant="h3" 
+                    color="primary"
+                >
+                    summary
+                </Typography>
+            </DialogTitle>
+
+            <Paper 
+                elevation={10} 
+                className={classes.paper}
+            >
+                <LinkDataCard
+                    handleClose={handleClose}
+                /> 
+            </Paper>
+
+            <DialogActions>
+                <Button 
+                    variant="outlined" 
+                    color="primary" 
+                    size="large" 
+                    onClick={handleClose}
+                >
+                    <Typography 
+                        variant="button" 
+                        color="default"
+                    >
+                        Dismiss
                     </Typography>
-                </DialogTitle>
-
-                <Paper elevation={0} className={classes.paper}>
-                    <LinkDataCard
-                        handleClose={handleClose}
-                    /> 
-                </Paper>
-
-                <DialogActions style={{ backgroundColor: '#fff' }}>
-                    <Button variant="outlined" color="primary" size="large" onClick={(e) => handleClose(e)}>
-                        <Typography variant="button" color="default">
-                            Cancel
-                        </Typography>
-                    </Button>
-                    <Button variant="contained" color="primary" size="large" onClick={(e) => handleSubmit(e)}>
-                        <Typography variant="button" color="default">
-                            Submit
-                        </Typography>
-                    </Button>
-                </DialogActions>
-            </div>
+                </Button>
+            </DialogActions>
+        
         </Dialog>
     );
 }

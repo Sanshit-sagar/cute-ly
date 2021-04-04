@@ -21,10 +21,12 @@ const AppBase = ({ AppComp, AppPageProps }) => {
       <React.Fragment>
           <ThemeProvider theme={state.dark ? darkTheme : lightTheme}>
             <CssBaseline /> 
-            <AppComp 
-              {...AppPageProps}
-              toggleTheme={handleToggle}
-            />  
+             
+              <AppComp 
+                {...AppPageProps}
+                toggleTheme={handleToggle}
+              />  
+             
           </ThemeProvider>
       </React.Fragment>
   );
