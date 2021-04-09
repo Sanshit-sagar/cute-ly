@@ -1,13 +1,12 @@
+import React, { useState } from 'react';
 
-import React from 'react';
-
-import { 
-    Radio, 
-    FormControlLabel, 
-    Paper, 
-    Typography, 
-    Tooltip, 
-} from '@material-ui/core';
+import FormLabel from '@material-ui/core/FormLabel';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'; 
 
 import { makeStyles, withStyles } from '@material-ui/core/styles'; 
@@ -15,25 +14,26 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { useCount } from '../SharedContext'; 
 
 const useStyles = makeStyles((theme) => ({
-    buttonGroupPaper: {
-        padding: theme.spacing(0.3),
-        marginRight: theme.spacing(0.25),
-        marginTop: theme.spacing(0.25),
+    paper: {
+        padding: theme.spacing(1),
     },
-    radioGroupContainer: {
+    container: {
         display: 'flex', 
         flexDirection: 'column', 
-        marginBottom: '1.25px',
     },
-    radioGroup: {
-        display: 'flex', 
-        flexDirection: 'row', 
-        justifyContent: 'space-between',
+    selector: {
+        margin: theme.spacing(0.15),
+        marginTop: theme.spacing(0.6),
+        borderRadius: '5px',
     },
-    radioContainer: {
-        marginTop: '12px', 
-        marginBottom: '12px', 
-        marginRight: '5px',
+    selectionText: {
+        color: theme.palette.background.header, 
+        marginLeft: '10px', 
+        marginRight: '10px',
+    },
+    menuItem: {
+        backgroundColor: theme.palette.primary.main,
+        borderRadius: '5px',
     },
 }));
 
@@ -53,51 +53,58 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
     },
 }))(ToggleButtonGroup);
 
-
-const RadioA = () => {
-    const [state, dispatch] = useCount();
+const MinimalSelect = ({ state, dispatch }) => {
+    const classes = useStyles();
+    const [val,setVal] = useState("SHORT");
+  
+    const handleChange = (event) => {
+      dispatch({
+        type: "UPDATE_MODE",
+        payload: {
+            value: event.target.value,
+        }
+      });
+      setVal(event.target.value);
+    };
+  
+    const menuProps = {
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "left"
+      },
+      transformOrigin: {
+        vertical: "top",
+        horizontal: "left"
+      },
+      getContentAnchorEl: null
+    };
+  
   
     return (
-        <Radio 
-            color="primary"
-            value="SHORT"
-            disabled={!validUrlPattern.test(state.url)}
-            name="radio-short"
-            checked = {
-                state.mode === 'SHORT'
-            }
-            onChange={(e) => 
-                dispatch({ 
-                    'type'  : 'UPDATE_MODE', 
-                    payload : e.target 
-                })
-            }
-            style={{ height: '100%' }}
-        />
+      <FormControl>
+        <Select
+          disableUnderline
+          disabled={!validUrlPattern.test(state.url) || state.url.length === 0}
+          MenuProps={menuProps}
+          value={val}
+          onChange={handleChange}
+          className={classes.selector}
+          style={{ backgroundColor: !validUrlPattern.test(state.url) ? 'silver' : '#1eb980' }}
+        >
+            <MenuItem value="SHORT" className={classes.menuItem}> 
+                <Typography variant="overline" className={classes.selectionText}>
+                    SHORTEN
+                </Typography> 
+            </MenuItem>
+            <MenuItem value="UNGUESSABLE" className={classes.menuItem}> 
+                <Typography variant="overline" className={classes.selectionText}>
+                    ENCRYPT
+                </Typography> 
+            </MenuItem>
+        </Select>
+      </FormControl>
     );
-}
-
-const RadioB = () => {
-    const [state, dispatch] = useCount();
-    
-    return (
-        <Radio 
-            color="primary"
-            disabled={!validUrlPattern.test(state.url)}
-            value="UNGUESSABLE"
-            name="radio-unguessable"
-            checked = {
-                state.mode === 'UNGUESSABLE'
-            }
-            onChange={(e) => 
-                dispatch({ 
-                    'type'  : 'UPDATE_MODE', 
-                    payload : e.target 
-                })
-            }
-        />
-    );
-}
+  };
 
 const ModeSelector = () => {
     const classes = useStyles(); 
@@ -105,59 +112,23 @@ const ModeSelector = () => {
 
     return (
         <StyledToggleButtonGroup url={state.url}>
-          <Paper elevation={0} className={classes.buttonGroupPaper}>
-                <div className={classes.radioGroupContainer}>
-                  
-                    <div className={classes.radioGroup}>
-                        <div className={classes.radioContainer}> 
-                            <Tooltip arrow enterDelay={500} title={
-                                    <Typography variant="caption" color="primary">
-                                        Shorten URL (4 Characters)
-                                    </Typography>
-                                }
-                            >  
-                                <FormControlLabel
-                                    value="SHORT"
-                                    control={
-                                        <RadioA />
-                                    }
-                                    label={
-                                        <Typography 
-                                        variant="overline" 
-                                        style={{ fontSize: '8px' }}
-                                        > 
-                                            SHORT 
-                                        </Typography>
-                                    }
-                                    labelPlacement="bottom"
-                                />
-                            </Tooltip> 
-                        </div>
-                            
-                        <div className={classes.radioContainer}> 
-                            <Tooltip arrow enterDelay={500} title={
-                                    <Typography variant="caption" color="primary">
-                                        Generate an Unguessable URL (16 Characters)
-                                    </Typography>
-                                }
-                            >  
-                                <FormControlLabel
-                                    value="UNGUESSABLE"
-                                    control={
-                                        <RadioB />
-                                    }
-                                    label={
-                                        <Typography variant="overline" style={{ fontSize: '8px' }}>
-                                            CRYPTIC 
-                                        </Typography>
-                                    }
-                                    labelPlacement="bottom"
-                                />
-                            </Tooltip>
-                        </div>
-                    </div>
-
-                </div>  
+          <Paper elevation={0} className={classes.paper}>
+                <div className={classes.container}>
+                    <FormLabel component="legend" style={{ marginLeft: '5px' }}> 
+                        <Typography 
+                            variant="overline" 
+                            style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980' }}
+                        > 
+                            Type
+                        </Typography> 
+                    </FormLabel>
+                    
+                    <Divider 
+                        style={{ backgroundColor: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980' }} 
+                    /> 
+                    
+                    <MinimalSelect state={state} dispatch={dispatch} />
+                </div>
             </Paper>
         </StyledToggleButtonGroup> 
     );

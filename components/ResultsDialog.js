@@ -24,6 +24,7 @@ import { useCount } from './SharedContext';
 import OpenGraphDataDisplay from './Composites/OpenGraphDataDisplay'; 
 
 import { useClipboard } from 'use-clipboard-copy';
+import Image from 'next/image'; 
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,59 +53,39 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
-    dialogPaper: {
-        color: theme.palette.primary.dark,
-    },
     paper: {
         border: `1px solid ${theme.palette.primary.main}`,
         borderRadius: '5px',
         margin: theme.spacing(1),
-        backgroundColor: '#fff',
+        backgroundColor: theme.palette.primary.main,
     },
     cardHeaderPaper: { 
         margin: theme.spacing(0.3), 
         border: 'thin solid', 
         borderColor: theme.palette.primary.main,
+        padding: theme.spacing(1),
     },
     iconButton: {
-        margin: '5px',
-    },
-    metaDetails: {
-        padding: theme.spacing(1),
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.background.header,
-    },
-    metaDetailsText: {
-        color: theme.palette.background.default,
-    },
-    paperAnalytics: {
-        
-    },
-    paperStatistics: {
-        border: 'thin solid',
-        borderColor: theme.palette.primary.main,
-        margin: theme.spacing(0.5),
-        backgroundColor: theme.palette.background.default,
-    },
-    innerPaper: {
-        display: 'flex', 
-        flexDirection: 'row', 
-        justifyContent: 'flex-start', 
         margin: '5px',
     },
     nickname: {
         border: 'thin solid',
         borderColor: theme.palette.primary.main,
+        color: theme.palette.background.header,
     },
     innerContent: {
         display: 'flex', 
         flexDirection: 'row', 
         justifyContent: 'center' 
-    },cardHeaderPaperGreen: {
+    },
+    cardHeaderPaperGreen: {
         margin: theme.spacing(0.3), 
         border: 'thin solid', 
         borderColor: theme.palette.primary.main,
         backgroundColor: theme.palette.primary.main,
+    },
+    fileCopyIcon: {
+        color: theme.palette.primary.main,
     },
 }));
 
@@ -126,6 +107,28 @@ const getMedium = (url) => {
 
 const getStarIconColor = (starred) => {
     return starred ? 'gold' : '#1eb980';
+}
+
+const myLoader = ({ src, width, quality }) => {
+    return `${src}?w=${width}&q=${quality || 100}`
+}
+
+const HttpImage = ({ imageLink }) => {
+    if(!imageLink || !imageLink.length) {
+        imageLink = "/external-link.png";
+    }
+
+    return (
+        <Fragment>
+            <Image
+                loader={myLoader}
+                src={imageLink}
+                alt="Open Graph Detected Image"
+                width={96}
+                height={96}
+            />
+        </Fragment>
+    );
 }
 
 const LinkFaviconComp = ({ imageLink }) => {
@@ -175,12 +178,7 @@ const LinkFaviconComp = ({ imageLink }) => {
                 }
                 {
                     medium==='http' && 
-                    <CardMedia
-                        className={classes.cover}
-                        image = "/external-link.png"
-                        title="Shareable external link"
-                        style={{ backgroundColor: '#fff' }}
-                    />
+                    <HttpImage imageLink={imageLink} /> 
                 }
             </Paper>
         </Fragment>
@@ -191,8 +189,10 @@ const ActionButtonGroup = () => {
     const classes = useStyles();
     const [state, dispatch] = useCount();
 
-    const [prev, setPrev] = useState(''); //holds prev copied URL
+    const [prev, setPrev] = useState(''); 
     const [copyError, setCopyError] = useState(false);
+    
+    const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
     const clipboard = useClipboard({
         onSuccess() {
@@ -272,6 +272,7 @@ const ActionButtonGroup = () => {
                     color="primary" 
                     size="large"
                     onClick={handleCopy}
+                    disabled={!validUrlPattern.test(state.url) || !state.mostRecentResult.length}
                     className={classes.iconButton}
                 >
                     { 
@@ -286,7 +287,7 @@ const ActionButtonGroup = () => {
                                 </Typography>
                             }
                         >  
-                            <FileCopyIcon color="primary" />
+                            <FileCopyIcon className={classes.fileCopyIcon} />
                         </Tooltip>
                     :
                         <Tooltip 
@@ -307,32 +308,62 @@ const ActionButtonGroup = () => {
     );
 }
 
+const Header = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();
+
+    return (
+        <Fragment>
+            { 
+                state.mostRecentResult && state.mostRecentResult?.length 
+            ?  
+                <Paper 
+                    elevation={5} 
+                    className={classes.cardHeaderPaper}
+                >
+                    <Link href={state.mostRecentResult}>
+                        <Typography variant="h6" style={{ color: state.dark ? '#fff' : '#000' }}>
+                            { state.mostRecentResult.substring(31) }
+                        </Typography>
+                    </Link>
+                </Paper>
+            :
+                null
+            }
+        </Fragment>
+    ); 
+}
+
+const OpenGraphData = () => {
+    const classes = useStyles();
+    const [state, dispatch] = useCount();
+
+    return (
+        <Fragment>
+            {
+                state.openGraphData && Object.entries(state.openGraphData).length 
+            ?
+                <Paper elevation={5} className={classes.cardHeaderPaper}>
+                    <OpenGraphDataDisplay state={state} /> 
+                </Paper>
+            :
+                null
+            }
+        </Fragment>
+    )
+}
+
 const LinkDataCard = () => {
     const classes = useStyles();
     const [state, dispatch] = useCount(); 
-    
-    const sanitizeInput = (input) => {
-        if(input.charAt(input.length-1) === ' ') {
-            return input.substring(0, input.length-1);
-        } else if(input.length > 20) {
-            return input.substring(0, 20);
-        }
-        return input; 
-    }
-
-    const handleChange = (inputValue) => {
-        const sanitizedValue = sanitizeInput(inputValue);
-        
-        dispatch({
-            type: "UPDATE_NICKNAME",
-            payload: {
-                value: sanitizedValue,
-            },
-        });
-    }
 
     const hybridGraph = state.openGraphData;
-    const imageLink = hybridGraph.image; 
+
+    const imageLink = (
+            hybridGraph && hybridGraph?.data && hybridGraph?.data?.image.length 
+        ?   hybridGraph.data.image 
+        :   '/external-link.png'
+    );
 
     return (
         <Card className={classes.root}>
@@ -348,72 +379,8 @@ const LinkDataCard = () => {
                     </div>
 
                     <div className={classes.details}>
-                        <Paper 
-                            elevation={5} 
-                            className={classes.cardHeaderPaper}
-                        >
-                            <div className={classes.innerPaper}>
-                               {
-                                    state.mostRecentResult && state.mostRecentResult.length
-                                ?
-                                    <Link href={state.mostRecentResult}>
-                                        <Typography 
-                                            component="h4" 
-                                            variant="h4"
-                                        >
-                                            /{state.mostRecentResult.substring(31)} 
-                                        </Typography>
-                                    </Link>
-                                :
-                                    <FormControl>
-                                        <OutlinedInput 
-                                            placeholder="untitled"
-                                            color="primary"
-                                            notched="true"
-                                            autoComplete="off"
-                                            value={state.nickname}
-                                            margin="dense"
-                                            onChange={(e) => handleChange(e.target.value)}
-                                            className={classes.nickname}
-                                        />
-                                        <Link 
-                                            color="primary" 
-                                            href = {
-                                                    state.mostRecentResult.length  
-                                                ?   state.mostRecentResult 
-                                                :  'Click generate to create a slug for this URL'
-                                            }
-                                        >
-                                            <FormHelperText> 
-                                                <Typography 
-                                                    variant="overline" 
-                                                    color="primary"
-                                                    style={{ fontSize: '9px' }}
-                                                >
-                                                    https://www.cutely.page.link/ 
-                                                </Typography>
-                                            </FormHelperText>
-                                        </Link>
-                                    </FormControl>
-                                }
-                            </div>
-                        </Paper>
-                        
-                        
-                        <Paper elevation={5} className={classes.cardHeaderPaper}>
-                            {
-                                state.openGraphData && Object.entries(state.openGraphData).length
-                            ?
-                                <OpenGraphDataDisplay state={state} /> 
-                            :
-                                <Button variant="outlined" color="primary">
-                                    <Typography variant="button" color="secondary"> 
-                                        Generate Open Graph Data?
-                                    </Typography>
-                                </Button>
-                            }
-                        </Paper>
-
+                        <Header /> 
+                        <OpenGraphData /> 
                         <ActionButtonGroup /> 
                     </div>
                 </div>
@@ -440,10 +407,11 @@ const ResultsDialog = () => {
             open={state.showResults} 
             onClose={handleClose}
         >
-            <DialogTitle>
+            <DialogTitle style={{ backgroundColor: '#1eb980'}}>
                 <Typography 
                     variant="h3" 
-                    color="primary"
+                    color="secondary"
+                    style={{ color: state.dark ? '#000' : '#fff' }}
                 >
                     summary
                 </Typography>
@@ -458,16 +426,16 @@ const ResultsDialog = () => {
                 /> 
             </Paper>
 
-            <DialogActions>
+            <DialogActions style={{ backgroundColor: '#1eb980'}}>
                 <Button 
-                    variant="outlined" 
-                    color="primary" 
+                    variant="contained" 
                     size="large" 
                     onClick={handleClose}
+                    style={{ backgroundColor: state.dark ? '#000' : '#fff' }}
                 >
                     <Typography 
                         variant="button" 
-                        color="default"
+                        style={{ color: '#1eb980'}}
                     >
                         Dismiss
                     </Typography>

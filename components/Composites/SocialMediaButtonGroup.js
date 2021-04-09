@@ -8,9 +8,18 @@ import Divider from '@material-ui/core/Divider';
 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { 
-    FormControl, FormControlLabel, FormHelperText, FormLabel, InputLabel,
-    Typography, Tooltip, Link, FilledInput,
-    Button, Paper, Grid, TextField
+    FormControl, 
+    FormHelperText, 
+    FormLabel, 
+    InputLabel,
+    Typography, 
+    Tooltip, 
+    Link, 
+    FilledInput,
+    Button, 
+    Paper, 
+    Grid, 
+    TextField
 } from '@material-ui/core';
 
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -590,7 +599,6 @@ const SubmitButtonTwitter = ({ message, handleClose }) => {
         const response = await createLink(state, encodedMessageUrl); 
         const linkData = sanitizeUrlModifierInput(response, state);
         const resp = await createNewLink(linkData); 
-        // props.handleClose(); 
     }
 
     return (
@@ -602,7 +610,10 @@ const SubmitButtonTwitter = ({ message, handleClose }) => {
             onClick={() => handleSubmit()}
             style={{ marginLeft: '10px', marginTop: '5px' }}
         > 
-            <Typography variant="button" color='textSecondary'> 
+            <Typography 
+                variant="button" 
+                color='textSecondary'
+            > 
                 Generate 
             </Typography>
         </Button>
@@ -709,7 +720,11 @@ const TwitterDialog = ({ open, handleClose }) => {
             </DialogContent>
 
             <DialogActions> 
-                <StyledDialogActionsGroup type="twitter" message={message} handleclose={handleClose} /> 
+                <StyledDialogActionsGroup 
+                    type="twitter" 
+                    message={message} 
+                    handleclose={handleClose} 
+                /> 
             </DialogActions>
         </Dialog>
     );
@@ -810,21 +825,25 @@ const SocialMediaButtonGroup = () => {
             </Paper>
         </StyledToggleButtonGroup>
 
-                <TwitterDialog open={open && medium==="twitter"} handleClose={handleClose} />
-                <WhatsappDialog 
-                    open={open && medium==="whatsapp"}
-                    handleClose={handleClose}
-                />
+        <TwitterDialog 
+            open={open && medium==="twitter"} 
+            handleClose={handleClose} 
+        />
 
-                <FacebookDialog 
-                    open={open && medium==="facebook"}
-                    handleClose={handleClose}
-                />
+        <WhatsappDialog 
+            open={open && medium==="whatsapp"}
+            handleClose={handleClose}
+        />
 
-                <LinkedinDialog 
-                    open={open && medium==="linkedin"}
-                    handleClose={handleClose}
-                />
+        <FacebookDialog 
+            open={open && medium==="facebook"}
+            handleClose={handleClose}
+        />
+
+        <LinkedinDialog 
+            open={open && medium==="linkedin"}
+            handleClose={handleClose}
+        />
     </Fragment>
     ); 
 }

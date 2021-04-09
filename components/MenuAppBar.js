@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   appBar: {
-    backgroundColor: theme.palette.background.header,
+    backgroundColor: theme.palette.background.default,
     border: 'thin solid',
     borderRadius: '5px',
     borderColor: theme.palette.primary.main,

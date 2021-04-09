@@ -6,6 +6,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { CountProvider, useCount } from '../components/SharedContext';
 import { lightTheme, darkTheme } from '../components/Themes'; 
 
+import { SnackbarProvider } from 'notistack';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 const AppBase = ({ AppComp, AppPageProps }) => {
@@ -33,17 +35,20 @@ const AppBase = ({ AppComp, AppPageProps }) => {
 }
 
 export default function App({ Component, pageProps }) {
+  
   return (
     <React.Fragment> 
       <CountProvider>
         <AuthProvider> 
           <RealtimeProvider>
+            <SnackbarProvider maxSnack={3}>
 
             <AppBase 
               AppComp={Component} 
               AppPageProps={pageProps} 
             /> 
 
+            </SnackbarProvider>
           </RealtimeProvider>
         </AuthProvider> 
       </CountProvider>

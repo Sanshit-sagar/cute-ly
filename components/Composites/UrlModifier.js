@@ -1,9 +1,12 @@
-import React, { Fragment, useState } from 'react'; 
+import React from 'react'; 
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Slide from '@material-ui/core/Slide';
+
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 
 import { makeStyles } from '@material-ui/core/styles'; 
 
@@ -15,12 +18,14 @@ import sanitizeUrlModifierInput from '../../utils/helpers/sanitizers';
 
 import UrlInput from './UrlInput'; 
 import ModeSelector from './ModeSelector'; 
-import NicknameDisplay from './NicknameDisplay'; 
 import TesterComponent from '../TesterComponent'; 
 import OtherOptionsButtonGroup from './OtherOptionsButtonGroup';
+import DetailsButtonGroup from './DetailsButtonGroup'; 
 import SocialMediaButtonGroup from './SocialMediaButtonGroup';
-import RealtimeStatusBar from '../Fetchers/RealtimeStatusBar'; 
 import ProgressBar from './ProgressBar';
+
+
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
     headerRow: {
@@ -62,7 +67,7 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
         <Button 
             variant="contained" 
             color="primary" 
-            size="small" 
+            size="large" 
             margin="dense"
             disabled={!validUrlPattern.test(state.url)}
             onClick={() => handleSubmit()}
@@ -87,7 +92,7 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
         <Button 
             variant="outlined"
             color="primary"
-            size="small"
+            size="large"
             margin="dense"
             disabled={!validUrlPattern.test(state.url)}
             onClick={() => handleClear()}
@@ -102,6 +107,25 @@ const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
   
 const UrlModifierBase = () => {
     const classes = useStyles(); 
+    const [state, dispatch] = useCount();
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const triggerSnackbarVariant = () => {
+        enqueueSnackbar('MESSAGE HERE', 
+        { 
+            anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            variant: 'success',
+            TransitionComponent: Slide, 
+        });
+    };
+
+    const handleExpandDetails = () => {
+        triggerSnackbarVariant();
+    }
 
     return (
         <Paper elevation={0} className={classes.paperDataGrid}>
@@ -121,9 +145,12 @@ const UrlModifierBase = () => {
                 </Grid>
             
                 <Grid item>
-                    <Grid container direction="row" justifyContent="flex-end" alignItems="center">
+                    <Grid container direction="row" justify="flex-end" alignItems="center">
                         <Grid item> 
                             <ModeSelector />
+                        </Grid>
+                        <Grid item>
+                            <DetailsButtonGroup /> 
                         </Grid>
                         <Grid item> 
                             <TesterComponent />
@@ -140,11 +167,12 @@ const UrlModifierBase = () => {
                 </Grid>
             
                 <Grid item>
-                    <Grid container direction="row" justify="space-between" alignItems='center' spacing={1}>
+                    <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
                         <Grid item>
-                            <RealtimeStatusBar /> 
+                            <Button size="small" margin="dense" variant="outlined" color="primary" onClick={handleExpandDetails}>
+                                <FullscreenIcon /> 
+                            </Button>
                         </Grid>
-
                         <Grid item>
                             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
                                 <Grid item>
@@ -164,7 +192,7 @@ const UrlModifierBase = () => {
 
 const UrlModifier = () => {
     return (
-
+        
         <Grid 
             container 
             direction="row" 
@@ -172,6 +200,7 @@ const UrlModifier = () => {
             alignIitems="center"
         >
             <Grid item>
+            
                 <UrlModifierBase /> 
             </Grid>
         </Grid>    

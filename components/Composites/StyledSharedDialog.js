@@ -35,10 +35,6 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
         handleClose(); 
     }
 
-    const getHeaderFontColor = () => {
-        return '#1eb980';  
-    }
-
     return (
     <Fragment> 
         {
@@ -52,15 +48,15 @@ const DialogBase = ({ open, handleClose, handleSubmit, content }) => {
                         content?.component 
                     &&    
                         <DialogContent>
-                            <Paper elevation={0} className={classes.captionPaper}>
-                                <Typography 
-                                    variant="h4"
-                                    color="primary"
-                                > 
-                                    {content.title} 
-                                </Typography>
-                            </Paper>
-                            {content?.component}
+                            <Fragment>
+                                <Paper elevation={0} className={classes.captionPaper}>
+                                    <Typography variant="h4" color="primary">
+                                        {content.title} 
+                                    </Typography>
+                                </Paper>
+
+                                { content?.component }
+                            </Fragment>
                         </DialogContent>
                     }
                 </Paper>

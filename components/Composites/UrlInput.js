@@ -44,7 +44,12 @@ const UrlInput = () => {
                         variant="outlined"
                         placeholde="Enter or Type a Valid URL"
                         error={!validUrlPattern.test(state.url) && state.url.length > 0}
-                        onChange={(e) => dispatch({ type: 'UPDATE_URL', payload: (e)})}
+                        onChange={
+                            (e) => dispatch({ 
+                                    type: 'UPDATE_URL', 
+                                    payload: (e)
+                                })
+                        }
                         autoComplete="off"
                         endAdornment = {
                             <InputAdornment 

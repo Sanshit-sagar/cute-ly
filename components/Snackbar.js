@@ -2,11 +2,20 @@ import React, { Fragment } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import MuiAlert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 import { useCount } from './SharedContext'; 
+
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="outlined" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   close: {
@@ -57,6 +66,21 @@ export default function SharedSnackbar() {
     }); 
   };
 
+  const CloseSnackbarAction = () => {
+    return (
+      <Fragment>
+        <IconButton
+          aria-label="close"
+          color="textSecondary"
+          className={classes.close}
+          onClick={handleClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Fragment>
+    );
+  }
+
   const classes = useStyles();
   return (
     <div>
@@ -80,25 +104,22 @@ export default function SharedSnackbar() {
         onExited={
           handleExited
         }
-        message={
-            state.snackbar.messageInfo 
-          ? state.snackbar.messageInfo.message 
-          : undefined
-        }
-        action={
-          <Fragment>
-            
-            <IconButton
-              aria-label="close"
-              color="textSecondary"
-              className={classes.close}
-              onClick={handleClose}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Fragment>
-        }
-      />
+      >
+          <Alert onClose={handleClose} severity="info">
+            <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
+              <Grid item>
+                { state.snackbar.messageInfo ? state.snackbar.messageInfo.message : ' ' }
+              </Grid>
+
+              <Grid item>
+                <Button> 
+                  <CloseIcon /> 
+                </Button>
+              </Grid>
+
+            </Grid>
+          </Alert>
+        </Snackbar> 
     </div>
   );
 }

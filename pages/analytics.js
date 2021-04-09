@@ -29,7 +29,7 @@ const AnalyticsBase = ({ user, loading }) => {
     const classes = useStyles();
 
     return (
-        <Fragment>
+        <div style={{ marginLeft: '75px' }}>
             <Typography 
                 color="primary"
                 variant="h1" 
@@ -43,9 +43,14 @@ const AnalyticsBase = ({ user, loading }) => {
                 { 
                     user && !loading 
                 ?
-                    <Paper elevation={10} className={classes.container}>
+                    <Paper 
+                        elevation={10} 
+                        className={classes.container}
+                    >
                         <RealtimeProvider>
-                            <CustomDataGrid user={user} />
+                            <CustomDataGrid 
+                                user={user} 
+                            />
                         </RealtimeProvider>
                     </Paper>
                 : 
@@ -59,7 +64,7 @@ const AnalyticsBase = ({ user, loading }) => {
             </Fragment>
 
             <ResultsDialog /> 
-        </Fragment>
+        </div>  
     ); 
 }
 
@@ -72,10 +77,19 @@ function Analytics() {
 
     return (
         <PageContainer>
-            <AnalyticsBase 
-                user={user} 
-                loading={loading} 
-            />
+            <SnackbarProvider 
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                TransitionComponent={Slide}
+                maxSnack={2}
+            >
+                <AnalyticsBase 
+                    user={user} 
+                    loading={loading}
+                />
+            </SnackbarProvider>
         </PageContainer>
     );
 }

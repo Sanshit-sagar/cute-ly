@@ -5,16 +5,18 @@ import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper'; 
-
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import { makeStyles } from '@material-ui/core/styles';
 
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import { cropOutputField } from '../../utils/helpers/sanitizers';
 
-import { makeStyles } from '@material-ui/core/styles';
-
 const useStyles = makeStyles((theme) => ({
+    metaTitlePaper: {
+        margin: theme.spacing(1),
+        padding: theme.spacing(0.3),
+    },
     chip: {
         borderRadius: '5px',
         margin: theme.spacing(1),
@@ -34,30 +36,26 @@ const useStyles = makeStyles((theme) => ({
     description: {
         color: theme.palette.primary.main,
     },
-    metaTitlePaper: {
-        margin: theme.spacing(1),
-        padding: theme.spacing(0.3),
-    },
 }));
+
+const emptyDataObject = {
+    title: '',
+    siteName: '',
+    type: '',
+    url: '',
+    image: '',
+};
 
 const OpenGraphDataDisplay = ({ state }) => {
     const classes = useStyles();
-    const [editDescription, setEditDescription] = useState(false);
 
     const hybridGraph = state.openGraphData;
-    
-    if(!hybridGraph.data || hybridGraph.error) {
-        return <Typography variant="body1"> Unable to Load Data </Typography>;
-    }
+    const data = (!hybridGraph.data || hybridGraph.error) ? emptyDataObject : hybridGraph.data; 
 
-    const data = hybridGraph.data; 
-
-    const croppedTitle = cropOutputField(data.title, 15); 
-    const croppedSiteName = cropOutputField(data.siteName, 12); 
-    const croppedType = cropOutputField(data.type, 12); 
-    const croppedUrl = cropOutputField(data.url, 30);
-    
-    const hybridGraphImage = data.image; 
+    const croppedTitle = cropOutputField(data.title, 35); 
+    const croppedSiteName = cropOutputField(data.siteName, 15); 
+    const croppedType = cropOutputField(data.type, 15).toUpperCase(); 
+    const croppedUrl = cropOutputField(data.url, 45);
 
     return (
         <Grid container direction="column" justify="center" alignItems="space-between" spacing={1}>
@@ -87,16 +85,16 @@ const OpenGraphDataDisplay = ({ state }) => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Chip 
+                        {/* <Chip 
                             variant="outlined" 
                             color="primary" 
                             size="small"
                             label={croppedSiteName} 
                             className={classes.chip}
-                        /> 
+                        />  */}
                         <Chip 
                             variant="outlined" 
-                            color="primary" 
+                            color="secondary" 
                             size="small"
                             label={croppedType} 
                             className={classes.chip}
@@ -106,32 +104,18 @@ const OpenGraphDataDisplay = ({ state }) => {
             </Grid>
             <Grid item>
                 <Box className={classes.descriptionBox}>
-                    <Fragment>
-                        {
-                                !editDescription 
-                            ?
-                                <div style={{ width: '100%' }}>  
-                                    <OutlinedInput
-                                        fullWidth 
-                                        multiline 
-                                        rows={3}
-                                        readOnly={false}
-                                        placeholder="Add a description"
-                                        color="primary"
-                                        margin="dense"
-                                        autoComplete="off"
-                                        value={data.description}
-                                        className={classes.description}
-                                    />
-                                </div>
-                            :
-                                <div>
-                                    <Typography variant="caption" color="primary">
-                                        { data.description }
-                                    </Typography>
-                                </div>
-                        }
-                    </Fragment>
+                    <OutlinedInput
+                        fullWidth 
+                        multiline 
+                        rows={5}
+                        readOnly={false}
+                        placeholder="Add a description"
+                        color="primary"
+                        margin="dense"
+                        autoComplete="off"
+                        value={data.description}
+                        className={classes.description}
+                    />
                 </Box>
             </Grid>
         </Grid>

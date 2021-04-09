@@ -44,7 +44,7 @@ export default function PageContainer({ children }) {
                 </Grid>
                 <Grid item>
                     <Paper elevation={0}>
-                        <Grid container direction="row" justify="flex-end" alignItems="center" spacing={2}>
+                        <Grid container direction="row" justify="space-evenly" alignItems="center" spacing={1}>
                             <Grid item>
                                 <CustomMiniDrawer
                                     open={open}

@@ -1,9 +1,7 @@
 import React, { Fragment, useState } from 'react'; 
 
 import { 
-    Typography, Paper, FormLabel, 
-    Grid, FormHelperText, FormControl, InputLabel, FilledInput,
-    Divider
+    Typography, Paper, FormLabel, Grid, Divider
 } from '@material-ui/core'; 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
@@ -14,8 +12,6 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import CopyToClipboardButton from '../Buttons/CopyToClipboardButton';
 import MarkFavouriteButton from '../Buttons/MarkFavouriteButton'; 
-import NicknameButton from '../Buttons/NicknameButton'; 
-
 import StyledSharedDialog from './StyledSharedDialog'; 
 import { useCount } from '../SharedContext'; 
 
@@ -45,89 +41,6 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
       },
     },
 }))(ToggleButtonGroup);
-
-const TitleInput = () => {
-    const classes = useStyles(); 
-    const [state, dispatch] = useCount();
-    const [rem, setRem] = useState(0); 
-
-    const handleNicknameChange = (name) => {
-        const sanitizedName = enforceLimit(name); 
-        dispatch({
-            type: "UPDATE_NICKNAME", 
-            payload: {
-                value: sanitizedName
-            }
-        }); 
-        handleRemUpdate();
-    }
-
-    const enforceLimit = (name) => {
-        //handle spacing here as well 
-        return (name.length > 20) ? name.substring(0, 20) : name; 
-    }
-
-    const handleRemUpdate = () => {
-        setRem(20 - state.nickname.length); 
-    }
-
-    return (
-        <Grid 
-            container
-            direction="column"
-            justify="center"
-            alignItems="stretch"
-            spacing={2}
-        > 
-            <Paper elevation={0} className={classes.paper}>
-                <Grid item>
-                    <FormControl fullWidth style={{ marginTop: '7.5px', marginBottom: '15px' }}>
-                        <InputLabel 
-                            style={{ 
-                                    color: state.nickname.length 
-                                ? (state.dark ? '#fff' : '#000' ) 
-                                : '#1eb980' 
-                            }}
-                        > 
-                            Nickname 
-                        </InputLabel>
-                        <FilledInput
-                            fullWidth
-                            variant="outlined"
-                            color="primary"
-                            name="nickname"
-                            label="Nickname"
-                            value={state.nickname}
-                            onChange={(e) => handleNicknameChange(e.target.value)}
-                            style={{ color: '#1eb980'}}
-                        /> 
-                    </FormControl>
-                </Grid>
-            
-                <Grid item>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
-                        <FormControl>
-                            <div style={{ display: 'flex', flexDirection:'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                                <FilledInput
-                                    disabled
-                                    color="primary"
-                                    value={rem}
-                                    size="small"
-                                    margin="dense"
-                                    style={{ width: '75px' }}
-                                />
-                                <FormHelperText> 
-                                    Characters Left 
-                                </FormHelperText>
-                            </div>
-                        </FormControl>
-                    </div>
-                </Grid>
-
-            </Paper>
-        </Grid>            
-    );
-}
 
 export default function OtherOptionsButtonGroup() {
     const classes = useStyles();
@@ -187,13 +100,6 @@ export default function OtherOptionsButtonGroup() {
         noSubmissionReq: true
     };
 
-    const titleContent = {
-        title: 'Nickname',
-        message: 'What would you like to call this URL? A meaningful name makes Links easily identifiable within your collection',
-        component: <TitleInput />,
-        noSubmissionReq: false
-    };
-
     const validUrlPattern =  /^https?:\/\/([\w\d\-]+\.)+\w{2,}(\/.+)?$/;
 
     const getBodyColor = () => {
@@ -221,17 +127,8 @@ export default function OtherOptionsButtonGroup() {
                                 justifyContent: 'space-between'
                             }}
                         >
-                           
-                            <MarkFavouriteButton
-                                handleClick={(e) => handleDialogOpen(e, "fav")}
-                            /> 
-                        
-
+                            <MarkFavouriteButton handleClick={(e) => handleDialogOpen(e, "fav")} />
                             <CopyToClipboardButton />
-
-                            <NicknameButton 
-                                handleClick={(e) => handleDialogOpen(e, "title")} 
-                            /> 
                         </div>
                     </div>
                 </Paper>

@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link'; 
 import Button from '@material-ui/core/Button'; 
+import IconButton from '@material-ui/core/IconButton'; 
 
 import StarIcon from '@material-ui/icons/Star';
 import FacebookIcon from '@material-ui/icons/Facebook'; 
@@ -13,6 +14,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import PageviewIcon from '@material-ui/icons/Pageview';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -25,13 +27,11 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 import StyledGrid from './StyledGrid'; 
-import { useRealtime } from '../../utils/useFirebaseRealtime';
 import AnalyticsCell from './AnalyticsCell'; 
-import { DeleteOutlineTwoTone } from '@material-ui/icons';
-// import UrlPreview from './UrlPreview'; 
-
 import SharedInfoDialog from '../SharedInfoDialog';
-import {AnalyticsProvider} from '../../utils/useAnalytics'; 
+import { useRealtime } from '../../utils/useFirebaseRealtime';
+import { DeleteOutlineTwoTone } from '@material-ui/icons';
+import { AnalyticsProvider } from '../../utils/useAnalytics'; 
 
 const useStyles = makeStyles((theme) => ({
     avatarIcon: {
@@ -102,41 +102,40 @@ const ActionButtonGroup = ({ params }) => {
 
     return (
         <Fragment>
-            <div className={classes.buttonGroup}>
-                <Link href={params.value}>
+            <Grid container direction="row" justify="flex-start" alignItems="center" spacing={1}>
+                <Grid item>
+                    <Link href={params.value}>
+                        <Button  
+                            color="primary" 
+                            size="small" 
+                            margin="dense" 
+                            className={classes.actionButton}
+                        >
+                            <PageviewIcon />
+                        </Button>
+                    </Link>
+                </Grid>
+                <Grid item>
                     <Button 
-                        variant="outlined" 
                         color="primary" 
                         size="small" 
                         margin="dense" 
                         className={classes.actionButton}
                     >
-                        <PageviewIcon />
+                        <OpenInNewIcon />
                     </Button>
-                </Link>
-            </div>
-            <div>
-                <Button 
-                    variant="outlined" 
-                    color="primary" 
-                    size="small" 
-                    margin="dense" 
-                    className={classes.actionButton}
-                >
-                    <OpenInNewIcon />
-                </Button>
-            </div>
-            <div>
-                <Button 
-                    variant="outlined" 
-                    color="primary" 
-                    size="small" 
-                    margin="dense" 
-                    className={classes.actionButton}
-                >
-                    <DeleteOutlineTwoTone className={classes.trashIcon} />
-                </Button>
-            </div>
+                </Grid>
+                <Grid item>
+                    <Button  
+                        color="primary" 
+                        size="small" 
+                        margin="dense" 
+                        className={classes.actionButton}
+                    >
+                        <DeleteOutlineTwoTone className={classes.trashIcon} />
+                    </Button>
+                </Grid>
+            </Grid>
         </Fragment>
     );
 }
@@ -159,7 +158,7 @@ const CustomTimestamp = ({ params }) => {
     const [moment, setMoment] = useState(params.value);
 
     const toggleMoment = () => {
-        console.log('toggling');
+        alert('toggling');
     }
 
     const MomentRelative = () => {
@@ -171,22 +170,81 @@ const CustomTimestamp = ({ params }) => {
     }
 
     return (
-        <Fragment>
-            <Button 
-                variant="outlined"
-                size="small"
-                margin="dense"
-                onClick={toggleMoment}
-                className={classes.toggleButton}
-            >
+        <Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
+            <Grid item>
                 <Typography 
                     variant="overline"
                     className={classes.toggleButtonText}
                 >
                     <MomentRelative /> 
                 </Typography>
-            </Button>
-        </Fragment>
+            </Grid>
+            <Grid item>
+                <IconButton 
+                    onClick={toggleMoment}
+                    size="small"
+                >
+                    <NavigateNextIcon 
+                        fontSize="small"
+                        style={{ margin: '5px' }} 
+                    />
+                </IconButton>
+            </Grid>
+        </Grid>
+    );
+}
+
+const NicknameCell = ({ params }) => {
+    const classes = useStyles();
+
+    const handleUpdateName = () => {
+        alert('Updating name...');
+    }
+
+    const UntitledPlaceholder = () => {
+        return (
+            <Fragment>
+                <Button onClick={handleUpdateName}>
+                    <Typography 
+                            variant="caption" 
+                            color="default"
+                    >
+                        click to add 
+                    </Typography>
+                </Button> 
+            </Fragment>
+        );
+    }
+
+    return (
+        <div className={classes.rowCenterCenter}>
+             { 
+                params.value?.length 
+            ?
+                <Typography 
+                    variant="h5" 
+                    color="primary"
+                >
+                    { params.value.substring(0, 10) }
+                </Typography>  
+            :
+                <UntitledPlaceholder />
+            }
+        </div>
+    );
+}
+
+const SlugDisplayCell = ({ params }) => {
+    const classes = useStyles(); 
+
+    return (
+        <div className={classes.rowCenterCenter}>
+            <Tooltip title={"https://sanshitsagar.page.link/" + params.value}>
+                <Typography variant="overline" color="primary">
+                    /{ params.value }
+                </Typography>  
+            </Tooltip>
+        </div>
     );
 }
 
@@ -206,26 +264,16 @@ const getCols = () => {
         }, { 
             field: 'nickname', 
             headerName: 'Nickname', 
-            width: 150,
+            width: 160,
             renderCell: (params) => (
-                <div className={classes.rowCenterCenter}>
-                    <Typography variant="h5" color="primary">
-                        { params.value?.length ? params.value.substring(0, 10) : 'N/A' }
-                    </Typography>  
-                </div>
+               <NicknameCell params={params} />
             ),
         }, { 
             field: 'slug', 
             headerName: 'Unique Slug', 
             width: 185,
             renderCell: (params) => (
-                <div className={classes.rowCenterCenter}>
-                    <Tooltip title={"https://sanshitsagar.page.link/" + params.value}>
-                        <Typography variant="overline" color="primary">
-                            /{ params.value }
-                        </Typography>  
-                    </Tooltip>
-                </div>
+                <SlugDisplayCell params={params} />
             ),
         }, 
         {
@@ -233,29 +281,29 @@ const getCols = () => {
             headerName: 'Analytics',
             width: 215,
             renderCell: (params) => (
-                <AnalyticsCell params={params} /> 
+                <AnalyticsCell params={params} />
             ),
         }, 
         { 
             field: 'socials', 
             headerName: 'Shared @', 
-            width: 150,
+            width: 160,
             renderCell: (params) => (
-                <SocialIcons params={params} /> 
+                <SocialIcons params={params} />
             ),
         }, {
             field: 'previewLink', 
             headerName: 'Actions', 
-            width: 250,
+            width: 265,
             renderCell: (params) => (
-                <ActionButtonGroup params={params} /> 
+                <ActionButtonGroup params={params} />
             ),
         }, { 
             field: 'timestamp', 
             headerName: 'Age', 
-            width: 160,
+            width: 170,
             renderCell: (params) => (
-                <CustomTimestamp params={params} /> 
+                <CustomTimestamp params={params} />
             ),
         },  
     ];
@@ -263,7 +311,6 @@ const getCols = () => {
 }
 
 const CustomDataGrid = ({ user }) => {
-    const classes = useStyles(); 
     const { links, linksMap, linksLoading, linksError } = useRealtime();
     
     console.log(links); 

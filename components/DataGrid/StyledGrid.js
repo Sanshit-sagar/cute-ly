@@ -126,7 +126,7 @@ const StyledGrid = ({ rows, columns, loading, toolbar }) => {
                 }}
                 pageSize={10}
                 headerHeight={40}
-                density="comfortable"
+                density="standard"
             />
         </Paper>
     );

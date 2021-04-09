@@ -95,9 +95,9 @@ const ProgressBar = () => {
                 />
             </Paper>
 
-            <div className={classes.progressDisplay}>
+            {/* <div className={classes.progressDisplay}>
                 <ProgressDisplay /> 
-            </div>
+            </div> */}
         </Fragment>
     );
 }

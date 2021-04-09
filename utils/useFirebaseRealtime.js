@@ -80,9 +80,9 @@ function useFirebaseRealtime() {
                     const newEntry = { id: data.suffix, ...sanitizeData(key, data)};
                     tempLinks.push(newEntry);
                 });
+                console.log(tempLinks); 
 
                 setLinks(tempLinks.reverse());
-                
                 setRealtimeState('RETRIEVED');
                 setLinksLoading(false);
             }); 
