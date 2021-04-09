@@ -77,19 +77,10 @@ function Analytics() {
 
     return (
         <PageContainer>
-            <SnackbarProvider 
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                TransitionComponent={Slide}
-                maxSnack={2}
-            >
-                <AnalyticsBase 
-                    user={user} 
-                    loading={loading}
-                />
-            </SnackbarProvider>
+            <AnalyticsBase 
+                user={user} 
+                loading={loading}
+            />
         </PageContainer>
     );
 }
