@@ -376,7 +376,10 @@ const reducer = (state, action) => {
         case "UPDATE_USER_LINKS_MAP":
             return {
                 ...state,
-                linksMap: action.payload.value,
+                linksMap: {
+                    ...state.linksMap,
+                    ...action.payload.value,
+                }
             }; 
         case "OPEN_GRAPH_RESULTS":
             return {

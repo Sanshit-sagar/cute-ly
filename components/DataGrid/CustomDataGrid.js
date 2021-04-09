@@ -313,8 +313,6 @@ const getCols = () => {
 const CustomDataGrid = ({ user }) => {
     const { links, linksMap, linksLoading, linksError } = useRealtime();
     
-    console.log(links); 
-
     return (
         <Fragment>
             <Grid container direction="column" justify="center" alignIitems="center">

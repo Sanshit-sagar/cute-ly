@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 
 import firebase from '../lib/firebase'; 
+
 import { useCount } from '../components/SharedContext';
 import { useAuth } from '../lib/auth';
 
@@ -53,6 +54,8 @@ function sanitizeData(key, data) {
 function useFirebaseRealtime() {
     const [state, dispatch] = useCount(); 
     const { user, loading, error } = useAuth(); 
+
+    const [didInit, setDidInit] = useState(false);
     
     const [links, setLinks] = useState([]); 
     const [linksMap, setLinksMap] = useState({}); 
@@ -62,48 +65,55 @@ function useFirebaseRealtime() {
     const [realtimeState, setRealtimeState] = useState('IDLE'); 
     const [realtimeResponse, setRealtimeResponse] = useState();
 
+    const handleNewListItem = (data) => {
+        setLinks([
+            ...links, 
+            {
+                id: data.suffix,
+                ...sanitizeData(data.key, data.val())
+            }
+        ]);
+    }
+
     useEffect(() => {
-        if(user) {
+        if(user && !didInit) {
             setLinksLoading(true);
-             
             const uid = firebase.auth().currentUser.uid;
             const ref = firebase.database().ref('/user-links/' + uid);
 
-            const listener = ref.on('value', snapshot => {
+            const listener = ref.once('value').then((snapshot) => {
                 var tempLinks = []; 
-                var tempLinksMap = [];
 
                 snapshot.forEach((childSnapshot) => {
                     const key = childSnapshot.key; 
                     const data = childSnapshot.val();
 
-                    if(!linksMap[key]) {
-                        const newEntry = { 
-                            id: data.suffix, 
-                            ...sanitizeData(key, data)
-                        };
-                        tempLinks.push(newEntry);
-                        tempLinksMap[key] = newEntry;
-                    } else {
-                        return false;
-                    }
+                    const newEntry = { 
+                        id: data.suffix, 
+                        ...sanitizeData(key, data)
+                    };
+                    tempLinks.push(newEntry);
+                    setDidInit(false);
                 });
 
-                if(tempLinks.length) {
-                    setLinks([
-                        ...links,
-                        ...tempLinks.reverse()
-                    ]);
-
-                    setLinksMap({
-                        ...linksMap,
-                        ...tempLinksMap,
-                    });
-                } 
-                
-                setLinksLoading(false);
+                setLinks([
+                    ...tempLinks.reverse(),
+                ]);
+                setLinksLoading(false); 
             }); 
-            return () => ref.off('value', listener); 
+        }
+
+        if(user && didInit) {
+            setLinksLoading(true);
+            const uid = firebase.auth().currentUser.uid;
+            const userLinksRef = firebase.database().ref('/user-links/' + uid);
+
+            const listener = userLinksRef.on('child_added', (data) => {
+                handleNewListItem(data);
+                setLinksLoading(false);
+            });
+            
+            return () => userLinksRef.off('child_added', listener); 
         }
     }, [firebase.database()]); 
 
