@@ -231,7 +231,8 @@ const reducer = (state, action) => {
                         ...state.snackbar.snackpack, 
                         { 
                             message: "New URL Generated: ", 
-                            key: new Date().getTime().toString()
+                            key: new Date().getTime().toString(),
+                            variant: 'success',
                         },
                     ],
                 },

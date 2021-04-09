@@ -80,7 +80,7 @@ function useFirebaseRealtime() {
         if(user && !didInit) {
             setLinksLoading(true);
             const uid = firebase.auth().currentUser.uid;
-            const ref = firebase.database().ref('/user-links/' + uid).orderByChild('timestamp').limitToLast(40);
+            const ref = firebase.database().ref('/user-links/' + uid).orderByChild('timestamp').limitToLast(25);
 
             const listener = ref.once('value').then((snapshot) => {
                 var tempLinks = []; 

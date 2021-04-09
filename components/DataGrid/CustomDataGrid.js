@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
  
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
@@ -182,29 +183,14 @@ const CustomTimestamp = ({ params }) => {
 const NicknameCell = ({ params }) => {
     const classes = useStyles();
 
-    const handleUpdateName = () => {
-        alert('Updating name...');
-    }
-
     const UntitledPlaceholder = () => {
         return (
-            <Fragment>
-                <Button color="primary" onClick={handleUpdateName}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                            <Typography 
-                                variant="caption" 
-                                color="default"
-                            >
-                                untitled 
-                            </Typography>
-                        </div>
-                        <div>
-                            <CreateIcon fontSize="small" color="primary" style={{ margin: '7.5px 2.5px 2.5px 7.5px' }} />
-                        </div>
-                    </div>
-                </Button> 
-            </Fragment>
+            <Typography 
+                variant="caption" 
+                color="default"
+            >
+                untitled 
+            </Typography>
         );
     }
 
@@ -214,7 +200,7 @@ const NicknameCell = ({ params }) => {
                 params.value?.length 
             ?
                 <Typography 
-                    variant="h5" 
+                    variant="body1" 
                     color="primary"
                 >
                     { params.value.substring(0, 11) }
@@ -257,7 +243,7 @@ const getCols = () => {
         }, { 
             field: 'nickname', 
             headerName: 'Nickname', 
-            width: 160,
+            width: 125,
             renderCell: (params) => (
                <NicknameCell params={params} />
             ),
@@ -284,15 +270,6 @@ const getCols = () => {
             renderCell: (params) => (
                 <SocialIcons params={params} />
             ),
-        }, { 
-            field: 'views',
-            headerName: 'Views',
-            width: 130,
-            renderCell: (params) => {
-                <Typography variant="subtitle" color="secondary">
-                    { params.value }
-                </Typography>
-            }
         }, {
             field: 'previewLink', 
             headerName: 'Actions', 
@@ -307,7 +284,16 @@ const getCols = () => {
             renderCell: (params) => (
                 <CustomTimestamp params={params} />
             ),
-        }, 
+        }, { 
+            field: 'views',
+            headerName: 'Views',
+            width: 130,
+            renderCell: (params) => {
+                <Typography variant="subtitle" color="secondary">
+                    { params.value }
+                </Typography>
+            }
+        }
     ];
     return columns
 }
@@ -316,21 +302,19 @@ const CustomDataGrid = ({ user }) => {
     const { links, linksMap, linksLoading, linksError } = useRealtime();
     
     return (
-        <Fragment>
-            <Grid container direction="column" justify="center" alignIitems="center">
-                <Grid item>
-                    <AnalyticsProvider>
-                        <StyledGrid  
-                            rows={links}
-                            columns={getCols()}
-                            loading={linksLoading}
-                            toolbar={CustomToolbar}
-                        />
-                        <SharedInfoDialog /> 
-                    </AnalyticsProvider>
-                </Grid>
+        <Grid container direction="column" justify="center" alignIitems="center">
+            <Grid item>
+                <AnalyticsProvider>
+                    <StyledGrid  
+                        rows={links}
+                        columns={getCols()}
+                        loading={linksLoading}
+                        toolbar={CustomToolbar}
+                    />
+                    <SharedInfoDialog /> 
+                </AnalyticsProvider>
             </Grid>
-        </Fragment>
+        </Grid>
     )
 }
 

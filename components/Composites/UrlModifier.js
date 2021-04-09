@@ -139,6 +139,21 @@ const UrlModifierBase = () => {
         }
     }
 
+    const ExpandButton = () => {
+        return (
+            <Button 
+                disabled={!validUrlPattern.test(state.url) || !state.url.length}
+                size="small" 
+                margin="dense" 
+                variant="outlined" 
+                color="primary" 
+                onClick={handleExpandDetails}
+            >
+                <FullscreenIcon /> 
+            </Button>
+        );
+    }
+
     return (
         <Paper elevation={0} className={classes.paperDataGrid}>
             <Grid container direction="column" justify="space-between" alignItems="stretch" spacing={2}>
@@ -181,11 +196,7 @@ const UrlModifierBase = () => {
                 <Grid item>
                     <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
                         <Grid item>
-                            <Button 
-                                disabled={!validUrlPattern.test(state.url) || !state.url.length}
-                                size="small" margin="dense" variant="outlined" color="primary" onClick={handleExpandDetails}>
-                                <FullscreenIcon /> 
-                            </Button>
+                           <ExpandButton /> 
                         </Grid>
                         <Grid item>
                             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>

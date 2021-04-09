@@ -22,17 +22,24 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column', 
     },
     selector: {
-        margin: theme.spacing(0.15),
-        marginTop: theme.spacing(0.6),
+        marginTop: theme.spacing(1),
+        border: 'thin solid',
+        borderColor: theme.palette.primary.main,
         borderRadius: '5px',
+        padding: theme.spacing(0.25),
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        color: theme.palette.primary.main,
     },
     selectionText: {
-        marginLeft: '10px', 
-        marginRight: '10px',
+        margin: theme.spacing(1),
+        border: 'thin solid',
+        borderColor: theme.palette.primary.main,
+        borderRadius: '5px',
     },
     menuItem: {
-        backgroundColor: theme.palette.primary.main,
-        borderRadius: '5px',
+        borderRadius: '2.5px',
+        color: theme.palette.primary.main,
     },
 }));
 
@@ -93,15 +100,15 @@ const MinimalSelect = ({ state, dispatch, triggerSnackbar }) => {
           value={val}
           onChange={handleChange}
           className={classes.selector}
-          style={{ backgroundColor: !validUrlPattern.test(state.url) ? (state.dark ? '#000' : '#fff') : '#1eb980' }}
+          style={{ backgroundColor: state.dark ? '#000' : '#fff', color: '#1eb980' }}
         >
             <MenuItem value="SHORT" className={classes.menuItem}> 
-                <Typography variant="overline" style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980'}}>
+                <Typography variant="caption" style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980'}}>
                     SHORTEN
                 </Typography> 
             </MenuItem>
             <MenuItem value="UNGUESSABLE" className={classes.menuItem}> 
-                <Typography variant="overline" style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980'}}>
+                <Typography variant="caption" style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980'}}>
                     ENCRYPT
                 </Typography> 
             </MenuItem>

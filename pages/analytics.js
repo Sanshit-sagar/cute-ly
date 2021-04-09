@@ -4,8 +4,8 @@ import Router from 'next/router';
 import { makeStyles } from '@material-ui/core/styles'; 
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'; 
-
-import Skeleton from '@material-ui/lab/Skeleton'; 
+import Skeleton from '@material-ui/lab/Skeleton';
+import Divider from '@material-ui/core/Divider'; 
 
 import { useAuth } from '../lib/auth';
 import PageContainer from '../components/PageContainer';
@@ -17,11 +17,16 @@ const useStyles = makeStyles((theme) => ({
     container: {
         margin: theme.spacing(1),
         border: 'thin solid',
-        borderColor: theme.palette.primary.main,
+        borderColor: theme.palette.background.header,
+        borderRadius: '3px',
     },
     dataGridSkeleton: {
         marginTop: '10px', 
         marginRight: '15px',
+    },
+    divider: { 
+        backgroundColor: theme.palette.primary.dark,
+        marginBottom: '25px',
     },
 })); 
 
@@ -39,12 +44,14 @@ const AnalyticsBase = ({ user, loading }) => {
                 analytics
             </Typography>
 
+            <Divider className={classes.divider} /> 
+
             <Fragment>
                 { 
                     user && !loading 
                 ?
                     <Paper 
-                        elevation={10} 
+                        elevation={0} 
                         className={classes.container}
                     >
                         <RealtimeProvider>
@@ -56,7 +63,7 @@ const AnalyticsBase = ({ user, loading }) => {
                 : 
                     <Skeleton 
                         variant="rect" 
-                        width="1325px" 
+                        width="1150px" 
                         height="65vh" 
                         className={classes.dataGridSkeleton}
                     />  

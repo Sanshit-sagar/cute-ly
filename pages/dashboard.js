@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { makeStyles } from '@material-ui/core/styles'; 
 import Slide from '@material-ui/core/Slide';
@@ -29,10 +30,22 @@ const useStyles = makeStyles((theme) => ({
         marginRight: '15px',
         borderRadius: '5px',
     },
-    success: { backgroundColor: 'purple' },
-    error: { backgroundColor: 'blue' },
-    warning: { backgroundColor: 'green' },
-    info: { backgroundColor: 'yellow' },
+    divider: { 
+        backgroundColor: theme.palette.primary.dark,
+        marginBottom: '50px',
+    },
+    success: { 
+        backgroundColor: theme.palette.primary.dark 
+    },
+    error: { 
+        backgroundColor: theme.palette.secondary.dark 
+    },
+    warning: { 
+        backgroundColor: 'yellow' 
+    },
+    info: { 
+        backgroundColor: theme.palette.background.header 
+    },
 }));
 
 
@@ -41,14 +54,17 @@ const DashboardBase = ({ user, loading }) => {
 
     return (
         <Fragment>
+            
             <Typography 
                 variant="h1" 
                 color="primary"
                 component="h1" 
                 className={classes.title}
             >
-                url prettifier
+                new cute.ly
             </Typography>
+
+            <Divider className={classes.divider} /> 
 
             <Fragment>
                 {
