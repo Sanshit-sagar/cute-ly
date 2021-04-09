@@ -409,7 +409,7 @@ const ResultsDialog = () => {
         >
             <DialogTitle style={{ backgroundColor: '#1eb980'}}>
                 <Typography 
-                    variant="h3" 
+                    variant="h2" 
                     color="secondary"
                     style={{ color: state.dark ? '#000' : '#fff' }}
                 >

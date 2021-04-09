@@ -285,29 +285,30 @@ const SocialMetaTagsButton = () => {
                     </Typography>
                 }
             >  
-                <Button 
-                    size="large"
-                    color="primary"
-                    variant="outlined"
-                    disabled={!validUrlPattern.test(gState.url)}
-                    onClick={() => handleOpen('meta')}
-                    style={{ paddingTop: '7.5px' }}
-                >
-                    <Fragment>
-                        { 
-                            globalState.counts.meta >= 1 
-                        ?
-                            <Badge badgeContent={globalState.counts.meta} color="secondary">
-                                <LabelImportantIcon style={{ color: 'aqua' }} />
-                            </Badge>
-                        : 
-                            <Badge badgeContent={0} color="secondary">
-                                <LabelImportantIcon style={{ color: getIconColor() }} />
-                            </Badge>
-                        }
-                    </Fragment> 
-                      
-                </Button>
+                <span>
+                    <Button 
+                        size="large"
+                        color="primary"
+                        variant="outlined"
+                        disabled={!validUrlPattern.test(gState.url)}
+                        onClick={() => handleOpen('meta')}
+                        style={{ paddingTop: '7.5px' }}
+                    >
+                        <Fragment>
+                            { 
+                                globalState.counts.meta >= 1 
+                            ?
+                                <Badge badgeContent={globalState.counts.meta} color="secondary">
+                                    <LabelImportantIcon style={{ color: 'aqua' }} />
+                                </Badge>
+                            : 
+                                <Badge badgeContent={0} color="secondary">
+                                    <LabelImportantIcon style={{ color: getIconColor() }} />
+                                </Badge>
+                            }
+                        </Fragment> 
+                    </Button>
+                </span>
             </Tooltip>    
         </div> 
     );

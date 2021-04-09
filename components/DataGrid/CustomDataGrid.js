@@ -301,7 +301,7 @@ const getCols = () => {
         }, { 
             field: 'timestamp', 
             headerName: 'Age', 
-            width: 170,
+            width: 215,
             renderCell: (params) => (
                 <CustomTimestamp params={params} />
             ),
