@@ -106,18 +106,7 @@ export default function SharedSnackbar() {
         }
       >
           <Alert onClose={handleClose} severity="info">
-            <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
-              <Grid item>
-                { state.snackbar.messageInfo ? state.snackbar.messageInfo.message : ' ' }
-              </Grid>
-
-              <Grid item>
-                <Button> 
-                  <CloseIcon /> 
-                </Button>
-              </Grid>
-
-            </Grid>
+            { state.snackbar.messageInfo ? state.snackbar.messageInfo.message : ' ' }
           </Alert>
         </Snackbar> 
     </div>

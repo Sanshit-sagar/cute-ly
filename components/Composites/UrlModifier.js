@@ -5,16 +5,9 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
-
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 
 import { makeStyles } from '@material-ui/core/styles'; 
-
-import { useCount } from '../SharedContext';
-import { createLink } from '../../lib/db'; 
-import { useRealtime } from '../../utils/useFirebaseRealtime'; 
-
-import sanitizeUrlModifierInput from '../../utils/helpers/sanitizers'; 
 
 import UrlInput from './UrlInput'; 
 import ModeSelector from './ModeSelector'; 
@@ -24,8 +17,11 @@ import DetailsButtonGroup from './DetailsButtonGroup';
 import SocialMediaButtonGroup from './SocialMediaButtonGroup';
 import ProgressBar from './ProgressBar';
 
-
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import { useCount } from '../SharedContext';
+import { createLink } from '../../lib/db'; 
+import { useRealtime } from '../../utils/useFirebaseRealtime'; 
+import { useSnackbar } from 'notistack';
+import sanitizeUrlModifierInput from '../../utils/helpers/sanitizers'; 
 
 const useStyles = makeStyles((theme) => ({
     headerRow: {
@@ -111,20 +107,36 @@ const UrlModifierBase = () => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const triggerSnackbarVariant = () => {
-        enqueueSnackbar('MESSAGE HERE', 
+    const triggerSnackbarVariant = ({ message, variant }) => {
+        enqueueSnackbar(message, 
         { 
             anchorOrigin: {
                 vertical: 'bottom',
                 horizontal: 'right',
             },
-            variant: 'success',
+            variant: variant,
             TransitionComponent: Slide, 
         });
     };
 
     const handleExpandDetails = () => {
-        triggerSnackbarVariant();
+        if(state.url && state.url.length && validUrlPattern.test(state.url)) {
+            dispatch({
+                type: 'SHOW_RESULTS',
+                payload: {
+                    value: true,
+                },
+            });
+            triggerSnackbarVariant({ 
+                message: 'displaying summary',
+                variant: 'info',
+            });
+        } else {
+            triggerSnackbarVariant({ 
+                message: 'a valid URL is needed to proceed',
+                variant: 'warning',
+            });
+        }
     }
 
     return (
@@ -147,7 +159,7 @@ const UrlModifierBase = () => {
                 <Grid item>
                     <Grid container direction="row" justify="flex-end" alignItems="center">
                         <Grid item> 
-                            <ModeSelector />
+                            <ModeSelector triggerSnackbar={handleExpandDetails} />
                         </Grid>
                         <Grid item>
                             <DetailsButtonGroup /> 
@@ -169,7 +181,9 @@ const UrlModifierBase = () => {
                 <Grid item>
                     <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
                         <Grid item>
-                            <Button size="small" margin="dense" variant="outlined" color="primary" onClick={handleExpandDetails}>
+                            <Button 
+                                disabled={!validUrlPattern.test(state.url) || !state.url.length}
+                                size="small" margin="dense" variant="outlined" color="primary" onClick={handleExpandDetails}>
                                 <FullscreenIcon /> 
                             </Button>
                         </Grid>

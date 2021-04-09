@@ -16,6 +16,7 @@
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindui/react": "^0.1.1",
     "axios": "^0.21.1",
+    "comma-number": "^2.0.1",
     "firebase": "^8.3.2",
     "firebase-admin": "^9.6.0",
     "moment": "^2.29.1",

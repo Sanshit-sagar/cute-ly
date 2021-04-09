@@ -5,7 +5,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link'; 
 import Button from '@material-ui/core/Button'; 
-import IconButton from '@material-ui/core/IconButton'; 
 
 import StarIcon from '@material-ui/icons/Star';
 import FacebookIcon from '@material-ui/icons/Facebook'; 
@@ -14,7 +13,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import PageviewIcon from '@material-ui/icons/Pageview';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import CreateIcon from '@material-ui/icons/Create';
 
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -105,7 +104,8 @@ const ActionButtonGroup = ({ params }) => {
             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={1}>
                 <Grid item>
                     <Link href={params.value}>
-                        <Button  
+                        <Button 
+                            variant="outlined"   
                             color="primary" 
                             size="small" 
                             margin="dense" 
@@ -117,6 +117,7 @@ const ActionButtonGroup = ({ params }) => {
                 </Grid>
                 <Grid item>
                     <Button 
+                        variant="outlined"
                         color="primary" 
                         size="small" 
                         margin="dense" 
@@ -127,6 +128,7 @@ const ActionButtonGroup = ({ params }) => {
                 </Grid>
                 <Grid item>
                     <Button  
+                        variant="outlined"
                         color="primary" 
                         size="small" 
                         margin="dense" 
@@ -157,10 +159,6 @@ const CustomTimestamp = ({ params }) => {
     const classes = useStyles(); 
     const [moment, setMoment] = useState(params.value);
 
-    const toggleMoment = () => {
-        alert('toggling');
-    }
-
     const MomentRelative = () => {
         return (
             <Moment parse="x" fromNow ago>
@@ -170,26 +168,13 @@ const CustomTimestamp = ({ params }) => {
     }
 
     return (
-        <Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-            <Grid item>
-                <Typography 
-                    variant="overline"
-                    className={classes.toggleButtonText}
-                >
-                    <MomentRelative /> 
-                </Typography>
-            </Grid>
-            <Grid item>
-                <IconButton 
-                    onClick={toggleMoment}
-                    size="small"
-                >
-                    <NavigateNextIcon 
-                        fontSize="small"
-                        style={{ margin: '5px' }} 
-                    />
-                </IconButton>
-            </Grid>
+        <Grid container direction="row" justify="center" alignItems="flex-start" spacing={1}>
+            <Typography 
+                variant="overline"
+                className={classes.toggleButtonText}
+            >
+                <MomentRelative /> 
+            </Typography>
         </Grid>
     );
 }
@@ -204,13 +189,20 @@ const NicknameCell = ({ params }) => {
     const UntitledPlaceholder = () => {
         return (
             <Fragment>
-                <Button onClick={handleUpdateName}>
-                    <Typography 
-                            variant="caption" 
-                            color="default"
-                    >
-                        click to add 
-                    </Typography>
+                <Button color="primary" onClick={handleUpdateName}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <Typography 
+                                variant="caption" 
+                                color="default"
+                            >
+                                untitled 
+                            </Typography>
+                        </div>
+                        <div>
+                            <CreateIcon fontSize="small" color="primary" style={{ margin: '7.5px 2.5px 2.5px 7.5px' }} />
+                        </div>
+                    </div>
                 </Button> 
             </Fragment>
         );
@@ -225,7 +217,8 @@ const NicknameCell = ({ params }) => {
                     variant="h5" 
                     color="primary"
                 >
-                    { params.value.substring(0, 10) }
+                    { params.value.substring(0, 11) }
+                    { params.value.length > 11 && "..." }
                 </Typography>  
             :
                 <UntitledPlaceholder />
@@ -278,34 +271,43 @@ const getCols = () => {
         }, 
         {
             field: 'analytics',
-            headerName: 'Analytics',
-            width: 215,
+            headerName: 'Analytics Parameters',
+            width: 210,
             renderCell: (params) => (
                 <AnalyticsCell params={params} />
             ),
         }, 
         { 
             field: 'socials', 
-            headerName: 'Shared @', 
+            headerName: 'Shareable Links', 
             width: 160,
             renderCell: (params) => (
                 <SocialIcons params={params} />
             ),
+        }, { 
+            field: 'views',
+            headerName: 'Views',
+            width: 130,
+            renderCell: (params) => {
+                <Typography variant="subtitle" color="secondary">
+                    { params.value }
+                </Typography>
+            }
         }, {
             field: 'previewLink', 
             headerName: 'Actions', 
-            width: 265,
+            width: 255,
             renderCell: (params) => (
                 <ActionButtonGroup params={params} />
             ),
         }, { 
             field: 'timestamp', 
             headerName: 'Age', 
-            width: 215,
+            width: 145,
             renderCell: (params) => (
                 <CustomTimestamp params={params} />
             ),
-        },  
+        }, 
     ];
     return columns
 }

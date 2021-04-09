@@ -377,8 +377,7 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 linksMap: {
-                    ...state.linksMap,
-                    ...action.payload.value,
+                    ...action.payload.value
                 }
             }; 
         case "OPEN_GRAPH_RESULTS":

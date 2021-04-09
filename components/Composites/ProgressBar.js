@@ -75,17 +75,6 @@ const ProgressBar = () => {
 
     }, [state.url, state.counts, state.nickname, state.socials, state.mostRecentResult]); 
 
-    const ProgressDisplay = () => {
-        return (
-            <Typography
-                variant="overline"
-                className={classes.colorPrimary}
-            >
-                { progress + "%" }
-            </Typography>
-        );
-    }
-
     return (
         <Fragment>
             <Paper elevation={10}>
@@ -94,10 +83,6 @@ const ProgressBar = () => {
                     value={progress} 
                 />
             </Paper>
-
-            {/* <div className={classes.progressDisplay}>
-                <ProgressDisplay /> 
-            </div> */}
         </Fragment>
     );
 }

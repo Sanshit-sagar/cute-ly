@@ -45,6 +45,7 @@ function sanitizeData(key, data) {
                 tags: data.analytics.tags,
             },
             timestamp: data.timestamp,
+            views: 0,
         };
         return sanitizeData; 
     }
@@ -79,7 +80,7 @@ function useFirebaseRealtime() {
         if(user && !didInit) {
             setLinksLoading(true);
             const uid = firebase.auth().currentUser.uid;
-            const ref = firebase.database().ref('/user-links/' + uid);
+            const ref = firebase.database().ref('/user-links/' + uid).orderByChild('timestamp').limitToLast(40);
 
             const listener = ref.once('value').then((snapshot) => {
                 var tempLinks = []; 

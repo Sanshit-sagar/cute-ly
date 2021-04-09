@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '5px',
     },
     selectionText: {
-        color: theme.palette.background.header, 
         marginLeft: '10px', 
         marginRight: '10px',
     },
@@ -53,7 +52,7 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
     },
 }))(ToggleButtonGroup);
 
-const MinimalSelect = ({ state, dispatch }) => {
+const MinimalSelect = ({ state, dispatch, triggerSnackbar }) => {
     const classes = useStyles();
     const [val,setVal] = useState("SHORT");
   
@@ -65,6 +64,11 @@ const MinimalSelect = ({ state, dispatch }) => {
         }
       });
       setVal(event.target.value);
+
+      triggerSnackbar({ 
+        message: 'Updated Mode to: ' + event.target.value,
+        variant: 'success',
+      });
     };
   
     const menuProps = {
@@ -89,15 +93,15 @@ const MinimalSelect = ({ state, dispatch }) => {
           value={val}
           onChange={handleChange}
           className={classes.selector}
-          style={{ backgroundColor: !validUrlPattern.test(state.url) ? 'silver' : '#1eb980' }}
+          style={{ backgroundColor: !validUrlPattern.test(state.url) ? (state.dark ? '#000' : '#fff') : '#1eb980' }}
         >
             <MenuItem value="SHORT" className={classes.menuItem}> 
-                <Typography variant="overline" className={classes.selectionText}>
+                <Typography variant="overline" style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980'}}>
                     SHORTEN
                 </Typography> 
             </MenuItem>
             <MenuItem value="UNGUESSABLE" className={classes.menuItem}> 
-                <Typography variant="overline" className={classes.selectionText}>
+                <Typography variant="overline" style={{ color: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980'}}>
                     ENCRYPT
                 </Typography> 
             </MenuItem>
@@ -106,7 +110,7 @@ const MinimalSelect = ({ state, dispatch }) => {
     );
   };
 
-const ModeSelector = () => {
+const ModeSelector = ({ triggerSnackbar }) => {
     const classes = useStyles(); 
     const [state, dispatch] = useCount(); 
 
@@ -127,7 +131,11 @@ const ModeSelector = () => {
                         style={{ backgroundColor: !validUrlPattern.test(state.url) ? 'gray' : '#1eb980' }} 
                     /> 
                     
-                    <MinimalSelect state={state} dispatch={dispatch} />
+                    <MinimalSelect 
+                      state={state} 
+                      dispatch={dispatch} 
+                      triggerSnackbar={triggerSnackbar} 
+                    />
                 </div>
             </Paper>
         </StyledToggleButtonGroup> 
