@@ -3,12 +3,11 @@ import React, { Fragment, useState, useCallback } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import { DialogTitle, FormControl, FormHelperText, OutlinedInput } from '@material-ui/core';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography'; 
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -17,14 +16,13 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import StarIcon from '@material-ui/icons/Star';
 import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import Tooltip from '@material-ui/core/Tooltip'; 
-
 import { makeStyles } from '@material-ui/core/styles';
+
+import Image from 'next/image'; 
+import { useClipboard } from 'use-clipboard-copy';
 
 import { useCount } from './SharedContext'; 
 import OpenGraphDataDisplay from './Composites/OpenGraphDataDisplay'; 
-
-import { useClipboard } from 'use-clipboard-copy';
-import Image from 'next/image'; 
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,10 +58,12 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.main,
     },
     cardHeaderPaper: { 
-        margin: theme.spacing(0.3), 
+        margin: theme.spacing(1), 
+        padding: theme.spacing(1),
         border: 'thin solid', 
         borderColor: theme.palette.primary.main,
-        padding: theme.spacing(1),
+        borderRadius: '5px',
+        color: theme.palette.background.header,
     },
     iconButton: {
         margin: '5px',
@@ -126,6 +126,7 @@ const HttpImage = ({ imageLink }) => {
                 alt="Open Graph Detected Image"
                 width={96}
                 height={96}
+                style={{ marginTop: '30px' }}
             />
         </Fragment>
     );
@@ -310,27 +311,15 @@ const ActionButtonGroup = () => {
 
 const Header = () => {
     const classes = useStyles();
-    const [state, dispatch] = useCount();
+    // const [state, dispatch] = useCount();
 
     return (
-        <Fragment>
-            { 
-                state.mostRecentResult && state.mostRecentResult?.length 
-            ?  
-                <Paper 
-                    elevation={5} 
-                    className={classes.cardHeaderPaper}
-                >
-                    <Link href={state.mostRecentResult}>
-                        <Typography variant="h6" style={{ color: state.dark ? '#fff' : '#000' }}>
-                            { state.mostRecentResult.substring(31) }
-                        </Typography>
-                    </Link>
-                </Paper>
-            :
-                null
-            }
-        </Fragment>
+        <Paper 
+            elevation={5} 
+            className={classes.cardHeaderPaper}
+        >
+           <h1> Hi there </h1>
+        </Paper>
     ); 
 }
 
@@ -407,41 +396,32 @@ const ResultsDialog = () => {
             open={state.showResults} 
             onClose={handleClose}
         >
-            <DialogTitle style={{ backgroundColor: '#1eb980'}}>
-                <Typography 
-                    variant="h2" 
-                    color="secondary"
-                    style={{ color: state.dark ? '#000' : '#fff' }}
+            <div style={{ backgroundColor: '#1eb980'}}>
+                <Paper 
+                    elevation={5} 
+                    className={classes.paper}
                 >
-                    summary
-                </Typography>
-            </DialogTitle>
+                    <LinkDataCard
+                        handleClose={handleClose}
+                    /> 
+                </Paper>
 
-            <Paper 
-                elevation={10} 
-                className={classes.paper}
-            >
-                <LinkDataCard
-                    handleClose={handleClose}
-                /> 
-            </Paper>
-
-            <DialogActions style={{ backgroundColor: '#1eb980'}}>
-                <Button 
-                    variant="contained" 
-                    size="large" 
-                    onClick={handleClose}
-                    style={{ backgroundColor: state.dark ? '#000' : '#fff' }}
-                >
-                    <Typography 
-                        variant="button" 
-                        style={{ color: '#1eb980'}}
+                <DialogActions style={{ backgroundColor: '#1eb980'}}>
+                    <Button 
+                        variant="contained" 
+                        size="large" 
+                        onClick={handleClose}
+                        style={{ backgroundColor: state.dark ? '#000' : '#fff' }}
                     >
-                        Dismiss
-                    </Typography>
-                </Button>
-            </DialogActions>
-        
+                        <Typography 
+                            variant="button" 
+                            style={{ color: '#1eb980'}}
+                        >
+                            Dismiss
+                        </Typography>
+                    </Button>
+                </DialogActions>
+            </div>
         </Dialog>
     );
 }

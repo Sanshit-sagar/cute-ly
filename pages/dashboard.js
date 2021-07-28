@@ -110,7 +110,6 @@ function Dashboard() {
                 TransitionComponent={Slide}
                 maxSnack={3}
                 dense
-                // preventDuplicate
                 autoHideDuration={4000}
                 classes={{
                     variantSuccess: classes.success,

@@ -52,7 +52,7 @@ const OpenGraphDataDisplay = ({ state }) => {
     const hybridGraph = state.openGraphData;
     const data = (!hybridGraph.data || hybridGraph.error) ? emptyDataObject : hybridGraph.data; 
 
-    const croppedTitle = cropOutputField(data.title, 35); 
+    const croppedTitle = cropOutputField(data.title, 30); 
     const croppedSiteName = cropOutputField(data.siteName, 15); 
     const croppedType = cropOutputField(data.type, 15).toUpperCase(); 
     const croppedUrl = cropOutputField(data.url, 45);
@@ -85,13 +85,7 @@ const OpenGraphDataDisplay = ({ state }) => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        {/* <Chip 
-                            variant="outlined" 
-                            color="primary" 
-                            size="small"
-                            label={croppedSiteName} 
-                            className={classes.chip}
-                        />  */}
+                      
                         <Chip 
                             variant="outlined" 
                             color="secondary" 
